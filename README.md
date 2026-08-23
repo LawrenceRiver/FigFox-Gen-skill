@@ -6,8 +6,6 @@
 
 **High-aesthetic domain references + FigureBench RAG · frozen colour · topology-first image generation**
 
-联网搜索领域共识 SVG 表达，结合 FigureBench 精选 RAG 和颜色审美，教会图像生成模型生成真实科研架构图。
-
 [中文说明](./README_ZH.md) · [Workflow](#workflow) · [Runs](#recorded-runs) · [Research note](#research-note)
 
 </div>
