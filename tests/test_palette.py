@@ -206,6 +206,20 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("Nature Portfolio", readme_zh)
         self.assertNotIn("FigureBench RAG · frozen colour", readme)
 
+    def test_readme_has_a_bilingual_marketing_hook_and_four_image_preview_strip(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn("让图像模型真正理解科研架构", readme)
+        hook_end = readme.index("## Workflow")
+        preview_strip = readme[:hook_end]
+        for asset in (
+            "workflow-en.png",
+            "latent-diffusion.png",
+            "musicot.png",
+            "alphafold3.png",
+        ):
+            self.assertIn(f"assets/runs/{asset}", preview_strip)
+
 
 if __name__ == "__main__":
     unittest.main()

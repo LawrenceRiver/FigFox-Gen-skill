@@ -4,7 +4,16 @@
 
 ### Make image models draw paper figures with scientific structure, not slide-deck guesswork.
 
-**Scientific paper figure generation · web drawing conventions · controlled colour · topology-first image generation**
+**High-aesthetic research references · controlled colour · topology-first image generation**
+
+让图像模型真正理解科研架构：联网寻找领域绘图惯例，融合审美配色与结构规划，生成可用于论文的图。
+
+<p align="center">
+  <img src="assets/runs/workflow-en.png" width="23%" alt="Workflow" />
+  <img src="assets/runs/latent-diffusion.png" width="23%" alt="Visual generation" />
+  <img src="assets/runs/musicot.png" width="23%" alt="Music generation" />
+  <img src="assets/runs/alphafold3.png" width="23%" alt="Biomolecular structure" />
+</p>
 
 [中文说明](./README_ZH.md) · [Workflow](#workflow) · [Runs](#recorded-runs) · [Research note](#research-note)
 
