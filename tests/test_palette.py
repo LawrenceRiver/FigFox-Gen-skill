@@ -131,6 +131,13 @@ class PaletteCliTests(unittest.TestCase):
 
 
 class SkillDocumentationTests(unittest.TestCase):
+    def test_ui_default_prompt_starts_a_complete_labelled_image_generation_task(self):
+        metadata = (ROOT / "agents/openai.yaml").read_text(encoding="utf-8")
+
+        self.assertIn("$genlike-scientific-svg", metadata)
+        self.assertIn("image-generation task", metadata)
+        self.assertIn("complete labelled research figure", metadata)
+
     def test_skill_documents_inline_colour_planning_and_image_free_palette_library(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         palette_reference = (ROOT / "references/palette-rag.md").read_text(encoding="utf-8")
@@ -160,6 +167,34 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme_zh)
         self.assertNotIn("git clone", readme)
         self.assertNotIn("git clone", readme_zh)
+
+    def test_readmes_lead_with_install_then_record_real_methodology_driven_runs(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
+
+        self.assertNotIn("## What it is", readme)
+        self.assertNotIn("## 这是什么", readme_zh)
+        self.assertLess(
+            readme.index("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill"),
+            readme.index("## Workflow"),
+        )
+        for method in ("Latent Diffusion", "MusiCoT", "AlphaFold 3"):
+            self.assertIn(method, readme)
+        self.assertIn("Methodology input", readme)
+        self.assertIn("Computer Vision", readme)
+
+    def test_readme_links_all_five_direct_image_generation_outputs(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        for asset in (
+            "workflow-en.png",
+            "workflow-zh.png",
+            "latent-diffusion.png",
+            "musicot.png",
+            "alphafold3.png",
+        ):
+            self.assertTrue((ROOT / "assets" / "runs" / asset).is_file())
+            self.assertIn(f"assets/runs/{asset}", readme)
 
 
 if __name__ == "__main__":
