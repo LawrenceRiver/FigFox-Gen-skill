@@ -6,6 +6,8 @@
 
 **Dual-reference RAG · curated color systems · editable SVG structure**
 
+联网搜索领域共识 SVG 表达，结合 FigureBench 精选 RAG 和颜色审美，教会图像生成模型生成真实科研架构图。
+
 [中文说明](./README_ZH.md) · [Workflow](#workflow) · [Install](#install) · [Research note](#research-note)
 
 </div>
