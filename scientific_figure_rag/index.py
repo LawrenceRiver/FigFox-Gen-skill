@@ -440,18 +440,18 @@ def derive_geometry_lexicon(index_path: str | Path) -> dict[str, Any]:
 
 
 def build_iteration_brief(
-    svg_contract: Mapping[str, Any],
+    generation_contract: Mapping[str, Any],
     geometry_lexicon: Mapping[str, Any],
 ) -> dict[str, Any]:
     """Create a one-pass refinement brief with explicit anti-drift boundaries."""
     protected = {
-        key: svg_contract.get(key)
+        key: generation_contract.get(key)
         for key in ("modules", "arrows", "labels", "primary_layout")
-        if key in svg_contract
+        if key in generation_contract
     }
     return {
         "phase": "single FigureBench-informed refinement after first raster draft",
-        "protected_svg_contract": protected,
+        "protected_generation_contract": protected,
         "forbidden_changes": [
             "module semantics",
             "arrow relations",

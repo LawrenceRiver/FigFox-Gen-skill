@@ -69,7 +69,7 @@ class RetrievalTest(unittest.TestCase):
             self.assertGreater(results[0]["scores"]["structure"], 0)
             self.assertNotIn("image_bytes", results[0])
 
-    def test_geometry_lexicon_and_refinement_brief_keep_svg_contract(self):
+    def test_geometry_lexicon_and_refinement_brief_keep_generation_contract(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             dataset = Path(temporary_directory) / "figurebench"
             image = dataset / "raw/images/1111.00001/1111.00001_method.png"
@@ -94,7 +94,7 @@ class RetrievalTest(unittest.TestCase):
 
             lexicon = derive_geometry_lexicon(index_path)
             brief = build_iteration_brief(
-                svg_contract={
+                generation_contract={
                     "modules": ["input", "encoder", "output"],
                     "arrows": [["input", "encoder"], ["encoder", "output"]],
                     "labels": ["Input", "Encoder", "Output"],
@@ -104,7 +104,7 @@ class RetrievalTest(unittest.TestCase):
             )
 
             self.assertEqual(lexicon["indexed_figures"], 1)
-            self.assertEqual(brief["protected_svg_contract"]["modules"], ["input", "encoder", "output"])
+            self.assertEqual(brief["protected_generation_contract"]["modules"], ["input", "encoder", "output"])
             self.assertIn("module semantics", brief["forbidden_changes"])
             self.assertIn("container geometry", brief["allowed_changes"])
 

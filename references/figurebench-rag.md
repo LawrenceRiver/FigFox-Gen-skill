@@ -56,11 +56,11 @@ python "$ROOT/scripts/figurebench_rag.py" query \
   --output "$ROOT/local/references.json"
 ```
 
-Use the V0 SVG contract and geometry lexicon to make the single constrained refinement brief:
+Use the Image Generation Contract and geometry lexicon to make the single constrained refinement brief after direct image generation:
 
 ```bash
 python "$ROOT/scripts/figurebench_rag.py" refinement-brief \
-  --svg-contract-json "$ROOT/local/svg-contract.json" \
+  --generation-contract-json "$ROOT/local/image-generation-contract.json" \
   --lexicon-json "$ROOT/local/geometry-lexicon.json" \
   --output "$ROOT/local/refinement-brief.json"
 ```

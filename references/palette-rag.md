@@ -11,7 +11,7 @@ Each render chooses exactly one source:
 
 The high-aesthetic **domain** references are never a colour source. Their job is topology, component conventions, and novelty evidence. A user reference image can guide style, but cannot add colours unless it separately passes the same unrelated-SVG rule.
 
-For a web-SVG group, record only its declared source domains plus role-labelled HEX/RGB values in the current run's planning JSON. Reject it when any source-domain label overlaps a brief-domain label. Do not retain its image, URL, thumbnail, embedding, or a reusable palette record. Its purpose is colour transfer without copying the visual identity of a semantically related figure.
+For a web-SVG group, make a **temporary crop** of the source's swatch or legend region only when needed to inspect exact values. Record only its declared source domains plus role-labelled HEX/RGB values in the current run's planning JSON. Reject it when any source-domain label overlaps a brief-domain label. Do not retain the crop, source image, URL, thumbnail, embedding, or a reusable palette record. Its purpose is colour transfer without copying the visual identity of a semantically related figure.
 
 ## Use
 
@@ -53,7 +53,7 @@ Compile before rendering:
 python scripts/figurebench_rag.py colour-contract --plan-json colour-plan.json
 ```
 
-The compiler freezes the source and returns `allowed_hex`. Every authored SVG fill and stroke must use only exact HEX values from `allowed_hex`; the raster pass cannot add, shift, blend, or activate any other colour. This is a planning field, not a separate model call. Render the plan into the SVG contract and preserve it during the final raster pass. Do not use colour as the only encoding of a category; retain labels, geometry, or patterns where distinction matters.
+The compiler freezes the source and returns `allowed_hex`. Every authored visual instruction in the Image Generation Contract must use only exact HEX values from `allowed_hex`; the raster model cannot add, shift, blend, or activate any other colour. This is a planning field, not a separate model call. Pass the plan directly to the image-generation model; do not render a full SVG before the image call. Do not use colour as the only encoding of a category; retain labels, geometry, or patterns where distinction matters.
 
 ## Maintaining the library
 

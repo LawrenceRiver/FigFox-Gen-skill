@@ -58,7 +58,7 @@ def main() -> None:
     query.add_argument("--output")
 
     refine = commands.add_parser("refinement-brief", help="Make a one-pass non-drifting refinement brief")
-    refine.add_argument("--svg-contract-json", required=True)
+    refine.add_argument("--generation-contract-json", required=True)
     refine.add_argument("--lexicon-json", required=True)
     refine.add_argument("--output")
 
@@ -97,7 +97,7 @@ def main() -> None:
         _write_json(
             arguments.output,
             build_iteration_brief(
-                _json_file(arguments.svg_contract_json),
+                _json_file(arguments.generation_contract_json),
                 _json_file(arguments.lexicon_json),
             ),
         )

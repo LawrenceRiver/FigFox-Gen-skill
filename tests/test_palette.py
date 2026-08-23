@@ -140,14 +140,19 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("palette-library.json", palette_reference)
         self.assertIn("must not store screenshots", palette_reference)
 
-    def test_docs_require_colour_source_isolation_locked_svg_text_and_skill_installation(self):
+    def test_docs_require_colour_source_isolation_direct_image_generation_and_skill_installation(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         palette_reference = (ROOT / "references/palette-rag.md").read_text(encoding="utf-8")
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
         readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
 
         self.assertIn("unrelated to the brief's domain", skill)
-        self.assertIn("immutable final layer", skill)
+        self.assertIn("temporary crop", skill)
+        self.assertIn("temporary crop", palette_reference)
+        self.assertIn("directly generate the final scientific raster", skill)
+        self.assertIn("must not use a rendered SVG as its input", skill)
+        self.assertIn("plan-first, image-generation-first", readme.lower())
+        self.assertIn("先规划、再图像生成", readme_zh)
         self.assertIn("only exact HEX values", palette_reference)
         self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme)
         self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme_zh)
