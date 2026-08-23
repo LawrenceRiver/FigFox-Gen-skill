@@ -1,0 +1,167 @@
+{
+  "format": "genlike-scientific-svg-palette-library-v1",
+  "palettes": [
+    {
+      "id": "biomedical-contrast-01",
+      "name": "Biomedical blue, green, yellow, and red contrast",
+      "tags": ["biomedical", "contrast", "mechanism", "comparison"],
+      "colours": [
+        {"role": "ink", "hex": "#14517C", "rgb": [20, 81, 124]},
+        {"role": "primary", "hex": "#2F7FC1", "rgb": [47, 127, 193]},
+        {"role": "surface", "hex": "#E7EFFA", "rgb": [231, 239, 250]},
+        {"role": "secondary", "hex": "#96C37D", "rgb": [150, 195, 125]},
+        {"role": "comparison", "hex": "#F3D266", "rgb": [243, 210, 102]},
+        {"role": "accent", "hex": "#D8383A", "rgb": [216, 56, 58]},
+        {"role": "muted", "hex": "#A9B8C6", "rgb": [169, 184, 198]}
+      ]
+    },
+    {
+      "id": "workflow-role-01",
+      "name": "Clear workflow roles",
+      "tags": ["workflow", "method", "pipeline", "contrast"],
+      "colours": [
+        {"role": "primary", "hex": "#2E5BFF", "rgb": [46, 91, 255]},
+        {"role": "accent", "hex": "#F59E0B", "rgb": [245, 158, 11]},
+        {"role": "secondary", "hex": "#14B8A6", "rgb": [20, 184, 166]},
+        {"role": "ink", "hex": "#475569", "rgb": [71, 85, 105]}
+      ]
+    },
+    {
+      "id": "top-journal-pastel-01",
+      "name": "Cool clinical pastel",
+      "tags": ["biomedical", "clinical", "pastel", "mechanism"],
+      "colours": [
+        {"role": "canvas", "hex": "#EDF7F8", "rgb": [237, 247, 248]},
+        {"role": "surface", "hex": "#C6E9E5", "rgb": [198, 233, 229]},
+        {"role": "primary", "hex": "#78BECB", "rgb": [120, 190, 203]},
+        {"role": "secondary", "hex": "#E2E1EF", "rgb": [226, 225, 239]},
+        {"role": "muted", "hex": "#C3C2E1", "rgb": [195, 194, 225]}
+      ]
+    },
+    {
+      "id": "top-journal-warm-01",
+      "name": "Warm biological contrast",
+      "tags": ["biomedical", "comparison", "warm", "contrast"],
+      "colours": [
+        {"role": "ink", "hex": "#9D6767", "rgb": [157, 103, 103]},
+        {"role": "primary", "hex": "#B84B48", "rgb": [184, 75, 72]},
+        {"role": "surface", "hex": "#F9C3A9", "rgb": [249, 195, 169]},
+        {"role": "canvas", "hex": "#EDF5F8", "rgb": [237, 245, 248]},
+        {"role": "accent", "hex": "#E05F4C", "rgb": [224, 95, 76]}
+      ]
+    },
+    {
+      "id": "top-journal-neutral-01",
+      "name": "Soft neutral research pastel",
+      "tags": ["pastel", "neutral", "overview", "biology"],
+      "colours": [
+        {"role": "canvas", "hex": "#F7F5E0", "rgb": [247, 245, 224]},
+        {"role": "surface", "hex": "#EDF5F8", "rgb": [237, 245, 248]},
+        {"role": "secondary", "hex": "#EEEBF6", "rgb": [238, 235, 246]},
+        {"role": "muted", "hex": "#BFBEDD", "rgb": [191, 190, 221]},
+        {"role": "accent", "hex": "#F5BEC1", "rgb": [245, 190, 193]}
+      ]
+    },
+    {
+      "id": "publication-paired-01",
+      "name": "Publication paired muted accents",
+      "tags": ["publication", "comparison", "pastel", "data"],
+      "colours": [
+        {"role": "primary", "hex": "#B83945", "rgb": [184, 57, 69]},
+        {"role": "surface", "hex": "#FBDFE2", "rgb": [251, 223, 226]},
+        {"role": "secondary", "hex": "#377483", "rgb": [55, 116, 131]},
+        {"role": "muted", "hex": "#C7DFF0", "rgb": [199, 223, 240]},
+        {"role": "accent", "hex": "#E3E457", "rgb": [227, 228, 87]},
+        {"role": "comparison", "hex": "#4F845C", "rgb": [79, 132, 92]}
+      ]
+    },
+    {
+      "id": "earth-data-01",
+      "name": "Earthy contour data",
+      "tags": ["data", "earth", "geospatial", "contrast"],
+      "colours": [
+        {"role": "muted", "hex": "#B7B49F", "rgb": [183, 180, 159]},
+        {"role": "primary", "hex": "#44757B", "rgb": [68, 117, 123]},
+        {"role": "ink", "hex": "#452A3D", "rgb": [69, 42, 61]},
+        {"role": "accent", "hex": "#D34D3A", "rgb": [211, 77, 58]},
+        {"role": "comparison", "hex": "#DC6C4C", "rgb": [220, 108, 76]},
+        {"role": "surface", "hex": "#EFD5B7", "rgb": [239, 213, 183]}
+      ]
+    },
+    {
+      "id": "epitope-blue-coral-01",
+      "name": "Epitopic blue and coral",
+      "tags": ["biomedical", "data", "contrast"],
+      "colours": [
+        {"role": "primary", "hex": "#2878B5", "rgb": [40, 120, 181]},
+        {"role": "surface", "hex": "#9AC9DB", "rgb": [154, 201, 219]},
+        {"role": "comparison", "hex": "#F8AC8C", "rgb": [248, 172, 140]},
+        {"role": "accent", "hex": "#C82423", "rgb": [200, 36, 35]},
+        {"role": "secondary", "hex": "#FF8884", "rgb": [255, 136, 132]}
+      ]
+    },
+    {
+      "id": "microbiology-soft-01",
+      "name": "Soft microbiology comparison",
+      "tags": ["biomedical", "microbiology", "comparison", "pastel"],
+      "colours": [
+        {"role": "primary", "hex": "#8ECFC9", "rgb": [142, 207, 201]},
+        {"role": "comparison", "hex": "#FFBE7A", "rgb": [255, 190, 122]},
+        {"role": "accent", "hex": "#FA7F6F", "rgb": [250, 127, 111]},
+        {"role": "secondary", "hex": "#82B0D2", "rgb": [130, 176, 210]},
+        {"role": "muted", "hex": "#BEB8DC", "rgb": [190, 184, 220]},
+        {"role": "surface", "hex": "#E7DAD2", "rgb": [231, 218, 210]},
+        {"role": "ink", "hex": "#999999", "rgb": [153, 153, 153]}
+      ]
+    },
+    {
+      "id": "cell-morphology-triad-01",
+      "name": "Cell morphology triad",
+      "tags": ["biomedical", "cells", "categorical", "contrast"],
+      "colours": [
+        {"role": "accent", "hex": "#EF767A", "rgb": [239, 118, 122]},
+        {"role": "ink", "hex": "#456990", "rgb": [69, 105, 144]},
+        {"role": "primary", "hex": "#48C0AA", "rgb": [72, 192, 170]}
+      ]
+    },
+    {
+      "id": "interactome-pastel-01",
+      "name": "Interactome and protein pastel",
+      "tags": ["biomedical", "network", "protein", "pastel"],
+      "colours": [
+        {"role": "ink", "hex": "#934B43", "rgb": [147, 75, 67]},
+        {"role": "comparison", "hex": "#D76364", "rgb": [215, 99, 100]},
+        {"role": "accent", "hex": "#EF7A6D", "rgb": [239, 122, 109]},
+        {"role": "surface", "hex": "#F1D77E", "rgb": [241, 215, 126]},
+        {"role": "secondary", "hex": "#B1CE46", "rgb": [177, 206, 70]},
+        {"role": "primary", "hex": "#5F97D2", "rgb": [95, 151, 210]},
+        {"role": "muted", "hex": "#9DC3E7", "rgb": [157, 195, 231]}
+      ]
+    },
+    {
+      "id": "likert-soft-01",
+      "name": "Soft ordered survey scale",
+      "tags": ["survey", "ordered", "pastel", "data"],
+      "colours": [
+        {"role": "accent", "hex": "#FCB2AF", "rgb": [252, 178, 175]},
+        {"role": "primary", "hex": "#9BDFDF", "rgb": [155, 223, 223]},
+        {"role": "surface", "hex": "#FFE2CE", "rgb": [255, 226, 206]},
+        {"role": "secondary", "hex": "#C4D8E9", "rgb": [196, 216, 233]},
+        {"role": "muted", "hex": "#BEB8DF", "rgb": [190, 184, 223]}
+      ]
+    },
+    {
+      "id": "survey-soft-01",
+      "name": "Soft survey diverging scale",
+      "tags": ["survey", "ordered", "pastel", "diverging"],
+      "colours": [
+        {"role": "primary", "hex": "#8DD3C6", "rgb": [141, 211, 198]},
+        {"role": "surface", "hex": "#BBE3DC", "rgb": [187, 227, 220]},
+        {"role": "accent", "hex": "#F28072", "rgb": [242, 128, 114]},
+        {"role": "comparison", "hex": "#F5B4AC", "rgb": [245, 180, 172]},
+        {"role": "muted", "hex": "#BEBDDA", "rgb": [190, 189, 218]},
+        {"role": "secondary", "hex": "#DAD7E8", "rgb": [218, 215, 232]}
+      ]
+    }
+  ]
+}

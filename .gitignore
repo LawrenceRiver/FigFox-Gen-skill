@@ -1,0 +1,11 @@
+local/
+data/
+*.sqlite
+*.sqlite-*
+*.jsonl
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+docs/superpowers/
+IMPLEMENTATION_PLAN.md
