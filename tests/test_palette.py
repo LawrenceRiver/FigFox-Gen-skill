@@ -196,6 +196,16 @@ class SkillDocumentationTests(unittest.TestCase):
             self.assertTrue((ROOT / "assets" / "runs" / asset).is_file())
             self.assertIn(f"assets/runs/{asset}", readme)
 
+    def test_readmes_acknowledge_reference_sources_without_making_rag_the_hook(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
+
+        self.assertIn("## Acknowledgements", readme)
+        self.assertIn("Nature Portfolio", readme)
+        self.assertIn("## 鸣谢", readme_zh)
+        self.assertIn("Nature Portfolio", readme_zh)
+        self.assertNotIn("FigureBench RAG · frozen colour", readme)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,7 @@
 
 ### Make image models draw paper figures with scientific structure, not slide-deck guesswork.
 
-**High-aesthetic domain references + FigureBench RAG · frozen colour · topology-first image generation**
+**Scientific paper figure generation · web drawing conventions · controlled colour · topology-first image generation**
 
 [中文说明](./README_ZH.md) · [Workflow](#workflow) · [Runs](#recorded-runs) · [Research note](#research-note)
 
@@ -108,6 +108,10 @@ I am a Computer Vision student researching scientific paper-figure generation, w
 Many pipelines prioritise generating an intermediate SVG or diagram specification. That intermediate alone does not make an image-generation model understand the figure. The image model is already good at planning visual form, but it commonly changes wording, drifts from controlled colours, falls back to an unprofessional non-SVG-like style, and makes a figure hard to reconstruct or edit later.
 
 This Skill keeps the useful controls explicit: domain drawing conventions, semantic–structural FigureBench RAG, an isolated palette contract, exact labels, and a topology contract before direct image generation. The target is not generic “AI art”; it is an original, legible figure that can meet the visual discipline expected of a serious research paper. Generated figures still require author verification before use as scientific evidence.
+
+## Acknowledgements
+
+This project is informed by FigureBench for local semantic–structural retrieval. Its live web-reference stage may inspect publicly accessible scholarly figure pages from Nature Portfolio, Science, Cell, and field-specific venues to learn drawing conventions or an unrelated-domain colour group. Source figures, temporary crops, raw FigureBench images, and original palette images are never redistributed; same-domain references never supply the final palette.
 
 ## For maintainers
 
