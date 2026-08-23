@@ -10,7 +10,7 @@
 
 </div>
 
-![GenLikeScientificSVG workflow](./assets/architecture/workflow-en.svg)
+![GenLikeScientificSVG workflow run](./assets/showcase/workflow-en.png)
 
 ## What it is
 
@@ -33,7 +33,7 @@ The Skill keeps reference gathering parallel and makes one controlled revision o
 
 ### Chinese workflow / 中文流程图
 
-![GenLikeScientificSVG 中文工作流程](./assets/architecture/workflow-zh.svg)
+![GenLikeScientificSVG 中文工作流程实跑结果](./assets/showcase/workflow-zh.png)
 
 ## What the final image model receives
 
@@ -86,7 +86,9 @@ It is an open research tool. Do not use generated conceptual figures as evidence
 
 ```text
 SKILL.md                   Main workflow
-assets/architecture/       Bilingual, editable workflow SVGs
+assets/architecture/       Bilingual, editable SVG contracts
+assets/showcase/           PNGs rasterized from checked SVG contracts
+examples/                  Input, planning, and source records for proof runs
 references/                Palette and FigureBench RAG specifications
 scientific_figure_rag/     Local semantic–structural and palette retrieval helpers
 scripts/                   Indexing, querying, and safe-export commands

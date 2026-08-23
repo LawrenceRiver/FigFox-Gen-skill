@@ -1,0 +1,25 @@
+{
+  "figure_intent": {
+    "purpose": "Explain the scientific-figure generation workflow as a bounded, evidence-grounded pipeline.",
+    "core_claim": "A final image model becomes more controllable when it receives dual references, a topology plan, color roles, and an SVG contract.",
+    "novelty_focus": "Separate semantic-structural RAG and high-aesthetic domain references are combined before a topology-locked SVG is rendered.",
+    "scope": "Conceptual workflow diagram, not a benchmark result."
+  },
+  "topology": {
+    "reading_order": "left_to_right_then_down",
+    "reference_branches": ["web_aesthetic", "figurebench_structure", "user_aesthetic_optional"],
+    "central_planning": ["scientific_topology", "color_roles"],
+    "contract": ["labels", "bounds", "ports", "arrows", "hierarchy"],
+    "verification": "one_local_patch_only"
+  },
+  "color_plan": {
+    "selection_principle": "A cohesive palette is selected per figure from available aesthetic evidence; colors are roles, not global fixed brand values.",
+    "roles": ["canvas", "ink", "reference-branch families", "planning", "single novelty accent"]
+  },
+  "outputs": {
+    "svg_contract_en": "../../assets/architecture/workflow-en.svg",
+    "svg_contract_zh": "../../assets/architecture/workflow-zh.svg",
+    "final_png_en": "../../assets/showcase/workflow-en.png",
+    "final_png_zh": "../../assets/showcase/workflow-zh.png"
+  }
+}

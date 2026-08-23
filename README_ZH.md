@@ -10,7 +10,7 @@
 
 </div>
 
-![GenLikeScientificSVG 中文工作流程](./assets/architecture/workflow-zh.svg)
+![GenLikeScientificSVG 中文工作流程实跑结果](./assets/showcase/workflow-zh.png)
 
 ## 这是什么
 
@@ -77,7 +77,9 @@ FigureBench 仅用于维护者本地的语义–结构参考；普通用户不�
 ## 仓库结构
 
 - `SKILL.md`：主工作流
-- `assets/architecture/`：可编辑的中英文流程 SVG
+- `assets/architecture/`：可编辑的中英文 SVG 结构合同
+- `assets/showcase/`：由检查后的 SVG 光栅化得到的 PNG
+- `examples/`：实跑输入、规划与来源记录
 - `references/`：配色与 FigureBench RAG 说明
 - `scientific_figure_rag/`：本地语义–结构与配色检索模块
 - `scripts/`：索引、检索和安全导出命令
