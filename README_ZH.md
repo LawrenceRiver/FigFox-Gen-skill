@@ -10,8 +10,6 @@
 
 </div>
 
-![GenLikeScientificSVG 中文工作流程实跑结果](./assets/showcase/workflow-zh.png)
-
 ## 这是什么
 
 GenLikeScientificSVG 是面向科研论文图生成的智能体 Skill。输入可以是想法、方法、结果、论文片段、草图或参考图。它可用于 Codex、Claude Code、DeepSeek Harness，以及其他能够加载 `SKILL.md` 与相邻文件的智能体。
@@ -22,19 +20,23 @@ GenLikeScientificSVG 是面向科研论文图生成的智能体 Skill。输入�
 
 | 阶段 | 明确产出 |
 | --- | --- |
-| 领域高审美参考 | 筛选至少 3–4 张相关论文 HTML/SVG 图，检查构图、层级、构件惯例、留白、色彩关系与科研感；提取领域绘图惯例，以及用户方法相较常见做法的证据。 |
+| 领域高审美参考 | 筛选至少 3–4 张相关论文 HTML/SVG 图，检查构图、层级、构件惯例、留白与科研感；提取领域绘图惯例，以及用户方法相较常见做法的证据；不提供最终配色。 |
 | FigureBench 语义–结构 RAG | 检索方法语义、图类型、拓扑、布局、分组、文字密度和抽象几何语法；不是像素相似图检索。 |
-| 科学拓扑与配色规划 | 压缩冗余文字；确定模块、箭头、层级、布局、标签、画布、文字线条、颜色角色和唯一强调色。该步骤内联完成，不增加模型调用。 |
-| SVG 结构合同 | 以可编辑 SVG 锁定科学拓扑、模块语义、标签边界、箭头端点、层级、分组与颜色角色。 |
+| 科学拓扑与配色规划 | 压缩冗余文字；确定模块、箭头、层级、布局与标签。每次只冻结一个配色源：批准库的色组，或与当前主题无关的网页 SVG 色组（仅限本次）。该步骤内联完成，不增加模型调用。 |
+| SVG 结构合同 | 以可编辑 SVG 锁定科学拓扑、模块语义、标签边界、箭头端点、层级、分组与精确 HEX 颜色角色。 |
 | 一次受控检查 | 得到 V0 光栅预览后，只检查碰撞、箭头、层级、文字边界、密度、留白和局部几何，并且只允许一次局部 SVG 修补。 |
-| 最终光栅图 | 图像模型可以提升科学资产与视觉质感，但必须保留 SVG 的科学关系、标签、箭头和主要结构。 |
+| 最终光栅图 | 图像模型只可提升非文字资产与视觉质感，必须保留 SVG 的科学关系、标签、箭头和已冻结配色；SVG 文字层最后合成。 |
+
+## 实跑证据
+
+工作流程图只有在它们以记录的 Figure Brief 为输入、完整产出参考记录、颜色合同、SVG、V0、一次局部修补和 PNG 后，才会发布在这里。此前手工绘制的流程图已经移除，不会被作为实跑证据展示。
 
 ## 最终图像模型实际获得什么
 
 - 来自高审美领域论文图的绘图惯例；
 - FigureBench 的语义–结构摘要，而不是完整数据集；
 - 将常规做法与用户方法创新点区分开的科学拓扑规划；
-- 来自纯 HEX/RGB 色组库的颜色角色分配；
+- 来自单一、已冻结 HEX/RGB 配色源的颜色角色分配：批准库色组，或与当前主题无关的网页 SVG 色组；
 - 明确的 SVG 模块边界、标签、端口、箭头方向、层级和阅读顺序；
 - 一份只允许局部修补、不能整图重设计的检查说明。
 
@@ -42,27 +44,26 @@ GenLikeScientificSVG 是面向科研论文图生成的智能体 Skill。输入�
 
 ## 安装
 
-克隆后请保留目录结构：`SKILL.md` 会引用同目录的 `references/`、`scripts/` 与 `scientific_figure_rag/`。
+请作为 Skill 安装。安装器会让用户选择目标智能体，并保留 `SKILL.md` 与相邻资源。
 
 ```bash
-git clone https://github.com/LawrenceRiver/genlike-scientific-svg-skill.git
+npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill
 ```
 
 | 智能体 | 加载方式 |
 | --- | --- |
-| Codex | 将仓库目录复制或软链接到 `~/.codex/skills/genlike-scientific-svg`。 |
-| Claude Code | 以项目 Skill 的形式加入仓库目录，并保留目录结构。 |
-| DeepSeek Harness / 其他智能体 | 将 `SKILL.md` 作为工作流指令加载，并保留相邻文件，使其可读取参考说明与辅助脚本。 |
+| Codex / Claude Code | 在安装器中选择对应智能体。 |
+| DeepSeek Harness / 其他智能体 | 通过该 Harness 的标准 Skill 加载方式安装，并保留 `SKILL.md` 和相邻文件。 |
 
 ## 配色系统
 
-配色 RAG 只保存成组的 HEX/RGB 色号、颜色角色和检索标签；不保存色卡截图、原图 URL、图片路径或图片 embedding。
+每次配色只冻结一个来源：批准库中的 HEX/RGB 色组，或与当前主题无关的网页 SVG 中临时提取的色组。它不保存色卡截图、原图 URL、图片路径或图片 embedding；同领域参考图也不提供最终颜色。
 
 ```bash
-python scripts/figurebench_rag.py palettes --planning-json colour-plan.json --top-k 3
+python scripts/figurebench_rag.py colour-contract --plan-json colour-plan.json
 ```
 
-它会选择少量候选色组，并在规划中明确画布、文字线条、容器、语义模块、比较色与唯一强调色。详见 [Palette RAG](./references/palette-rag.md)。
+它会输出本次唯一允许使用的 HEX 色号，并在规划中明确画布、文字线条、容器、语义模块、比较色与唯一强调色。详见 [Palette RAG](./references/palette-rag.md)。
 
 ## 可选的 FigureBench RAG
 
@@ -77,9 +78,6 @@ FigureBench 仅用于维护者本地的语义–结构参考；普通用户不�
 ## 仓库结构
 
 - `SKILL.md`：主工作流
-- `assets/architecture/`：可编辑的中英文 SVG 结构合同
-- `assets/showcase/`：由检查后的 SVG 光栅化得到的 PNG
-- `examples/`：实跑输入、规划与来源记录
 - `references/`：配色与 FigureBench RAG 说明
 - `scientific_figure_rag/`：本地语义–结构与配色检索模块
 - `scripts/`：索引、检索和安全导出命令

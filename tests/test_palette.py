@@ -5,7 +5,7 @@ import sys
 import tempfile
 import unittest
 
-from scientific_figure_rag.palette import select_palettes
+from scientific_figure_rag.palette import compile_colour_contract, select_palettes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,6 +31,67 @@ class PaletteSelectionTests(unittest.TestCase):
         self.assertIn("accent", {colour["role"] for colour in palette["colours"]})
 
 
+class ColourContractTests(unittest.TestCase):
+    def test_locks_assignments_to_exact_values_from_an_approved_library_group(self):
+        contract = compile_colour_contract(
+            {
+                "brief_domains": ["biomedical"],
+                "source": {"kind": "approved_library", "palette_id": "biomedical-contrast-01"},
+                "assignments": {"canvas": "#E7EFFA", "ink": "#14517C", "accent": "#D8383A"},
+            }
+        )
+
+        self.assertEqual(
+            contract["allowed_hex"],
+            ["#14517C", "#2F7FC1", "#E7EFFA", "#96C37D", "#F3D266", "#D8383A", "#A9B8C6"],
+        )
+        self.assertEqual(contract["assignments"]["accent"], "#D8383A")
+
+    def test_rejects_an_invented_colour_even_when_the_role_is_valid(self):
+        with self.assertRaisesRegex(ValueError, "not in the selected source"):
+            compile_colour_contract(
+                {
+                    "brief_domains": ["biomedical"],
+                    "source": {"kind": "approved_library", "palette_id": "biomedical-contrast-01"},
+                    "assignments": {"accent": "#112233"},
+                }
+            )
+
+    def test_accepts_an_ephemeral_svg_palette_only_when_its_domain_is_unrelated(self):
+        contract = compile_colour_contract(
+            {
+                "brief_domains": ["diffusion", "computer vision"],
+                "source": {
+                    "kind": "cross_domain_svg",
+                    "source_domains": ["marine ecology"],
+                    "colours": [
+                        {"role": "canvas", "hex": "#F7F4EE", "rgb": [247, 244, 238]},
+                        {"role": "ink", "hex": "#203040", "rgb": [32, 48, 64]},
+                        {"role": "primary", "hex": "#3A7CA5", "rgb": [58, 124, 165]},
+                    ],
+                },
+                "assignments": {"canvas": "#F7F4EE", "ink": "#203040", "primary": "#3A7CA5"},
+            }
+        )
+
+        self.assertEqual(contract["source"]["kind"], "cross_domain_svg")
+        self.assertEqual(contract["allowed_hex"], ["#F7F4EE", "#203040", "#3A7CA5"])
+
+    def test_rejects_a_cross_domain_svg_palette_from_the_current_domain(self):
+        with self.assertRaisesRegex(ValueError, "unrelated"):
+            compile_colour_contract(
+                {
+                    "brief_domains": ["diffusion"],
+                    "source": {
+                        "kind": "cross_domain_svg",
+                        "source_domains": ["diffusion"],
+                        "colours": [{"role": "primary", "hex": "#3A7CA5", "rgb": [58, 124, 165]}],
+                    },
+                    "assignments": {"primary": "#3A7CA5"},
+                }
+            )
+
+
 class PaletteCliTests(unittest.TestCase):
     def test_cli_returns_palette_selection_from_planning_json(self):
         plan = {"tags": ["biomedical", "contrast"], "required_roles": ["ink", "accent"]}
@@ -47,6 +108,27 @@ class PaletteCliTests(unittest.TestCase):
 
         self.assertEqual(json.loads(completed.stdout)["palettes"][0]["id"], "biomedical-contrast-01")
 
+    def test_cli_compiles_a_frozen_colour_contract(self):
+        plan = {
+            "brief_domains": ["biomedical"],
+            "source": {"kind": "approved_library", "palette_id": "biomedical-contrast-01"},
+            "assignments": {"ink": "#14517C", "accent": "#D8383A"},
+        }
+        script = ROOT / "scripts/figurebench_rag.py"
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            plan_path = Path(temporary_directory) / "plan.json"
+            plan_path.write_text(json.dumps(plan), encoding="utf-8")
+            completed = subprocess.run(
+                [sys.executable, str(script), "colour-contract", "--plan-json", str(plan_path)],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+        result = json.loads(completed.stdout)
+        self.assertEqual(result["assignments"]["accent"], "#D8383A")
+        self.assertEqual(result["source"]["palette_id"], "biomedical-contrast-01")
+
 
 class SkillDocumentationTests(unittest.TestCase):
     def test_skill_documents_inline_colour_planning_and_image_free_palette_library(self):
@@ -57,6 +139,20 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("does not add a model call", skill)
         self.assertIn("palette-library.json", palette_reference)
         self.assertIn("must not store screenshots", palette_reference)
+
+    def test_docs_require_colour_source_isolation_locked_svg_text_and_skill_installation(self):
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        palette_reference = (ROOT / "references/palette-rag.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
+
+        self.assertIn("unrelated to the brief's domain", skill)
+        self.assertIn("immutable final layer", skill)
+        self.assertIn("only exact HEX values", palette_reference)
+        self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme)
+        self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme_zh)
+        self.assertNotIn("git clone", readme)
+        self.assertNotIn("git clone", readme_zh)
 
 
 if __name__ == "__main__":

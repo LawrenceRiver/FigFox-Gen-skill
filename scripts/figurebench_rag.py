@@ -18,7 +18,7 @@ from scientific_figure_rag.index import (  # noqa: E402
     export_public_bundle,
     query_index,
 )
-from scientific_figure_rag.palette import select_palettes  # noqa: E402
+from scientific_figure_rag.palette import compile_colour_contract, select_palettes  # noqa: E402
 
 
 def _write_json(path: str | None, value: object) -> None:
@@ -70,6 +70,12 @@ def main() -> None:
     palettes.add_argument("--planning-json", required=True)
     palettes.add_argument("--top-k", type=int, default=3)
 
+    colour_contract = commands.add_parser(
+        "colour-contract", help="Freeze one approved or cross-domain SVG palette for a render"
+    )
+    colour_contract.add_argument("--plan-json", required=True)
+    colour_contract.add_argument("--output")
+
     arguments = parser.parse_args()
     if arguments.command == "index":
         _write_json(None, build_index(arguments.dataset, arguments.index))
@@ -99,6 +105,8 @@ def main() -> None:
         _write_json(None, export_public_bundle(arguments.index, arguments.output))
     elif arguments.command == "palettes":
         _write_json(None, select_palettes(_json_file(arguments.planning_json), arguments.top_k))
+    elif arguments.command == "colour-contract":
+        _write_json(arguments.output, compile_colour_contract(_json_file(arguments.plan_json)))
 
 
 if __name__ == "__main__":

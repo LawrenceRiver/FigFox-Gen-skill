@@ -1,5 +1,0 @@
-# Input: GenLikeScientificSVG workflow
-
-Create one wide, publication-style scientific figure that explains an agent-agnostic research-figure generation workflow. The reader must see that a Figure Brief is combined with three parallel sources: (1) high-aesthetic domain paper HTML/SVG references, screened for composition and drawing conventions; (2) FigureBench semantic–structural RAG, which returns topology, layout, grouping, and abstract geometry grammar rather than pixels; and (3) optional user aesthetic constraints. The central claim is that scientific topology and color roles are planned before rendering. The SVG contract must lock modules, labels, arrow relations, hierarchy, and color roles. A single V0 inspection can patch only local problems before the final raster figure.
-
-Constraints: left-to-right reading order; modules and arrows remain editable in SVG; display one restrained novelty accent only; the final raster may improve visual finish but cannot change the SVG scientific topology.
