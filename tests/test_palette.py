@@ -151,6 +151,8 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("temporary crop", palette_reference)
         self.assertIn("directly generate the final scientific raster", skill)
         self.assertIn("must not use a rendered SVG as its input", skill)
+        self.assertIn("generate every required label directly", skill)
+        self.assertIn("missing, incorrect, or overflowing text", skill)
         self.assertIn("plan-first, image-generation-first", readme.lower())
         self.assertIn("先规划、再图像生成", readme_zh)
         self.assertIn("only exact HEX values", palette_reference)

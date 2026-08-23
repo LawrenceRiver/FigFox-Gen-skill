@@ -22,19 +22,19 @@ Keep the reference work parallel. Do not expand it into a multi-agent serial cha
 3. Do one **Scientific Topology Planning** pass. Extract Figure Intent inline, not as an extra model call: purpose, core claim, novelty focus, scope, and domain drawing question. Simultaneously perform scientific compression: remove redundant methodological prose; replace text that position or arrows can express; merge repeated modules. Plan modules, levels, arrows, layout, labels, and the few novelty claims that deserve emphasis.
    - **Color Planning** is an inline output of this same pass and does not add a model call. Declare the selected source, its domain (when it is a cross-domain SVG), every exact allowed HEX value, and role assignments for canvas, ink/outline, surfaces, semantic modules, and at most one novelty accent. Compile it with `python scripts/figurebench_rag.py colour-contract --plan-json colour-plan.json`. The renderer may use only exact HEX values in the compiled contract: no new, shifted, blended, or activated colours. State restrictions before rendering: avoid rainbow treatment, do not encode a category with colour alone, reserve the accent for the intended claim, and keep text/arrow contrast readable.
 4. Emit a compact **Image Generation Contract** from the plan: canvas/aspect; named modules; relative bounds and grouping; directional relations; primary reading order; exact label strings; allowed scientific assets; selected reference crops; FigureBench summaries; and the compiled colour contract. This is structured data/prompt context, not a rendered SVG.
-5. Call the selected image-generation model to **directly generate the final scientific raster** from the Image Generation Contract and approved reference crops. It must not use a rendered SVG as its input. The model may improve assets, icons, materials, and controlled geometry details, but it must preserve module meanings, arrow relations, principal structure, and the compiled colour contract.
-6. Inspect the generated raster once with a VLM using the FigureBench geometry lexicon and selected RAG summaries. Apply exactly one **local raster patch** for collisions, arrow direction, hierarchy, text density, label fit, whitespace, or non-copying geometry treatment. Use an image-edit call for visual corrections; use a post-generation text overlay only when the image model cannot reproduce the required label exactly. Do not redesign the figure or rerun topology planning.
+5. Call the selected image-generation model to **directly generate the final scientific raster** from the Image Generation Contract and approved reference crops. It must not use a rendered SVG as its input. It must **generate every required label directly** inside its specified module, rather than dropping text or leaving blank boxes. The model may improve assets, icons, materials, and controlled geometry details, but it must preserve module meanings, arrow relations, principal structure, label content, and the compiled colour contract.
+6. Inspect the generated raster once with a VLM using the FigureBench geometry lexicon and selected RAG summaries. Explicitly check for **missing, incorrect, or overflowing text**, as well as collisions, arrow direction, hierarchy, density, whitespace, and non-copying geometry treatment. Apply exactly one **local raster patch** through an image-edit call. Do not redesign the figure or rerun topology planning.
 
 ## Image Generation Contract and typography
 
 Represent the following explicitly before the image call: canvas/aspect; named module bounds; z-order; input/output ports; arrow endpoints and direction; group bounds; exact label strings and intended label bounds; wrapping rules; emphasis levels; and the Color Planning role-to-HEX assignments.
 
-- Treat every labelled box as a text-fit constraint: measure the actual font, wrap with `tspan` where necessary, keep padding on all four sides, and ensure the label remains inside its own bounds at final raster dimensions.
+- Treat every labelled box as a text-fit constraint: specify the label string, font hierarchy, line breaks, and padding in the Image Generation Contract, and require the image model to render it inside the stated bounds.
 - Keep arrow shafts and heads clear of labels and module interiors. Preserve a visible gap between unrelated modules and groups.
 - Use geometric primitives deliberately: containers, nested enclosures, ribbons, brackets, nodes, directional channels, and restrained scientific texture. FigureBench geometry is a source of abstract grammar, not a tracing library.
 - Complex scientific assets are expected to be raster/generated assets. Do not force them into a brittle SVG before the image call.
 - The one patch may alter only local geometry and presentation. It may not add/remove/reorder semantic modules, edit label meaning, invert or reroute relationships into a new topology, or change the primary reading order.
-- Require every label, legend, panel letter, and annotation in the Image Generation Contract. If a text overlay is needed after generation, it is a minimal transparent layer applied to the final raster, never a full pre-generation SVG render.
+- Require every label, legend, panel letter, and annotation in the Image Generation Contract. The image model generates them as part of the scientific figure; do not pre-emptively remove text from its prompt.
 
 ## FigureBench iteration rule
 
@@ -47,11 +47,11 @@ Use RAG to derive an aggregate **geometry grammar** (container silhouettes, grou
 Supply the Image Generation Contract and approved cropped references, then state these invariants plainly:
 
 - Preserve all labelled modules, their semantic roles, their arrow relations, and the primary layout.
-- Preserve every required label exactly unless the user has asked for a wording change. If exact rendering fails, use only the minimal post-generation text overlay needed to restore it.
+- Generate every required label directly and preserve it exactly unless the user has asked for a wording change. Do not omit text from the image-generation prompt or leave text boxes empty.
 - Improve rendering only inside the Image Generation Contract: scientific polish, asset detail, material, colour relationships, and allowed local geometric treatment.
 - Use only exact HEX values in the compiled Color Planning contract. Do not introduce, shift, blend, or activate any other colour, and do not repurpose the novelty accent.
 - Do not make it look like a generic slide or mimic a retrieved FigureBench figure.
 
 ## Delivery
 
-Return the high-quality raster figure and retain the Image Generation Contract plus any minimal text-overlay source. Report the chosen web-reference rationale, compact FigureBench structure summaries, the image model used, and the one patch made. Do not publish raw FigureBench images or the local corpus. Only publish the safe embedding/metadata bundle after checking dataset and source licensing and receiving authority to deploy.
+Return the high-quality raster figure and retain the Image Generation Contract. Report the chosen web-reference rationale, compact FigureBench structure summaries, the image model used, and the one patch made. Do not publish raw FigureBench images or the local corpus. Only publish the safe embedding/metadata bundle after checking dataset and source licensing and receiving authority to deploy.
