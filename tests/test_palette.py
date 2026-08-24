@@ -138,7 +138,7 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("image-generation task", metadata)
         self.assertIn("complete labelled research figure", metadata)
         self.assertIn("first image draft", metadata)
-        self.assertIn("semantic SVG reconstruction", metadata)
+        self.assertIn("one direct image-generation call", metadata)
         self.assertIn("final PNG", metadata)
 
     def test_skill_documents_inline_colour_planning_and_image_free_palette_library(self):
@@ -163,25 +163,27 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("must not use a rendered SVG as its input", skill)
         self.assertIn("generate every required label directly", skill)
         self.assertIn("missing, incorrect, or overflowing text", skill)
-        self.assertIn("plan-first, image-generation-first", readme.lower())
-        self.assertIn("先规划、再图像生成", readme_zh)
+        self.assertIn("field-first, reference-grounded, image-generation-first", readme.lower())
+        self.assertIn("先识别领域、再参考学习、最后直接图像生成", readme_zh)
         self.assertIn("only exact HEX values", palette_reference)
         self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme)
         self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme_zh)
         self.assertNotIn("git clone", readme)
         self.assertNotIn("git clone", readme_zh)
 
-    def test_skill_documents_semantic_png_to_svg_reconstruction_before_second_image_call(self):
+    def test_skill_documents_optional_faithful_svg_verification_after_one_image_call(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         rag_reference = (ROOT / "references/figurebench-rag.md").read_text(encoding="utf-8")
 
-        self.assertIn("semantic PNG-to-SVG reconstruction", skill)
-        self.assertIn("second image-generation call", skill)
-        self.assertIn("not a pixel trace", skill)
-        self.assertIn("overlay the SVG text and structural layer", skill)
+        self.assertIn("at least 3 and preferably 4+", skill)
+        self.assertIn("do not label planned parts with numbers", skill)
+        self.assertIn("one direct image-generation call", skill)
+        self.assertIn("optional faithful PNG-to-SVG verification", skill)
+        self.assertIn("skip SVG verification", skill)
+        self.assertIn("do not make a second image-generation call", skill)
         self.assertIn("flat exact-HEX fills", skill)
         self.assertIn("complex scientific assets", skill)
-        self.assertIn("png-to-svg-brief", rag_reference)
+        self.assertIn("svg-verification-brief", rag_reference)
 
     def test_readmes_lead_with_install_then_record_real_methodology_driven_runs(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

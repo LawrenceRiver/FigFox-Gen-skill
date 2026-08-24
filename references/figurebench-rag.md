@@ -65,15 +65,15 @@ python "$ROOT/scripts/figurebench_rag.py" refinement-brief \
   --output "$ROOT/local/refinement-brief.json"
 ```
 
-After the inspection writes an issue list, compile a semantic PNG-to-SVG reconstruction brief. The VLM must inspect the actual first draft and rebuild its valid modules, exact editable labels, arrows, margins, and frozen colour contract. It is not a pixel trace and it is not a programmatic redraw from the original plan: remove gradients, perspective, malformed shapes, and semantically empty decoration while retaining meaningful complex scientific assets. Rasterize the reconstructed SVG as the non-negotiable structural reference for one second image-generation call, then overlay the SVG text and structural layer onto the final PNG:
+After the one direct image-generation call, SVG is optional verification rather than another design stage. Use it only when a converter can faithfully transcribe the actual first PNG into editable layers, exact editable labels, spatial relations, and the frozen colour contract. It must not redraw a new SVG from the plan. If the conversion cannot preserve those properties, skip SVG verification and return the original PNG:
 
 ```bash
-python "$ROOT/scripts/figurebench_rag.py" png-to-svg-brief \
+python "$ROOT/scripts/figurebench_rag.py" svg-verification-brief \
   --first-draft-png "$ROOT/local/first-draft.png" \
   --generation-contract-json "$ROOT/local/image-generation-contract.json" \
   --lexicon-json "$ROOT/local/geometry-lexicon.json" \
   --inspection-json "$ROOT/local/inspection.json" \
-  --output "$ROOT/local/png-to-svg-brief.json"
+  --output "$ROOT/local/svg-verification-brief.json"
 ```
 
 ## Deployment boundary

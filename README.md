@@ -4,7 +4,7 @@
 
 ### Make image models draw paper figures with scientific structure, not slide-deck guesswork.
 
-**High-aesthetic research references · frozen colour · PNG → semantic SVG → image generation**
+**High-aesthetic domain references · FigureBench structure · frozen colour · one direct PNG**
 
 让图像模型真正理解科研架构：联网寻找领域绘图惯例，融合审美配色与结构规划，生成可用于论文的图。
 
@@ -29,7 +29,7 @@ Then give the agent a Figure Brief: an idea, long methodology, result, paper exc
 
 ## Workflow
 
-The workflow is **plan-first, image-generation-first, semantic-SVG-guided**: evidence can be gathered independently, then it commits to one topology and one colour contract before the image model draws a first figure draft. A VLM turns the actual draft into a simplified, editable scientific SVG; that SVG guides one second image-generation pass and locks the final text and geometry layer.
+The workflow is **field-first, reference-grounded, image-generation-first**: it identifies the field, learns shared professional conventions from 3–4 strong domain figures, combines them with FigureBench structure grammar, then generates one complete labelled PNG. SVG is not an intermediate planning layer. It is an optional verification/export only when the actual PNG can be faithfully converted into editable layers.
 
 | Stage | What it contributes |
 | --- | --- |
@@ -37,7 +37,7 @@ The workflow is **plan-first, image-generation-first, semantic-SVG-guided**: evi
 | FigureBench semantic–structural RAG | Retrieve compact summaries of method semantics, figure type, topology, grouping, layout, text density, and geometric grammar. It is not pixel retrieval and never sends the full corpus to a model. |
 | Topology + colour planning | Compress prose into modules, labels, arrows, hierarchy, and reading order. Freeze exactly one approved colour group, either local or from an unrelated-domain SVG. |
 | Direct image generation | Give the model an Image Generation Contract with exact labels, relationships, layout, reference summaries, and HEX roles. It generates the first raster draft directly—including its text. No SVG raster is used as a pre-generation input. |
-| Semantic PNG → SVG → final image | Inspect text, collisions, arrows, hierarchy, density, geometry, and colour use once. The VLM semantically reconstructs the actual PNG into editable SVG—not a pixel trace—then removes gradients, perspective, malformed geometry, and meaningless decoration. Its SVG is the non-negotiable structure reference for one second image call; an SVG overlay locks exact labels and geometry in the final PNG. |
+| One direct PNG + optional SVG verification | Generate one complete labelled PNG directly. If a capable converter can faithfully transcribe that exact image into editable text/layers while preserving its structure and frozen palette, return the SVG too. Otherwise keep the original PNG and report that SVG verification was skipped—never redraw a different SVG. |
 
 The deliberate combination is **two kinds of reference**: field-specific visual conventions tell the model how a community usually draws a concept, while FigureBench teaches reusable scientific geometry and structure. Colour is deliberately separate, so a same-domain paper is never copied as a palette.
 
@@ -114,9 +114,9 @@ These are empirical inputs for the repository rather than reconstructions of the
 
 I am a Computer Vision student researching scientific paper-figure generation, with hands-on experience making figures for mathematical modelling competitions and daily research communication. My current work focuses on diffusion models, VLMs, and how faithfully they can understand and realise a scientific visual brief.
 
-Generating an SVG before image generation does not by itself make an image model understand a figure. The image model is useful for complex scientific assets and visual form, but it commonly changes wording, drifts from controlled colours, and relaxes the geometric discipline of a human-edited paper diagram. GenLikeScientificSVG therefore lets it make a first draft, then asks a VLM to semantically rebuild that actual image as a cleaner editable SVG: core modules, arrows, labels, and valid domain assets are retained, while gradients, perspective, malformed containers, and empty decoration are removed. The reconstructed SVG constrains a second image-generation pass and locks the final text/geometry overlay.
+Generating an SVG before image generation does not by itself make an image model understand a figure. The model must first learn a field's terminology, visual metaphors, and professional treatment of common components, then turn a structured original plan into one complete PNG. SVG is useful only when it is a genuine editable conversion of that produced PNG; a newly authored diagram is not a conversion and is not substituted for the final figure.
 
-This Skill keeps the useful controls explicit: domain drawing conventions, semantic–structural FigureBench RAG, an isolated palette contract, exact labels, a topology contract before direct image generation, and one semantic PNG-to-SVG reconstruction before the final image pass. The target is not generic “AI art”; it is an original, legible figure that can meet the visual discipline expected of a serious research paper. Generated figures still require author verification before use as scientific evidence.
+This Skill keeps the useful controls explicit: domain drawing conventions, semantic–structural FigureBench RAG, an isolated palette contract, exact labels, and one topology contract before direct image generation. The target is not generic “AI art”; it is an original, legible figure that can meet the visual discipline expected of a serious research paper. Generated figures still require author verification before use as scientific evidence.
 
 ## Acknowledgements
 
