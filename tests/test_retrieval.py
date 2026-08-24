@@ -218,6 +218,10 @@ class RetrievalTest(unittest.TestCase):
                         "modules": [{"id": "input", "label": "Input"}],
                         "arrows": [],
                         "labels": ["Input"],
+                        "colour_contract": {
+                            "source": {"kind": "approved_library", "palette_id": "top-journal-neutral-01"},
+                            "allowed_hex": ["#F7F5E0", "#EDF5F8", "#EEEBF6", "#BFBEDD", "#F5BEC1"],
+                        },
                     }
                 ),
                 encoding="utf-8",
