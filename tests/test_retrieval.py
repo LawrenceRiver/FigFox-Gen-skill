@@ -8,7 +8,7 @@ from pathlib import Path
 from scientific_figure_rag.index import (
     build_index,
     build_iteration_brief,
-    build_png_to_svg_reconstruction_brief,
+    build_svg_verification_brief,
     derive_geometry_lexicon,
     export_public_bundle,
     query_index,
@@ -109,8 +109,8 @@ class RetrievalTest(unittest.TestCase):
             self.assertIn("module semantics", brief["forbidden_changes"])
             self.assertIn("container geometry", brief["allowed_changes"])
 
-    def test_png_to_svg_reconstruction_brief_preserves_meaning_and_prunes_ai_artifacts(self):
-        reconstruction = build_png_to_svg_reconstruction_brief(
+    def test_svg_verification_brief_requires_a_faithful_transcription_or_skip(self):
+        verification = build_svg_verification_brief(
             first_draft_png="/tmp/latent-diffusion-first-draft.png",
             generation_contract={
                 "canvas": {"width": 1600, "height": 900},
@@ -136,19 +136,19 @@ class RetrievalTest(unittest.TestCase):
             },
         )
 
-        self.assertEqual(reconstruction["phase"], "semantic PNG-to-SVG reconstruction")
-        self.assertEqual(reconstruction["raster_source"], "/tmp/latent-diffusion-first-draft.png")
-        self.assertEqual(reconstruction["semantic_truth"]["modules"][1]["id"], "encoder")
-        self.assertEqual(reconstruction["semantic_truth"]["arrows"], [{"from": "input", "to": "encoder"}])
-        self.assertEqual(reconstruction["palette_policy"]["palette_id"], "top-journal-neutral-01")
-        self.assertIn("gradient_fill", reconstruction["reconstruction_targets"])
-        self.assertTrue(any("do not pixel-trace" in rule for rule in reconstruction["svg_reconstruction_rules"]))
-        self.assertIn("second image-generation call", reconstruction["second_generation_boundary"])
-        self.assertIn("module semantics", reconstruction["forbidden_changes"])
+        self.assertEqual(verification["phase"], "optional faithful PNG-to-SVG verification")
+        self.assertEqual(verification["raster_source"], "/tmp/latent-diffusion-first-draft.png")
+        self.assertEqual(verification["verification_truth"]["modules"][1]["id"], "encoder")
+        self.assertEqual(verification["verification_truth"]["arrows"], [{"from": "input", "to": "encoder"}])
+        self.assertEqual(verification["palette_policy"]["palette_id"], "top-journal-neutral-01")
+        self.assertIn("gradient_fill", verification["inspection_targets"])
+        self.assertIn("do not create a new SVG", verification["conversion_rules"])
+        self.assertEqual(verification["on_conversion_failure"], "skip_svg_verification")
+        self.assertIn("module semantics", verification["preservation_rules"])
 
-    def test_png_to_svg_reconstruction_rejects_an_unidentified_palette_group(self):
+    def test_svg_verification_rejects_an_unidentified_palette_group(self):
         with self.assertRaisesRegex(ValueError, "frozen palette source"):
-            build_png_to_svg_reconstruction_brief(
+            build_svg_verification_brief(
                 first_draft_png="/tmp/draft.png",
                 generation_contract={
                     "colour_contract": {"allowed_hex": ["#FFFFFF", "#112233"]},
@@ -204,7 +204,7 @@ class RetrievalTest(unittest.TestCase):
 
             self.assertEqual(json.loads(lexicon_path.read_text(encoding="utf-8"))["indexed_figures"], 1)
 
-    def test_cli_writes_a_png_to_svg_reconstruction_brief(self):
+    def test_cli_writes_an_svg_verification_brief(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             temporary = Path(temporary_directory)
             contract_path = temporary / "contract.json"
@@ -233,7 +233,7 @@ class RetrievalTest(unittest.TestCase):
                 [
                     sys.executable,
                     str(script),
-                    "png-to-svg-brief",
+                    "svg-verification-brief",
                     "--first-draft-png",
                     "/tmp/first-draft.png",
                     "--generation-contract-json",
@@ -250,9 +250,10 @@ class RetrievalTest(unittest.TestCase):
                 text=True,
             )
 
-            reconstruction = json.loads(output_path.read_text(encoding="utf-8"))
-            self.assertEqual(reconstruction["phase"], "semantic PNG-to-SVG reconstruction")
-            self.assertEqual(reconstruction["reconstruction_targets"], ["glow"])
+            verification = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(verification["phase"], "optional faithful PNG-to-SVG verification")
+            self.assertEqual(verification["inspection_targets"], ["glow"])
+            self.assertEqual(verification["on_conversion_failure"], "skip_svg_verification")
 
     def test_image_geometry_features_are_recorded_as_inferred_structure(self):
         try:

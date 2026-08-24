@@ -476,18 +476,17 @@ def build_iteration_brief(
     }
 
 
-def build_png_to_svg_reconstruction_brief(
+def build_svg_verification_brief(
     first_draft_png: str,
     generation_contract: Mapping[str, Any],
     geometry_lexicon: Mapping[str, Any],
     inspection: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Brief a VLM to semantically reconstruct a first PNG as editable SVG.
+    """Brief an optional faithful editable-SVG verification of a first PNG.
 
-    This is deliberately a semantic transcription, not a pixel trace and not a
-    deterministic redraw from the original plan.  The VLM sees the actual first
-    draft, preserves its valid scientific meaning, removes AI-looking decoration,
-    and emits the editable structure used to condition the second image call.
+    The first generated PNG remains the only creative figure. This brief may be
+    used only by a converter able to transcribe that actual PNG into editable
+    SVG layers. It must never synthesize a new SVG from the original contract.
     """
     issues = inspection.get("issues", [])
     if not isinstance(issues, list):
@@ -497,7 +496,7 @@ def build_png_to_svg_reconstruction_brief(
         for issue in issues
         if isinstance(issue, Mapping) and isinstance(issue.get("kind"), str)
     ]
-    semantic_truth = {
+    verification_truth = {
         key: generation_contract.get(key)
         for key in ("canvas", "title", "modules", "arrows", "labels", "primary_layout")
         if key in generation_contract
@@ -522,40 +521,39 @@ def build_png_to_svg_reconstruction_brief(
     if not source_is_identified or not allowed_hex:
         raise ValueError("A semantic SVG reconstruction requires one identified frozen palette source and its allowed HEX group.")
     return {
-        "phase": "semantic PNG-to-SVG reconstruction",
+        "phase": "optional faithful PNG-to-SVG verification",
         "raster_source": first_draft_png,
-        "semantic_truth": semantic_truth,
-        "reconstruction_targets": list(dict.fromkeys(repair_targets)),
+        "verification_truth": verification_truth,
+        "inspection_targets": list(dict.fromkeys(repair_targets)),
         "palette_policy": {
             "palette_id": palette_id,
             "source_kind": source_kind,
             "allowed_hex": allowed_hex,
             "rule": "Use exactly this one frozen group. Do not mix groups, infer missing role colours, or invent fallback HEX values.",
         },
-        "svg_reconstruction_rules": [
-            "Inspect the actual first raster and classify each visible item as core, supporting, or decorative before drawing SVG.",
-            "do not pixel-trace; reconstruct semantic modules, arrows, labels, and valid domain-standard assets as editable SVG layers.",
-            "preserve exact label strings as editable text, aligned inside the correct module or annotation bounds.",
-            "remove gradients, glow, cast shadows, 3D or perspective containers, deformed boxes, and decorative micro-icons without scientific meaning.",
-            "use a restrained family of basic primitives: points, straight or orthogonal lines, circles, rectangles or rounded rectangles, brackets, and domain-standard glyphs only when they clarify meaning.",
-            "use flat structural fills and one consistent stroke, corner, arrowhead, margin, and alignment system.",
-            "keep valid complex scientific assets only when they carry method meaning; simplify their surrounding frames rather than inventing substitute icons.",
+        "conversion_rules": [
+            "faithfully transcribe the actual first PNG, including all meaningful modules, connections, assets, and spatial relations.",
+            "preserve every required label as editable text and preserve its placement relative to the PNG.",
+            "preserve editable layers and the frozen one-group palette without introducing colours or moving semantic content.",
+            "do not create a new SVG",
+            "do not use the topology contract as a substitute for observing the first PNG.",
         ],
-        "forbidden_changes": [
+        "preservation_rules": [
             "module semantics",
             "arrow relations",
             "main reading order",
             "label content",
             "primary layout contract",
             "palette-group mixing or fallback colours",
-            "invented decorative symbols that are not conventional for the stated domain",
+            "newly authored geometry presented as a conversion",
         ],
         "geometry_grammar": {
             "composition_families": geometry_lexicon.get("composition_families", []),
             "primitive_distribution": geometry_lexicon.get("primitive_distribution", {}),
         },
-        "second_generation_boundary": "Rasterize this reconstructed SVG as the structural reference for one second image-generation call. Preserve its topology, module semantics, arrow relations, exact labels, and frozen palette; simplify only visual rendering. Overlay the SVG text and structural layer onto the resulting PNG to lock labels and geometry.",
-        "anti_copy_rule": "Use aggregate FigureBench grammar only; reconstruct this request's first draft semantically, never trace a retrieved figure or reproduce a retrieved figure's distinctive arrangement.",
+        "on_conversion_failure": "skip_svg_verification",
+        "delivery_rule": "Return the original first PNG when a converter cannot preserve semantic structure, editable text, layer editability, or palette fidelity.",
+        "anti_copy_rule": "FigureBench is aggregate grammar only; this verification transcribes the generated first PNG, never a retrieved paper figure.",
     }
 
 
