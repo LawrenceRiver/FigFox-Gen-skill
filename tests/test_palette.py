@@ -138,7 +138,7 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("image-generation task", metadata)
         self.assertIn("complete labelled research figure", metadata)
         self.assertIn("first image draft", metadata)
-        self.assertIn("SVG correction", metadata)
+        self.assertIn("semantic SVG reconstruction", metadata)
         self.assertIn("final PNG", metadata)
 
     def test_skill_documents_inline_colour_planning_and_image_free_palette_library(self):
@@ -171,16 +171,17 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertNotIn("git clone", readme)
         self.assertNotIn("git clone", readme_zh)
 
-    def test_skill_documents_one_post_generation_svg_correction_without_a_second_image_call(self):
+    def test_skill_documents_semantic_png_to_svg_reconstruction_before_second_image_call(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
         rag_reference = (ROOT / "references/figurebench-rag.md").read_text(encoding="utf-8")
 
-        self.assertIn("post-generation SVG correction", skill)
-        self.assertIn("directly to the final PNG", skill)
-        self.assertIn("do not send it to a second image-generation call", skill)
+        self.assertIn("semantic PNG-to-SVG reconstruction", skill)
+        self.assertIn("second image-generation call", skill)
+        self.assertIn("not a pixel trace", skill)
+        self.assertIn("overlay the SVG text and structural layer", skill)
         self.assertIn("flat exact-HEX fills", skill)
         self.assertIn("complex scientific assets", skill)
-        self.assertIn("svg-repair-brief", rag_reference)
+        self.assertIn("png-to-svg-brief", rag_reference)
 
     def test_readmes_lead_with_install_then_record_real_methodology_driven_runs(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

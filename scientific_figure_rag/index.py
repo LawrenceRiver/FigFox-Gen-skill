@@ -476,17 +476,18 @@ def build_iteration_brief(
     }
 
 
-def build_svg_repair_brief(
+def build_png_to_svg_reconstruction_brief(
+    first_draft_png: str,
     generation_contract: Mapping[str, Any],
     geometry_lexicon: Mapping[str, Any],
     inspection: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Compile one editable SVG correction layer after an image-model draft.
+    """Brief a VLM to semantically reconstruct a first PNG as editable SVG.
 
-    The SVG is a post-generation repair surface, not an image-model input or a
-    traced copy of the raster.  It locks layout, type, connectors, and flat
-    colour fills while allowing complex scientific visual assets to remain
-    placed raster content.
+    This is deliberately a semantic transcription, not a pixel trace and not a
+    deterministic redraw from the original plan.  The VLM sees the actual first
+    draft, preserves its valid scientific meaning, removes AI-looking decoration,
+    and emits the editable structure used to condition the second image call.
     """
     issues = inspection.get("issues", [])
     if not isinstance(issues, list):
@@ -496,22 +497,39 @@ def build_svg_repair_brief(
         for issue in issues
         if isinstance(issue, Mapping) and isinstance(issue.get("kind"), str)
     ]
-    protected = {
+    semantic_truth = {
         key: generation_contract.get(key)
-        for key in ("canvas", "modules", "arrows", "labels", "primary_layout", "colour_contract")
+        for key in ("canvas", "title", "modules", "arrows", "labels", "primary_layout")
         if key in generation_contract
     }
+    colour_contract = generation_contract.get("colour_contract", {})
+    if not isinstance(colour_contract, Mapping):
+        colour_contract = {}
+    source = colour_contract.get("source", {})
+    if not isinstance(source, Mapping):
+        source = {}
+    allowed_hex = colour_contract.get("allowed_hex", [])
+    if not isinstance(allowed_hex, list):
+        allowed_hex = []
     return {
-        "phase": "single post-generation SVG correction",
-        "svg_structure_layer": protected,
-        "repair_targets": list(dict.fromkeys(repair_targets)),
-        "raster_asset_policy": "preserve complex scientific assets as placed raster assets",
-        "rendering_rules": [
-            "flat exact-HEX fills only",
-            "no gradients, glow, texture, or decorative shadows on structural colour blocks",
-            "align containers, labels, ports, and arrow endpoints to the declared geometry",
-            "render exact label strings inside their declared bounds",
-            "use one consistent stroke family, corner family, and arrowhead family",
+        "phase": "semantic PNG-to-SVG reconstruction",
+        "raster_source": first_draft_png,
+        "semantic_truth": semantic_truth,
+        "reconstruction_targets": list(dict.fromkeys(repair_targets)),
+        "palette_policy": {
+            "palette_id": source.get("palette_id"),
+            "source_kind": source.get("kind"),
+            "allowed_hex": allowed_hex,
+            "rule": "Use exactly this one frozen group. Do not mix groups, infer missing role colours, or invent fallback HEX values.",
+        },
+        "svg_reconstruction_rules": [
+            "Inspect the actual first raster and classify each visible item as core, supporting, or decorative before drawing SVG.",
+            "do not pixel-trace; reconstruct semantic modules, arrows, labels, and valid domain-standard assets as editable SVG layers.",
+            "preserve exact label strings as editable text, aligned inside the correct module or annotation bounds.",
+            "remove gradients, glow, cast shadows, 3D or perspective containers, deformed boxes, and decorative micro-icons without scientific meaning.",
+            "use a restrained family of basic primitives: points, straight or orthogonal lines, circles, rectangles or rounded rectangles, brackets, and domain-standard glyphs only when they clarify meaning.",
+            "use flat structural fills and one consistent stroke, corner, arrowhead, margin, and alignment system.",
+            "keep valid complex scientific assets only when they carry method meaning; simplify their surrounding frames rather than inventing substitute icons.",
         ],
         "forbidden_changes": [
             "module semantics",
@@ -519,14 +537,15 @@ def build_svg_repair_brief(
             "main reading order",
             "label content",
             "primary layout contract",
-            "replacement of preserved complex scientific assets with invented vector symbols",
+            "palette-group mixing or fallback colours",
+            "invented decorative symbols that are not conventional for the stated domain",
         ],
         "geometry_grammar": {
             "composition_families": geometry_lexicon.get("composition_families", []),
             "primitive_distribution": geometry_lexicon.get("primitive_distribution", {}),
         },
-        "output": "render the corrected SVG directly to the final PNG; do not send it to a second image-generation call",
-        "anti_copy_rule": "Use the aggregate FigureBench grammar only; do not trace a retrieved figure or the first raster draft.",
+        "second_generation_boundary": "Rasterize this reconstructed SVG as the structural reference for one second image-generation call. Preserve its topology, module semantics, arrow relations, exact labels, and frozen palette; simplify only visual rendering. Overlay the SVG text and structural layer onto the resulting PNG to lock labels and geometry.",
+        "anti_copy_rule": "Use aggregate FigureBench grammar only; reconstruct this request's first draft semantically, never trace a retrieved figure or reproduce a retrieved figure's distinctive arrangement.",
     }
 
 

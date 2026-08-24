@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT))
 from scientific_figure_rag.index import (  # noqa: E402
     build_index,
     build_iteration_brief,
-    build_svg_repair_brief,
+    build_png_to_svg_reconstruction_brief,
     derive_geometry_lexicon,
     export_public_bundle,
     query_index,
@@ -63,13 +63,14 @@ def main() -> None:
     refine.add_argument("--lexicon-json", required=True)
     refine.add_argument("--output")
 
-    svg_repair = commands.add_parser(
-        "svg-repair-brief", help="Make one post-generation editable SVG correction brief"
+    png_to_svg = commands.add_parser(
+        "png-to-svg-brief", help="Make a semantic PNG-to-editable-SVG reconstruction brief"
     )
-    svg_repair.add_argument("--generation-contract-json", required=True)
-    svg_repair.add_argument("--lexicon-json", required=True)
-    svg_repair.add_argument("--inspection-json", required=True)
-    svg_repair.add_argument("--output")
+    png_to_svg.add_argument("--first-draft-png", required=True)
+    png_to_svg.add_argument("--generation-contract-json", required=True)
+    png_to_svg.add_argument("--lexicon-json", required=True)
+    png_to_svg.add_argument("--inspection-json", required=True)
+    png_to_svg.add_argument("--output")
 
     public = commands.add_parser("export-public", help="Export a safe, image-free deployment bundle")
     public.add_argument("--index", required=True)
@@ -110,10 +111,11 @@ def main() -> None:
                 _json_file(arguments.lexicon_json),
             ),
         )
-    elif arguments.command == "svg-repair-brief":
+    elif arguments.command == "png-to-svg-brief":
         _write_json(
             arguments.output,
-            build_svg_repair_brief(
+            build_png_to_svg_reconstruction_brief(
+                arguments.first_draft_png,
                 _json_file(arguments.generation_contract_json),
                 _json_file(arguments.lexicon_json),
                 _json_file(arguments.inspection_json),

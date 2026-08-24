@@ -8,7 +8,7 @@ from pathlib import Path
 from scientific_figure_rag.index import (
     build_index,
     build_iteration_brief,
-    build_svg_repair_brief,
+    build_png_to_svg_reconstruction_brief,
     derive_geometry_lexicon,
     export_public_bundle,
     query_index,
@@ -109,8 +109,9 @@ class RetrievalTest(unittest.TestCase):
             self.assertIn("module semantics", brief["forbidden_changes"])
             self.assertIn("container geometry", brief["allowed_changes"])
 
-    def test_svg_repair_brief_locks_structural_layers_and_preserves_complex_raster_assets(self):
-        repair = build_svg_repair_brief(
+    def test_png_to_svg_reconstruction_brief_preserves_meaning_and_prunes_ai_artifacts(self):
+        reconstruction = build_png_to_svg_reconstruction_brief(
+            first_draft_png="/tmp/latent-diffusion-first-draft.png",
             generation_contract={
                 "canvas": {"width": 1600, "height": 900},
                 "modules": [
@@ -120,7 +121,10 @@ class RetrievalTest(unittest.TestCase):
                 "arrows": [{"from": "input", "to": "encoder"}],
                 "labels": ["Input", "Encoder"],
                 "primary_layout": "horizontal_flow",
-                "colour_contract": {"allowed_hex": ["#FFFFFF", "#172033", "#2563EB"]},
+                "colour_contract": {
+                    "source": {"kind": "approved_library", "palette_id": "top-journal-neutral-01"},
+                    "allowed_hex": ["#FFFFFF", "#172033", "#2563EB"],
+                },
                 "scientific_assets": [{"id": "protein", "kind": "complex_raster_asset"}],
             },
             geometry_lexicon={"composition_families": ["sequential-band composition"]},
@@ -132,13 +136,15 @@ class RetrievalTest(unittest.TestCase):
             },
         )
 
-        self.assertEqual(repair["phase"], "single post-generation SVG correction")
-        self.assertEqual(repair["svg_structure_layer"]["modules"][1]["id"], "encoder")
-        self.assertEqual(repair["svg_structure_layer"]["arrows"], [{"from": "input", "to": "encoder"}])
-        self.assertEqual(repair["raster_asset_policy"], "preserve complex scientific assets as placed raster assets")
-        self.assertIn("flat exact-HEX fills only", repair["rendering_rules"])
-        self.assertIn("gradient_fill", repair["repair_targets"])
-        self.assertIn("module semantics", repair["forbidden_changes"])
+        self.assertEqual(reconstruction["phase"], "semantic PNG-to-SVG reconstruction")
+        self.assertEqual(reconstruction["raster_source"], "/tmp/latent-diffusion-first-draft.png")
+        self.assertEqual(reconstruction["semantic_truth"]["modules"][1]["id"], "encoder")
+        self.assertEqual(reconstruction["semantic_truth"]["arrows"], [{"from": "input", "to": "encoder"}])
+        self.assertEqual(reconstruction["palette_policy"]["palette_id"], "top-journal-neutral-01")
+        self.assertIn("gradient_fill", reconstruction["reconstruction_targets"])
+        self.assertTrue(any("do not pixel-trace" in rule for rule in reconstruction["svg_reconstruction_rules"]))
+        self.assertIn("second image-generation call", reconstruction["second_generation_boundary"])
+        self.assertIn("module semantics", reconstruction["forbidden_changes"])
 
     def test_public_export_excludes_raw_image_paths_and_corpus_text(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -187,13 +193,13 @@ class RetrievalTest(unittest.TestCase):
 
             self.assertEqual(json.loads(lexicon_path.read_text(encoding="utf-8"))["indexed_figures"], 1)
 
-    def test_cli_writes_an_svg_repair_brief(self):
+    def test_cli_writes_a_png_to_svg_reconstruction_brief(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             temporary = Path(temporary_directory)
             contract_path = temporary / "contract.json"
             lexicon_path = temporary / "lexicon.json"
             inspection_path = temporary / "inspection.json"
-            output_path = temporary / "repair.json"
+            output_path = temporary / "reconstruction.json"
             script = Path(__file__).resolve().parents[1] / "scripts/figurebench_rag.py"
             contract_path.write_text(
                 json.dumps(
@@ -212,7 +218,9 @@ class RetrievalTest(unittest.TestCase):
                 [
                     sys.executable,
                     str(script),
-                    "svg-repair-brief",
+                    "png-to-svg-brief",
+                    "--first-draft-png",
+                    "/tmp/first-draft.png",
                     "--generation-contract-json",
                     str(contract_path),
                     "--lexicon-json",
@@ -227,9 +235,9 @@ class RetrievalTest(unittest.TestCase):
                 text=True,
             )
 
-            repair = json.loads(output_path.read_text(encoding="utf-8"))
-            self.assertEqual(repair["phase"], "single post-generation SVG correction")
-            self.assertEqual(repair["repair_targets"], ["glow"])
+            reconstruction = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(reconstruction["phase"], "semantic PNG-to-SVG reconstruction")
+            self.assertEqual(reconstruction["reconstruction_targets"], ["glow"])
 
     def test_image_geometry_features_are_recorded_as_inferred_structure(self):
         try:

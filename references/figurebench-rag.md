@@ -65,14 +65,15 @@ python "$ROOT/scripts/figurebench_rag.py" refinement-brief \
   --output "$ROOT/local/refinement-brief.json"
 ```
 
-After the inspection writes an issue list, compile one editable SVG correction. It is built from the original contract and aggregate geometry grammar, not by tracing the raster. It locks structural blocks, exact labels, arrows, margins, and the frozen colour contract; complex scientific assets remain placed raster assets. Render the SVG directly to the final PNG and do not send it to a second image-generation model:
+After the inspection writes an issue list, compile a semantic PNG-to-SVG reconstruction brief. The VLM must inspect the actual first draft and rebuild its valid modules, exact editable labels, arrows, margins, and frozen colour contract. It is not a pixel trace and it is not a programmatic redraw from the original plan: remove gradients, perspective, malformed shapes, and semantically empty decoration while retaining meaningful complex scientific assets. Rasterize the reconstructed SVG as the non-negotiable structural reference for one second image-generation call, then overlay the SVG text and structural layer onto the final PNG:
 
 ```bash
-python "$ROOT/scripts/figurebench_rag.py" svg-repair-brief \
+python "$ROOT/scripts/figurebench_rag.py" png-to-svg-brief \
+  --first-draft-png "$ROOT/local/first-draft.png" \
   --generation-contract-json "$ROOT/local/image-generation-contract.json" \
   --lexicon-json "$ROOT/local/geometry-lexicon.json" \
   --inspection-json "$ROOT/local/inspection.json" \
-  --output "$ROOT/local/svg-repair-brief.json"
+  --output "$ROOT/local/png-to-svg-brief.json"
 ```
 
 ## Deployment boundary
