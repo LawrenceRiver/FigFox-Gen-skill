@@ -146,6 +146,17 @@ class RetrievalTest(unittest.TestCase):
         self.assertIn("second image-generation call", reconstruction["second_generation_boundary"])
         self.assertIn("module semantics", reconstruction["forbidden_changes"])
 
+    def test_png_to_svg_reconstruction_rejects_an_unidentified_palette_group(self):
+        with self.assertRaisesRegex(ValueError, "frozen palette source"):
+            build_png_to_svg_reconstruction_brief(
+                first_draft_png="/tmp/draft.png",
+                generation_contract={
+                    "colour_contract": {"allowed_hex": ["#FFFFFF", "#112233"]},
+                },
+                geometry_lexicon={},
+                inspection={},
+            )
+
     def test_public_export_excludes_raw_image_paths_and_corpus_text(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             dataset = Path(temporary_directory) / "dataset"

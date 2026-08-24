@@ -511,14 +511,24 @@ def build_png_to_svg_reconstruction_brief(
     allowed_hex = colour_contract.get("allowed_hex", [])
     if not isinstance(allowed_hex, list):
         allowed_hex = []
+    source_kind = source.get("kind")
+    palette_id = source.get("palette_id")
+    if source_kind == "approved_library":
+        source_is_identified = isinstance(palette_id, str) and bool(palette_id)
+    elif source_kind == "cross_domain_svg":
+        source_is_identified = bool(source.get("source_domains"))
+    else:
+        source_is_identified = False
+    if not source_is_identified or not allowed_hex:
+        raise ValueError("A semantic SVG reconstruction requires one identified frozen palette source and its allowed HEX group.")
     return {
         "phase": "semantic PNG-to-SVG reconstruction",
         "raster_source": first_draft_png,
         "semantic_truth": semantic_truth,
         "reconstruction_targets": list(dict.fromkeys(repair_targets)),
         "palette_policy": {
-            "palette_id": source.get("palette_id"),
-            "source_kind": source.get("kind"),
+            "palette_id": palette_id,
+            "source_kind": source_kind,
             "allowed_hex": allowed_hex,
             "rule": "Use exactly this one frozen group. Do not mix groups, infer missing role colours, or invent fallback HEX values.",
         },
