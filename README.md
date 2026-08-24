@@ -29,15 +29,15 @@ Then give the agent a Figure Brief: an idea, long methodology, result, paper exc
 
 ## Workflow
 
-The workflow is **plan-first, image-generation-first**: evidence can be gathered independently, then it commits to one topology and one colour contract before the image model draws the figure.
+The workflow is **plan-first, image-generation-first, SVG-corrected**: evidence can be gathered independently, then it commits to one topology and one colour contract before the image model draws a first figure draft. One editable SVG correction locks the structural layer and renders the final PNG.
 
 | Stage | What it contributes |
 | --- | --- |
 | Domain visual search | Screen 3–4+ strong paper HTML/SVG/PDF figures for composition, hierarchy, component conventions, whitespace, focal point, and scientific credibility. It supplies drawing conventions and novelty evidence—not final colours. |
 | FigureBench semantic–structural RAG | Retrieve compact summaries of method semantics, figure type, topology, grouping, layout, text density, and geometric grammar. It is not pixel retrieval and never sends the full corpus to a model. |
 | Topology + colour planning | Compress prose into modules, labels, arrows, hierarchy, and reading order. Freeze exactly one approved colour group, either local or from an unrelated-domain SVG. |
-| Direct image generation | Give the model an Image Generation Contract with exact labels, relationships, layout, reference summaries, and HEX roles. It generates the final raster figure directly—including its text. No SVG raster is used as a pre-generation input. |
-| One check | Inspect text, collisions, arrows, hierarchy, density, and colour use once; allow only one local patch, never a redesign. |
+| Direct image generation | Give the model an Image Generation Contract with exact labels, relationships, layout, reference summaries, and HEX roles. It generates the first raster draft directly—including its text. No SVG raster is used as a pre-generation input. |
+| One SVG correction | Inspect text, collisions, arrows, hierarchy, density, geometry, and colour use once. Then lock structural boxes, arrows, labels, and flat fills in one editable SVG; preserve complex raster assets and render the SVG directly to the final PNG. No second image-generation call and no redesign. |
 
 The deliberate combination is **two kinds of reference**: field-specific visual conventions tell the model how a community usually draws a concept, while FigureBench teaches reusable scientific geometry and structure. Colour is deliberately separate, so a same-domain paper is never copied as a palette.
 
@@ -114,9 +114,9 @@ These are empirical inputs for the repository rather than reconstructions of the
 
 I am a Computer Vision student researching scientific paper-figure generation, with hands-on experience making figures for mathematical modelling competitions and daily research communication. My current work focuses on diffusion models, VLMs, and how faithfully they can understand and realise a scientific visual brief.
 
-Many pipelines prioritise generating an intermediate SVG or diagram specification. That intermediate alone does not make an image-generation model understand the figure. The image model is already good at planning visual form, but it commonly changes wording, drifts from controlled colours, falls back to an unprofessional non-SVG-like style, and makes a figure hard to reconstruct or edit later.
+Generating an SVG before image generation does not by itself make an image model understand a figure. The image model is useful for complex scientific assets and visual form, but it commonly changes wording, drifts from controlled colours, and relaxes the geometric discipline of a human-edited paper diagram. GenLikeScientificSVG therefore uses SVG after the first draft: one correction layer locks the geometry, text, connectors, margins, and flat colour blocks while preserving complex scientific raster assets.
 
-This Skill keeps the useful controls explicit: domain drawing conventions, semantic–structural FigureBench RAG, an isolated palette contract, exact labels, and a topology contract before direct image generation. The target is not generic “AI art”; it is an original, legible figure that can meet the visual discipline expected of a serious research paper. Generated figures still require author verification before use as scientific evidence.
+This Skill keeps the useful controls explicit: domain drawing conventions, semantic–structural FigureBench RAG, an isolated palette contract, exact labels, a topology contract before direct image generation, and one post-generation SVG correction. The target is not generic “AI art”; it is an original, legible figure that can meet the visual discipline expected of a serious research paper. Generated figures still require author verification before use as scientific evidence.
 
 ## Acknowledgements
 

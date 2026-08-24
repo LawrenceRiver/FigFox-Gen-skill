@@ -137,6 +137,9 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("$genlike-scientific-svg", metadata)
         self.assertIn("image-generation task", metadata)
         self.assertIn("complete labelled research figure", metadata)
+        self.assertIn("first image draft", metadata)
+        self.assertIn("SVG correction", metadata)
+        self.assertIn("final PNG", metadata)
 
     def test_skill_documents_inline_colour_planning_and_image_free_palette_library(self):
         skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
@@ -156,7 +159,7 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("unrelated to the brief's domain", skill)
         self.assertIn("temporary crop", skill)
         self.assertIn("temporary crop", palette_reference)
-        self.assertIn("directly generate the final scientific raster", skill)
+        self.assertIn("directly generate the first scientific raster draft", skill)
         self.assertIn("must not use a rendered SVG as its input", skill)
         self.assertIn("generate every required label directly", skill)
         self.assertIn("missing, incorrect, or overflowing text", skill)
@@ -167,6 +170,17 @@ class SkillDocumentationTests(unittest.TestCase):
         self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme_zh)
         self.assertNotIn("git clone", readme)
         self.assertNotIn("git clone", readme_zh)
+
+    def test_skill_documents_one_post_generation_svg_correction_without_a_second_image_call(self):
+        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+        rag_reference = (ROOT / "references/figurebench-rag.md").read_text(encoding="utf-8")
+
+        self.assertIn("post-generation SVG correction", skill)
+        self.assertIn("directly to the final PNG", skill)
+        self.assertIn("do not send it to a second image-generation call", skill)
+        self.assertIn("flat exact-HEX fills", skill)
+        self.assertIn("complex scientific assets", skill)
+        self.assertIn("svg-repair-brief", rag_reference)
 
     def test_readmes_lead_with_install_then_record_real_methodology_driven_runs(self):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

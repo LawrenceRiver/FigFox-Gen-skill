@@ -56,13 +56,23 @@ python "$ROOT/scripts/figurebench_rag.py" query \
   --output "$ROOT/local/references.json"
 ```
 
-Use the Image Generation Contract and geometry lexicon to make the single constrained refinement brief after direct image generation:
+Use the Image Generation Contract and geometry lexicon to make a constrained VLM inspection brief after direct image generation:
 
 ```bash
 python "$ROOT/scripts/figurebench_rag.py" refinement-brief \
   --generation-contract-json "$ROOT/local/image-generation-contract.json" \
   --lexicon-json "$ROOT/local/geometry-lexicon.json" \
   --output "$ROOT/local/refinement-brief.json"
+```
+
+After the inspection writes an issue list, compile one editable SVG correction. It is built from the original contract and aggregate geometry grammar, not by tracing the raster. It locks structural blocks, exact labels, arrows, margins, and the frozen colour contract; complex scientific assets remain placed raster assets. Render the SVG directly to the final PNG and do not send it to a second image-generation model:
+
+```bash
+python "$ROOT/scripts/figurebench_rag.py" svg-repair-brief \
+  --generation-contract-json "$ROOT/local/image-generation-contract.json" \
+  --lexicon-json "$ROOT/local/geometry-lexicon.json" \
+  --inspection-json "$ROOT/local/inspection.json" \
+  --output "$ROOT/local/svg-repair-brief.json"
 ```
 
 ## Deployment boundary

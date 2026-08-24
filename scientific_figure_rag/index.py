@@ -476,6 +476,60 @@ def build_iteration_brief(
     }
 
 
+def build_svg_repair_brief(
+    generation_contract: Mapping[str, Any],
+    geometry_lexicon: Mapping[str, Any],
+    inspection: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Compile one editable SVG correction layer after an image-model draft.
+
+    The SVG is a post-generation repair surface, not an image-model input or a
+    traced copy of the raster.  It locks layout, type, connectors, and flat
+    colour fills while allowing complex scientific visual assets to remain
+    placed raster content.
+    """
+    issues = inspection.get("issues", [])
+    if not isinstance(issues, list):
+        issues = []
+    repair_targets = [
+        str(issue["kind"])
+        for issue in issues
+        if isinstance(issue, Mapping) and isinstance(issue.get("kind"), str)
+    ]
+    protected = {
+        key: generation_contract.get(key)
+        for key in ("canvas", "modules", "arrows", "labels", "primary_layout", "colour_contract")
+        if key in generation_contract
+    }
+    return {
+        "phase": "single post-generation SVG correction",
+        "svg_structure_layer": protected,
+        "repair_targets": list(dict.fromkeys(repair_targets)),
+        "raster_asset_policy": "preserve complex scientific assets as placed raster assets",
+        "rendering_rules": [
+            "flat exact-HEX fills only",
+            "no gradients, glow, texture, or decorative shadows on structural colour blocks",
+            "align containers, labels, ports, and arrow endpoints to the declared geometry",
+            "render exact label strings inside their declared bounds",
+            "use one consistent stroke family, corner family, and arrowhead family",
+        ],
+        "forbidden_changes": [
+            "module semantics",
+            "arrow relations",
+            "main reading order",
+            "label content",
+            "primary layout contract",
+            "replacement of preserved complex scientific assets with invented vector symbols",
+        ],
+        "geometry_grammar": {
+            "composition_families": geometry_lexicon.get("composition_families", []),
+            "primitive_distribution": geometry_lexicon.get("primitive_distribution", {}),
+        },
+        "output": "render the corrected SVG directly to the final PNG; do not send it to a second image-generation call",
+        "anti_copy_rule": "Use the aggregate FigureBench grammar only; do not trace a retrieved figure or the first raster draft.",
+    }
+
+
 def export_public_bundle(index_path: str | Path, bundle_path: str | Path) -> dict[str, int]:
     """Export a deployable retrieval payload without raw images, paths, or corpus text."""
     connection = sqlite3.connect(index_path)

@@ -8,6 +8,7 @@ from pathlib import Path
 from scientific_figure_rag.index import (
     build_index,
     build_iteration_brief,
+    build_svg_repair_brief,
     derive_geometry_lexicon,
     export_public_bundle,
     query_index,
@@ -108,6 +109,37 @@ class RetrievalTest(unittest.TestCase):
             self.assertIn("module semantics", brief["forbidden_changes"])
             self.assertIn("container geometry", brief["allowed_changes"])
 
+    def test_svg_repair_brief_locks_structural_layers_and_preserves_complex_raster_assets(self):
+        repair = build_svg_repair_brief(
+            generation_contract={
+                "canvas": {"width": 1600, "height": 900},
+                "modules": [
+                    {"id": "input", "bounds": [40, 220, 220, 120], "label": "Input"},
+                    {"id": "encoder", "bounds": [350, 220, 220, 120], "label": "Encoder"},
+                ],
+                "arrows": [{"from": "input", "to": "encoder"}],
+                "labels": ["Input", "Encoder"],
+                "primary_layout": "horizontal_flow",
+                "colour_contract": {"allowed_hex": ["#FFFFFF", "#172033", "#2563EB"]},
+                "scientific_assets": [{"id": "protein", "kind": "complex_raster_asset"}],
+            },
+            geometry_lexicon={"composition_families": ["sequential-band composition"]},
+            inspection={
+                "issues": [
+                    {"kind": "gradient_fill", "target": "encoder"},
+                    {"kind": "misaligned_arrow", "target": "input->encoder"},
+                ]
+            },
+        )
+
+        self.assertEqual(repair["phase"], "single post-generation SVG correction")
+        self.assertEqual(repair["svg_structure_layer"]["modules"][1]["id"], "encoder")
+        self.assertEqual(repair["svg_structure_layer"]["arrows"], [{"from": "input", "to": "encoder"}])
+        self.assertEqual(repair["raster_asset_policy"], "preserve complex scientific assets as placed raster assets")
+        self.assertIn("flat exact-HEX fills only", repair["rendering_rules"])
+        self.assertIn("gradient_fill", repair["repair_targets"])
+        self.assertIn("module semantics", repair["forbidden_changes"])
+
     def test_public_export_excludes_raw_image_paths_and_corpus_text(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             dataset = Path(temporary_directory) / "dataset"
@@ -154,6 +186,50 @@ class RetrievalTest(unittest.TestCase):
             )
 
             self.assertEqual(json.loads(lexicon_path.read_text(encoding="utf-8"))["indexed_figures"], 1)
+
+    def test_cli_writes_an_svg_repair_brief(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            temporary = Path(temporary_directory)
+            contract_path = temporary / "contract.json"
+            lexicon_path = temporary / "lexicon.json"
+            inspection_path = temporary / "inspection.json"
+            output_path = temporary / "repair.json"
+            script = Path(__file__).resolve().parents[1] / "scripts/figurebench_rag.py"
+            contract_path.write_text(
+                json.dumps(
+                    {
+                        "modules": [{"id": "input", "label": "Input"}],
+                        "arrows": [],
+                        "labels": ["Input"],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            lexicon_path.write_text(json.dumps({"composition_families": ["balanced multi-region composition"]}), encoding="utf-8")
+            inspection_path.write_text(json.dumps({"issues": [{"kind": "glow"}]}), encoding="utf-8")
+
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(script),
+                    "svg-repair-brief",
+                    "--generation-contract-json",
+                    str(contract_path),
+                    "--lexicon-json",
+                    str(lexicon_path),
+                    "--inspection-json",
+                    str(inspection_path),
+                    "--output",
+                    str(output_path),
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+            repair = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(repair["phase"], "single post-generation SVG correction")
+            self.assertEqual(repair["repair_targets"], ["glow"])
 
     def test_image_geometry_features_are_recorded_as_inferred_structure(self):
         try:

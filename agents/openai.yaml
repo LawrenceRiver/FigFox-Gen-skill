@@ -1,6 +1,6 @@
 interface:
   display_name: "GenLikeScientificSVG"
   short_description: "Generate complete labelled paper figures with image-generation models"
-  default_prompt: "Use $genlike-scientific-svg to execute a scientific paper-figure image-generation task and create one complete labelled research figure from my brief."
+  default_prompt: "Use $genlike-scientific-svg to execute a scientific paper-figure image-generation task: create one complete labelled research figure from my brief, generate a first image draft, apply one editable SVG correction for geometry/text/flat colour blocks, and render the final PNG."
 policy:
   allow_implicit_invocation: true
