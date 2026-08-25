@@ -525,6 +525,12 @@ class RunManifestTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "does not exist"):
                 validate_run_manifest({"artifacts": artifacts}, root)
 
+            (root / "extra.png").write_bytes(b"fixture")
+            artifacts["extra_model_image"] = "extra.png"
+            artifacts.pop("extra")
+            with self.assertRaisesRegex(ValueError, "must not include extra_model_image"):
+                validate_run_manifest({"artifacts": artifacts}, root)
+
     def test_load_json_object_requires_a_json_object(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             path = Path(temporary_directory) / "artifact.json"

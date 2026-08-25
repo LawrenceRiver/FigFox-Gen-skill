@@ -300,6 +300,11 @@ def validate_run_manifest(value: Mapping[str, Any], root: Path) -> dict[str, Any
         if not candidate.is_file():
             raise ValueError(f"run manifest artifact does not exist: {normalized_path}")
         normalized_artifacts[key] = normalized_path
+    unexpected = set(artifacts) - set(_RUN_ARTIFACTS)
+    if unexpected:
+        raise ValueError(
+            f"run manifest artifacts must not include {sorted(unexpected)[0]}"
+        )
     normalized["artifacts"] = normalized_artifacts
     return normalized
 
