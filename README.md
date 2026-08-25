@@ -2,9 +2,9 @@
 
 # FigFox-Gen-skill
 
-### Evidence-guided scientific figures, refined through an editable-vector diagnosis.
+### Evidence-guided scientific figures with a human-editable construction plan.
 
-**Domain conventions · human-producible planning · mapped FigureBench crops · one palette lineage · final PNG2**
+**Domain conventions · human-producible planning · mapped FigureBench crops · one palette lineage · final PNG1**
 
 <!-- FILL IN: approved example figures can be added after the next end-to-end run. -->
 
@@ -13,9 +13,8 @@
 </div>
 
 FigFox-Gen-skill turns a scientific Methodology and an optional reference image
-into a revised, labelled architecture figure. It uses two image-generation passes
-with one mandatory editable-SVG diagnostic between them. The final output is PNG2;
-SVG1 is an intermediate diagnostic artifact, not the final deliverable.
+into one labelled, human-editable-style architecture figure. It performs one
+image-generation pass and delivers PNG1 as the final output.
 
 ## Installation
 
@@ -36,10 +35,7 @@ Methodology + optional reference
   -> Context 3: mapped FigureBench crops + one palette lineage + taste
   -> Creative Director prompt -> brief + targeted paper-SVG crops
   -> Prompt 1 with all mapped crops -> PNG1
-  -> direct base-Codex visual transcription -> editable SVG1
-  -> temporary PNG1.5 -> diagnosis + approved/replacement crops
-  -> Prompt 2 with PNG1 and crops, never PNG1.5
-  -> final PNG2 -> stop
+  -> stop
 ```
 
 ### Context 1: recurring domain visual language
@@ -92,11 +88,11 @@ python scripts/figure_workflow.py build-creative-director-prompt --run RUN
 python scripts/figure_workflow.py validate-creative-director --run RUN
 ```
 
-### PNG1, editable SVG1, and diagnosis
+### Prompt 1 and final PNG1
 
 Prompt 1 contains the Methodology, Contexts 1–3, the Creative Director brief, the
 optional reference, domain crops, every mapped FigureBench crop, and any validated
-paper-SVG crops proposed by the Creative Director. The first image-generation pass
+paper-SVG crops proposed by the Creative Director. The only image-generation pass
 creates PNG1. Paper-SVG crops guide only their declared component and are variants;
 they do not donate source labels, colours, proportions, or complete compositions.
 
@@ -106,30 +102,11 @@ no sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge may 
 inserted. Use inline labels or editable geometry; only a scientifically necessary
 real photo can be an explicitly documented special treatment.
 
-The base Codex multimodal model must then inspect PNG1 itself and directly transcribe
-its visible labels, colours, geometry, paths, groups, lines, arrows, placement, and
-relationships into editable SVG1 in one pass. This is not a redesign or a local
-redraw: HTML, Python, draw.io, tracing utilities, and a single embedded-raster
-wrapper are invalid substitutes. If direct editable transcription fails, the Skill
-reports that failure instead of fabricating a fallback.
-
-SVG1 is deterministically rendered to PNG1.5 solely for visual diagnosis. Each
-planned component receives one verdict: `keep`, `accept_variation`, `patch`,
-`reject`, or `replace`. Only qualified SVG regions and targeted replacement regions
-become crops for the second prompt. PNG1.5 is never a Prompt 2 attachment.
-
-The diagnosis is an active correction gate: gradient or translucent overlays on
-formerly flat boxes, missing badges/seals/medals/icons, lost labels, and broken
-connectors cannot be marked faithful. They become explicit PNG1 repairs or
-replacement lookups, and Prompt 2 must apply those repairs.
-
-### Final PNG2
-
-Prompt 2 modifies PNG1 using the diagnosis, approved SVG crops, replacement crops,
-and the earlier contexts. The second image-generation pass produces final PNG2 and
-the workflow stops; PNG2 is not sent through another SVG loop. The deterministic
-helpers validate files and provenance, but do not claim to observe model calls or
-guarantee scientific correctness. Authors must verify the result before publication.
+The image-generation model receives `prompt-1/prompt.md` and every manifest
+attachment once. It must produce one complete labelled figure with flat,
+deliberate, human-producible geometry. PNG1 is the final deliverable for this
+workflow; there is no conversion or second generation after it. Authors must
+inspect PNG1 before publication.
 
 ## Recorded methodology cases
 

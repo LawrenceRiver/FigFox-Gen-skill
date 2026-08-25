@@ -1,4 +1,4 @@
-"""Validation helpers for model-produced two-pass workflow artifacts."""
+"""Validation helpers for the single-pass PNG1 workflow artifacts."""
 
 from __future__ import annotations
 
@@ -12,20 +12,6 @@ from urllib.parse import urlparse
 from .palette import validate_palette
 
 
-VERDICTS = {"keep", "accept_variation", "patch", "reject", "replace"}
-_UNRESOLVED_SVG_DEFECT_MARKERS = (
-    "gradient",
-    "missing badge",
-    "badge is missing",
-    "missing seal",
-    "missing medal",
-    "missing icon",
-    "not replicated",
-    "not reproduced",
-    "absent",
-    "occluded",
-    "materially distorted",
-)
 WEB_MANIFEST_FORMAT = "scholarly-domain-figure-manifest-v1"
 _WEB_CROP_ROOT = PurePosixPath("references/web/crops")
 _WEB_REPLACEMENT_ROOT = PurePosixPath("references/web/crops/replacements")
@@ -41,17 +27,11 @@ _RUN_ARTIFACTS = {
     "figurebench_candidates": "references/figurebench/candidates.json",
     "figurebench_crop_request": "references/figurebench/crops/request.json",
     "figurebench_crops": "references/figurebench/crops/manifest.json",
+    "creative_director_prompt": "creative-director/prompt.md",
+    "creative_director_brief": "creative-director/brief.json",
     "prompt1": "prompt-1/prompt.md",
     "prompt1_attachments": "prompt-1/attachments.json",
     "png1": "png1.png",
-    "svg1": "svg-diagnostic/svg1.svg",
-    "png1_5": "svg-diagnostic/png1.5.png",
-    "diagnosis": "svg-diagnostic/diagnosis.json",
-    "approved_crop_request": "svg-diagnostic/approved-crops/request.json",
-    "approved_crops": "svg-diagnostic/approved-crops/manifest.json",
-    "prompt2": "prompt-2/prompt.md",
-    "prompt2_attachments": "prompt-2/attachments.json",
-    "png2": "png2-final.png",
 }
 
 
@@ -466,37 +446,6 @@ def validate_creative_director(
         normalized["svg_evidence_status"] = "no_external_svg_needed"
     else:
         normalized["svg_evidence_status"] = "paper_svg_crops_verified"
-    return normalized
-
-
-def validate_diagnosis(
-    value: Mapping[str, Any], component_ids: Collection[str]
-) -> dict[str, Any]:
-    """Validate one SVG-diagnostic verdict for every Context 2 component."""
-
-    source = _mapping(value, "diagnosis")
-    normalized = copy.deepcopy(dict(source))
-    verdict_records = _records(source.get("verdicts"), "diagnosis verdicts")
-    recorded_component_ids: list[str] = []
-    normalized["verdicts"] = []
-    for index, record in enumerate(verdict_records):
-        location = f"diagnosis verdicts[{index}]"
-        component_id = _required_string(record, "component_id", location)
-        verdict = _required_string(record, "verdict", location)
-        if verdict not in VERDICTS:
-            raise ValueError(f"{location} has unsupported verdict")
-        reason = _required_string(record, "reason", location)
-        if verdict in {"keep", "accept_variation"}:
-            lowered_reason = reason.casefold()
-            if any(marker in lowered_reason for marker in _UNRESOLVED_SVG_DEFECT_MARKERS):
-                raise ValueError(
-                    f"{location} cannot mark an unresolved SVG defect as {verdict}; use patch, reject, or replace"
-                )
-        recorded_component_ids.append(component_id)
-        normalized_record = _normalized_record(record, ("component_id", "verdict", "reason"))
-        normalized["verdicts"].append(normalized_record)
-    if len(recorded_component_ids) != len(set(recorded_component_ids)) or set(recorded_component_ids) != set(component_ids):
-        raise ValueError("diagnosis requires exactly one verdict per Context 2 component")
     return normalized
 
 

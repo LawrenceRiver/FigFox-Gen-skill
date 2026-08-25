@@ -1,6 +1,6 @@
 interface:
   display_name: "FigFox-Gen-skill"
-  short_description: "Build evidence-guided two-pass scientific figures"
-  default_prompt: "Use $FigFox-Gen-skill with a Methodology and optional reference to build Contexts 1–3 from 3–4 scholarly figure panels, human-producible planning, mapped FigureBench crops and one palette lineage; generate PNG1, have the base Codex model directly transcribe it to editable SVG1 for diagnosis, then generate and return final PNG2 from PNG1 and approved or replacement crops."
+  short_description: "Build evidence-guided single-pass scientific figures"
+  default_prompt: "Use $FigFox-Gen-skill with a Methodology and optional reference to build Contexts 1–3 from 3–4 scholarly figure panels, human-producible planning, a Creative Director brief with targeted paper-SVG crops when needed, mapped FigureBench crops and one palette lineage, then generate and return final PNG1 in one image pass."
 policy:
   allow_implicit_invocation: true

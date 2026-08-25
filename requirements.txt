@@ -1,4 +1,1 @@
-defusedxml>=0.7
-CairoSVG>=2.7
 Pillow>=10.0
-tinycss2>=1.4

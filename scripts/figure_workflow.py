@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic CLI for the evidence-guided two-pass figure workflow."""
+"""Deterministic CLI for the evidence-guided single-pass PNG1 workflow."""
 
 from __future__ import annotations
 
@@ -19,23 +19,18 @@ try:
     from scientific_figure_workflow import (  # noqa: E402
         build_prompt1_bundle,
         build_creative_director_prompt,
-        build_prompt2_bundle,
         find_user_reference,
-        inspect_editable_svg,
         load_palette_library,
         load_json_object,
         load_reference_index,
         materialize_figurebench_crops,
-        materialize_svg_crops,
         rank_candidates,
-        render_svg,
         run_artifact_paths,
         validate_complete_run,
         validate_context1,
         validate_context2,
         validate_context3,
         validate_creative_director,
-        validate_diagnosis,
         validate_palette,
         validate_reference_coverage,
         validate_web_manifest,
@@ -165,6 +160,18 @@ def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
         load_json_object(root / _RUN_ARTIFACTS["web_manifest"]), root, context1
     )
     methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
+    creative_prompt_path = root / _RUN_ARTIFACTS["creative_director_prompt"]
+    creative_brief_path = root / _RUN_ARTIFACTS["creative_director_brief"]
+    if not creative_prompt_path.is_file() or not creative_brief_path.is_file():
+        raise ValueError("build-prompt1 requires the Creative Director prompt and brief")
+    expected_creative_prompt = build_creative_director_prompt(
+        methodology, context1, context2, context3
+    )["prompt"]
+    if creative_prompt_path.read_text(encoding="utf-8") != expected_creative_prompt:
+        raise ValueError("Creative Director prompt does not match deterministic compilation")
+    creative = validate_creative_director(
+        load_json_object(creative_brief_path), root, _component_ids(context2)
+    )
     bundle = build_prompt1_bundle(
         methodology,
         context1,
@@ -172,72 +179,10 @@ def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
         context3,
         find_user_reference(root),
         root,
-        load_json_object(root / "creative-director/brief.json")
-        if (root / "creative-director/brief.json").is_file()
-        else None,
+        creative,
     )
     write_bundle(bundle, root / "prompt-1")
     return {"phase": "prompt1", "attachments": len(bundle["attachments"]), "path": "prompt-1"}
-
-
-def _cmd_inspect_svg(arguments: argparse.Namespace) -> dict[str, Any]:
-    root = _run_root(arguments.run)
-    return inspect_editable_svg(root / _RUN_ARTIFACTS["svg1"])
-
-
-def _cmd_render_svg(arguments: argparse.Namespace) -> dict[str, Any]:
-    root = _run_root(arguments.run)
-    path = render_svg(
-        root / _RUN_ARTIFACTS["svg1"], root / _RUN_ARTIFACTS["png1_5"]
-    )
-    return {"path": path.relative_to(root).as_posix()}
-
-
-def _cmd_validate_diagnosis(arguments: argparse.Namespace) -> dict[str, Any]:
-    root = _run_root(arguments.run)
-    context2 = load_json_object(root / _CONTEXT_PATHS[2])
-    diagnosis = load_json_object(root / _RUN_ARTIFACTS["diagnosis"])
-    normalized = validate_diagnosis(diagnosis, _component_ids(context2))
-    return {"verdicts": len(normalized["verdicts"]), "diagnosis": normalized}
-
-
-def _cmd_crop_svg(arguments: argparse.Namespace) -> dict[str, Any]:
-    root = _run_root(arguments.run)
-    output_path = root / _RUN_ARTIFACTS["approved_crops"]
-    request = load_json_object(root / _RUN_ARTIFACTS["approved_crop_request"])
-    context2 = load_json_object(root / _CONTEXT_PATHS[2])
-    result = materialize_svg_crops(
-        root / _RUN_ARTIFACTS["png1_5"],
-        request,
-        load_json_object(root / _RUN_ARTIFACTS["diagnosis"]),
-        _component_ids(context2),
-        output_path.parent,
-    )
-    write_json_atomic(output_path, result)
-    return {"crops": len(result["crops"]), "path": _RUN_ARTIFACTS["approved_crops"]}
-
-
-def _replacement_crops(root: Path) -> dict[str, Any]:
-    path = root / "references/web/crops/replacements/manifest.json"
-    return load_json_object(path) if path.is_file() else {"crops": []}
-
-
-def _cmd_build_prompt2(arguments: argparse.Namespace) -> dict[str, Any]:
-    root = _run_root(arguments.run)
-    context1, context2, context3 = _contexts(root)
-    bundle = build_prompt2_bundle(
-        (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8"),
-        context1,
-        context2,
-        context3,
-        _RUN_ARTIFACTS["png1"],
-        load_json_object(root / _RUN_ARTIFACTS["diagnosis"]),
-        load_json_object(root / _RUN_ARTIFACTS["approved_crops"]),
-        _replacement_crops(root),
-        root,
-    )
-    write_bundle(bundle, root / "prompt-2")
-    return {"phase": "prompt2", "attachments": len(bundle["attachments"]), "path": "prompt-2"}
 
 
 def _cmd_validate_run(arguments: argparse.Namespace) -> dict[str, Any]:
@@ -260,11 +205,6 @@ def _parser() -> _Parser:
         "build-creative-director-prompt": _cmd_build_creative_director_prompt,
         "validate-creative-director": _cmd_validate_creative_director,
         "build-prompt1": _cmd_build_prompt1,
-        "inspect-svg": _cmd_inspect_svg,
-        "render-svg": _cmd_render_svg,
-        "validate-diagnosis": _cmd_validate_diagnosis,
-        "crop-svg": _cmd_crop_svg,
-        "build-prompt2": _cmd_build_prompt2,
         "validate-run": _cmd_validate_run,
     }
     context = commands.add_parser("validate-context")

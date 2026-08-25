@@ -2,17 +2,16 @@
 
 # FigFox-Gen-skill
 
-### 用可编辑矢量诊断来修正有证据依据的科研图。
+### 用可人工编辑的规划来生成有证据依据的科研图。
 
-**领域视觉惯例 · 可人工制作的规划 · FigureBench 定向裁图 · 单一配色谱系 · 最终 PNG2**
+**领域视觉惯例 · 可人工制作的规划 · FigureBench 定向裁图 · 单一配色谱系 · 最终 PNG1**
 
 [English](./README.md) · [流程](#工作流程) · [内置参考包](#内置参考包) · [安装](#安装)
 
 </div>
 
-FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签、经过
-修订的科研架构图。流程有两次图像生成，中间必须进行一次可编辑 SVG 诊断。
-最终结果是 PNG2；SVG1 只是中间诊断材料，不是最终交付物。
+FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签、符合人工编辑
+逻辑的科研架构图。流程只进行一次图像生成，PNG1 就是最终结果。
 
 ## 安装
 
@@ -32,10 +31,7 @@ Methodology + 可选参考图
   -> Context 3：FigureBench 定向裁图 + 单一配色谱系 + Taste 软约束
   -> 创意师 Prompt -> 创意简报 + 定向论文 SVG 裁图
   -> Prompt 1（包含全部定向裁图）-> PNG1
-  -> Codex 裸模型直接视觉转写 -> 可编辑 SVG1
-  -> 临时 PNG1.5 -> 诊断清单 + 合格/替换裁图
-  -> Prompt 2（PNG1 + 裁图，绝不含 PNG1.5）
-  -> 最终 PNG2 -> 结束
+  -> 结束
 ```
 
 ### Context 1：同领域反复出现的视觉语言
@@ -81,10 +77,10 @@ python scripts/figure_workflow.py build-creative-director-prompt --run RUN
 python scripts/figure_workflow.py validate-creative-director --run RUN
 ```
 
-### PNG1、可编辑 SVG1 与诊断
+### Prompt 1 与最终 PNG1
 
 Prompt 1 同时包含 Methodology、Contexts 1–3、创意师简报、可选参考图、论文裁图、
-所有定向 FigureBench 裁图，以及创意师批准的论文 SVG 裁图。第一次图像生成得到
+所有定向 FigureBench 裁图，以及创意师批准的论文 SVG 裁图。唯一一次图像生成得到
 PNG1。论文 SVG 裁图只能指导声明的构件，不能带入来源标签、配色、比例或整张图的
 构图。
 
@@ -93,25 +89,9 @@ PNG1 有两条绝对禁令：任何模块都不能把上半段用横线框出来
 勋章、印章或栅格徽章。需要的科学对象必须用可编辑几何表达；只有科学上确有必要、
 并在 Context 2 明确记录的真实照片才能作为特殊视觉。
 
-随后必须把 PNG1 本身直接交给 Codex 裸多模态模型，让它看着像素一次性把标签、
-颜色、几何、路径、分组、线条、箭头、位置和关系转写为可编辑 SVG1。这不是重新
-设计或本地重画；HTML、Python、draw.io、描摹工具和单张栅格包装都不能作为替代。
-如果直接可编辑转写失败，就明确报告失败，不能偷偷手搓一个 SVG。
-
-SVG1 只会被确定性渲染成 PNG1.5 供 VLM 核验。Context 2 的每个构件必须得到
-`keep`、`accept_variation`、`patch`、`reject` 或 `replace` 中的一个判断。只有
-合格的 SVG 局部和定向替换局部会进入第二轮；PNG1.5 永远不能成为 Prompt 2 附件。
-
-这一步是主动返修闸门：原图中平面的框被渐变或半透明层覆盖、勋章/徽章/图标缺失、
-标签丢失或连接关系断裂，都不能判为忠实保留；必须写成针对 PNG1 的明确修补或替换，
-并由 Prompt 2 真正执行。
-
-### 最终 PNG2
-
-Prompt 2 以 PNG1 为修改基础，结合诊断、合格 SVG 裁图、替换裁图和前三个
-Context。第二次图像生成得到最终 PNG2，流程到此结束，不再对 PNG2 做第二轮 SVG
-转写。确定性工具只验证文件与来源关系，不声称能够观察模型调用，也不保证科学结论
-自动正确；正式使用前仍需作者核验。
+图像模型只接收一次 `prompt-1/prompt.md` 和全部清单附件，生成一张完整、有标签、
+符合人工编辑逻辑的图。PNG1 是本 Skill 的最终交付物；之后不再转换或再次生成。
+正式使用前仍需作者检查 PNG1。
 
 ## Methodology 案例原文
 

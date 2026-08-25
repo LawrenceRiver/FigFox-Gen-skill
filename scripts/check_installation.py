@@ -21,7 +21,6 @@ _REQUIRED_FILES = (
     "references/figurebench-visual-selection.md",
     "references/palette-library.json",
     "references/prompt-templates.md",
-    "references/svg-diagnostic.md",
     "references/taste-rules.md",
     "scientific_figure_workflow/__init__.py",
     "scientific_figure_workflow/artifacts.py",
@@ -29,17 +28,11 @@ _REQUIRED_FILES = (
     "scientific_figure_workflow/palette.py",
     "scientific_figure_workflow/prompts.py",
     "scientific_figure_workflow/run_validation.py",
-    "scientific_figure_workflow/svg_diagnostics.py",
     "scripts/check_installation.py",
     "scripts/figure_workflow.py",
     "assets/figurebench-references/index.json",
 )
-_REQUIRED_REQUIREMENTS = {
-    "cairosvg": "cairosvg",
-    "defusedxml": "defusedxml",
-    "pillow": "PIL",
-    "tinycss2": "tinycss2",
-}
+_REQUIRED_REQUIREMENTS = {"pillow": "PIL"}
 _PACKAGE_MODULES = (
     "scientific_figure_workflow",
     "scientific_figure_workflow.artifacts",
@@ -47,7 +40,6 @@ _PACKAGE_MODULES = (
     "scientific_figure_workflow.palette",
     "scientific_figure_workflow.prompts",
     "scientific_figure_workflow.run_validation",
-    "scientific_figure_workflow.svg_diagnostics",
 )
 _PROBE_CODE = r'''
 import importlib

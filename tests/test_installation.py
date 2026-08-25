@@ -14,7 +14,7 @@ SCRIPT = ROOT / "scripts" / "check_installation.py"
 
 
 class InstallationCliTests(unittest.TestCase):
-    def test_public_files_describe_the_complete_two_pass_png_workflow(self):
+    def test_public_files_describe_the_complete_single_pass_png_workflow(self):
         public_files = (
             ROOT / "SKILL.md",
             ROOT / "README.md",
@@ -31,8 +31,9 @@ class InstallationCliTests(unittest.TestCase):
             with self.subTest(path=path.name):
                 text = path.read_text(encoding="utf-8")
                 self.assertIn("PNG1", text)
-                self.assertIn("SVG1", text)
-                self.assertIn("PNG2", text)
+                self.assertTrue("Creative Director" in text or "创意师" in text)
+                self.assertNotIn("SVG1", text)
+                self.assertNotIn("PNG2", text)
                 for claim in obsolete_claims:
                     self.assertNotIn(claim, text)
 
@@ -48,10 +49,9 @@ class InstallationCliTests(unittest.TestCase):
             "Contexts 1–3",
             "mapped FigureBench crops",
             "PNG1",
-            "base Codex",
-            "SVG1",
-            "diagnosis",
-            "PNG2",
+            "Creative Director",
+            "paper-SVG crops",
+            "PNG1",
         )
         for phrase in required_phrases:
             self.assertIn(phrase, prompt)
@@ -84,6 +84,8 @@ class InstallationCliTests(unittest.TestCase):
             "first image draft as the final PNG",
             "return the SVG too",
             "同时交付 SVG",
+            "two image-generation passes",
+            "second image-generation pass",
         )
         for phrase in forbidden:
             self.assertNotIn(phrase, public_text)
