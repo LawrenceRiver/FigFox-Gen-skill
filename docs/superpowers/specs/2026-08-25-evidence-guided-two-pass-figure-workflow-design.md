@@ -79,7 +79,7 @@ The language model reads the Methodology once and records:
 
 This stage is semantic classification, not a visual planning pass.
 
-When a user reference image is present, it has strong influence over structure, palette eligibility, and basic visualization choices. VLM inspection must distinguish human-editable or photographic evidence from obviously model-generated decoration. Only the former is eligible for reuse.
+When a user reference image is present, it has strong influence over structure and basic visualization choices. It may express a colour preference, but it is not a palette source. VLM inspection must distinguish human-editable or photographic evidence from obviously model-generated decoration. Only the former is eligible for reuse.
 
 ## Stage 1: scholarly visual search and Context 1
 
@@ -129,11 +129,11 @@ The output is `context-2-content-visual-plan.json`. Each item maps exact scienti
 
 Context 2 determines which concrete components are needed, such as rectangles, containers, arrows, nodes, grouped regions, scientific objects, and structural illustrations.
 
-The Skill bundles exactly 30 complete FigureBench development images in `assets/figurebench-references/`. They form the normal-user reference library and are installed with the Skill; users are not asked to download FigureBench. Each image must have verified redistribution terms and attribution, a stable id, source id, component tags, layout tags, palette tags, and a short human-authored index description. The complete multi-gigabyte FigureBench dataset is used only by maintainers when curating a future revision of these 30 references.
+The Skill bundles exactly 30 complete FigureBench development images in `assets/figurebench-references/`. They form the normal-user reference library and are installed with the Skill; users are not asked to download FigureBench. Each image must have verified redistribution terms and attribution, a stable id, source id, component tags, layout tags, human-editability signals, and a short human-authored index description. The complete multi-gigabyte FigureBench dataset is used only by maintainers when curating a future revision of these 30 references.
 
-The 30-image library must cover a deliberately diverse set of human-editable scientific-figure treatments: basic and angled containers, arrows and branching flows, nested groups, staged architectures, nodes and matrices, simplified scientific processes, hand-drawn treatments, eligible photographic crops, layout families, and restrained palette families. Selection favors reusable construction grammar and scientific clarity rather than popularity or visual complexity. Official test images are never used.
+The 30-image library must cover a deliberately diverse set of human-editable scientific-figure treatments: basic and angled containers, arrows and branching flows, nested groups, staged architectures, nodes and matrices, simplified scientific processes, hand-drawn treatments, eligible photographic crops, layout families, spacing rhythms, and stroke families. Selection favors reusable construction grammar and scientific clarity rather than popularity, visual complexity, or source colour. Official test images are never used.
 
-For each run, the helper ranks the bundled library against Context 2 and prepares approximately ten candidate images. The VLM inspects the actual complete images rather than only metadata. It selects and crops useful component regions, observing:
+For each run, the helper ranks the bundled library against Context 2. The VLM must inspect at least two complete reference images, then continue selecting references until the planned visual vocabulary is covered. Coverage, not a fixed image count, is the stopping condition: every required geometry, frame/container family, connector treatment, layout relationship, and special visualization in Context 2 must have a credible human-editable reference or an explicit basic-geometry justification. The VLM inspects the actual complete images rather than only metadata. It selects and crops useful component regions, observing:
 
 - shape and silhouette;
 - angle and perspective;
@@ -148,17 +148,15 @@ Each selected FigureBench reference must retain both:
 1. a crop image; and
 2. a textual crop contract describing which target component it guides, what may be borrowed, what must change, and why the result remains a variant.
 
-The complete bundled image is a selection source; the per-run crop is the Prompt 1 attachment. Prompt 1 does not receive all 30 images or ten unexplained complete figures.
+The complete bundled image is a selection source; the per-run crop is the Prompt 1 attachment. Prompt 1 does not receive unexplained complete figures. Context 3 records a coverage matrix that maps every planned visual need to at least one crop or basic-geometry justification and explains why reference collection is complete.
 
 ### Single-palette rule
 
-Each run uses one palette identity. The palette may come from:
+Each run starts from exactly one approved palette-library group. Neither the user reference image nor FigureBench supplies the active palette.
 
-- the user reference image;
-- one selected FigureBench image; or
-- one approved palette-table entry.
+When the base group is too narrow for the planned semantic roles, perform a targeted web colour-relationship search around that group. Added colours must have an explicit relationship to the base group, such as a tint, shade, tone, analogous neighbour, compatible neutral, or controlled contrast. Record the exact HEX/RGB value, relationship type, intended role, and web evidence. Do not select or borrow a second palette-library group.
 
-The run must not mix visual identities. All allowed colours must belong to the selected palette family. Nearby tones may be used only when they are already present in that same selected source or palette entry. The contract records exact HEX/RGB values and their intended roles.
+The run therefore retains one palette lineage: one approved base group plus optional, evidenced related-colour extensions. The user reference may guide colour emphasis or restraint, but its pixels do not expand the allowed set. The contract records all exact allowed HEX/RGB values and their intended roles.
 
 ### Taste guidance
 
@@ -170,7 +168,7 @@ Priority is:
 2. explicit user constraints and eligible user-reference evidence;
 3. recurring domain visual conventions;
 4. human editability and construction provenance;
-5. the single-palette contract; and
+5. the one base-palette lineage and its evidenced related-colour extensions; and
 6. taste guidance.
 
 Taste cannot authorize a new colour source, decorative element, or scientifically misleading composition.
@@ -348,7 +346,7 @@ Legacy retrieval code may be retained only where it supports candidate preparati
 Expose deterministic commands for:
 
 - validating Contexts 1–3;
-- preparing ten FigureBench candidates;
+- ranking FigureBench candidates and validating adaptive visual-reference coverage;
 - applying VLM-provided crop coordinates;
 - compiling and validating the one palette;
 - building Prompt 1 and Prompt 2 bundles;
@@ -363,9 +361,10 @@ No CLI command performs model reasoning that belongs to the Skill.
 - Fewer than three strong domain figures: continue searching or report insufficient evidence; do not invent a convention list.
 - No native SVG paper figure: use credible HTML/PDF figure crops while recording the source format.
 - Bundled FigureBench reference pack is missing any of its 30 indexed images: fail installation validation before starting a run.
-- Fewer than ten usable candidates from the bundled pack: record the shortfall and widen the bundled-library ranking; do not ask an ordinary user to download the full dataset.
+- Fewer than two inspected bundled references: fail Context 3 validation.
+- Any Context 2 visual need lacks a reference crop or explicit basic-geometry justification: continue reference collection and block Prompt 1.
 - Crop without a target contract: reject it from the prompt bundle.
-- Multiple palette sources: fail validation.
+- Missing base palette-library group, a second palette-library group, or a related colour without web evidence: fail validation.
 - Direct SVG transcription failure: report failure and do not hand-author a substitute.
 - SVG1 is only an embedded raster: fail editability validation.
 - PNG1.5 appears in Prompt 2 attachments: fail bundle validation.
@@ -378,10 +377,10 @@ Tests must verify observable behavior and artifact invariants, not merely search
 Required coverage:
 
 - schema tests for all three contexts and manifests;
-- candidate diversity and exact candidate-count behavior;
+- adaptive candidate selection with a two-image minimum and complete visual-coverage stopping rule;
 - installation validation for exactly 30 indexed, attributed bundled images;
 - crop-coordinate execution and crop-to-component mapping;
-- one-palette enforcement for user-reference, FigureBench, and palette-table sources;
+- one base-palette-group enforcement and validation of web-evidenced related-colour extensions;
 - Prompt 1 attachment inclusion, including FigureBench crops;
 - anti-AI constraints and Methodology text compression fields in Prompt 1;
 - rejection of HTML, malformed SVG, and raster-only SVG wrappers;
@@ -399,8 +398,8 @@ The rewrite is complete when:
 1. The Skill executes the canonical artifact flow without reverting to topology-first planning.
 2. Contexts 1–3 are concrete validated artifacts.
 3. Prompt 1 includes mapped FigureBench crop images and their contracts.
-4. The installed Skill contains exactly 30 complete, indexed, attributed FigureBench development references and selects about ten per run before cropping.
-5. Only one palette identity is accepted per run.
+4. The installed Skill contains exactly 30 complete, indexed, attributed FigureBench development references; each run inspects at least two and stops only after every planned visual need is covered.
+5. Each run uses exactly one palette-library base group, optionally enriched only by web-evidenced related colours rather than another library group.
 6. PNG1 is generated from the full Prompt 1 bundle.
 7. SVG1 is directly transcribed from PNG1 by the base model and cannot be substituted with a local redraw.
 8. PNG1.5 is used only for diagnosis and is structurally excluded from Prompt 2.
