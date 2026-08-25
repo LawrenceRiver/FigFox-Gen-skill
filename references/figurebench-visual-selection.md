@@ -8,7 +8,10 @@ does not supply a palette: choose all colours from the approved palette workflow
    2 component id.
 2. Rank the complete FigureBench references, then inspect at least two distinct
    complete references before selecting any regions. Use complete figures only
-   for inspection; never attach a complete figure to Prompt 1.
+   for inspection; never attach a complete figure to Prompt 1. Ranking normalizes
+   natural-language Context 2 treatments against maintained component, layout,
+   and human-editability tags. It is an inspection-order aid, never a substitute
+   for looking at the complete reference pixels.
 3. Select the relevant region from each inspected figure, and update the coverage
    matrix after each selection. Continue inspecting ranked complete references as
    needed. There is no fixed maximum or target number of images: stop only when

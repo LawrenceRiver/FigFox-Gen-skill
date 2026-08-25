@@ -55,7 +55,41 @@ def initialize_run(root):
     context3["coverage_matrix"][0]["crop_ids"] = ["container"]
     context3["coverage_matrix"][1]["crop_ids"] = ["arrow"]
     write_json(root / MANIFEST_PATHS["context3"], context3)
-    write_json(root / MANIFEST_PATHS["web_manifest"], {"sources": []})
+    write_json(
+        root / MANIFEST_PATHS["web_manifest"],
+        {
+            "format": "scholarly-domain-figure-manifest-v1",
+            "sources": [
+                {
+                    "id": "paper-1-piano-roll",
+                    "title": "Fixture paper one",
+                    "figure": "Figure 1",
+                    "source_url": "https://arxiv.org/abs/0001.00001",
+                    "evidence_url": "https://arxiv.org/html/0001.00001/figure-1.png",
+                    "crop_path": "references/web/crops/piano-roll.png",
+                    "inspection": "A retained piano-roll panel with aligned note bars.",
+                },
+                {
+                    "id": "paper-2-encoder",
+                    "title": "Fixture paper two",
+                    "figure": "Figure 2",
+                    "source_url": "https://arxiv.org/abs/0001.00002",
+                    "evidence_url": "https://arxiv.org/html/0001.00002/figure-2.png",
+                    "crop_path": "references/web/crops/paper-2.png",
+                    "inspection": "A retained encoder block and directional connector panel.",
+                },
+                {
+                    "id": "paper-3-decoder",
+                    "title": "Fixture paper three",
+                    "figure": "Figure 3",
+                    "source_url": "https://arxiv.org/abs/0001.00003",
+                    "evidence_url": "https://arxiv.org/html/0001.00003/figure-3.png",
+                    "crop_path": "references/web/crops/paper-3.png",
+                    "inspection": "A retained decoder and structured-output panel.",
+                },
+            ],
+        },
+    )
     write_json(
         root / MANIFEST_PATHS["figurebench_crop_request"],
         {
@@ -87,6 +121,8 @@ def initialize_run(root):
         },
     )
     write_png(root / "references/web/crops/piano-roll.png")
+    write_png(root / "references/web/crops/paper-2.png", (45, 75, 105))
+    write_png(root / "references/web/crops/paper-3.png", (60, 90, 120))
     write_png(root / MANIFEST_PATHS["png1"], (10, 80, 120))
     write_png(root / MANIFEST_PATHS["png2"], (20, 100, 140))
     svg = (
@@ -280,6 +316,17 @@ class WorkflowCliTests(unittest.TestCase):
         write_png(self.run_root / MANIFEST_PATHS["png1_5"])
         completed = self.run_cli("build-prompt2", "--run", self.run_root, expected=2)
         self.assertIn("PNG1.5", completed.stderr)
+
+    def test_build_prompt1_rejects_missing_scholarly_evidence(self):
+        self.run_cli("crop-references", "--run", self.run_root)
+        write_json(
+            self.run_root / MANIFEST_PATHS["web_manifest"],
+            {"format": "scholarly-domain-figure-manifest-v1", "sources": []},
+        )
+
+        completed = self.run_cli("build-prompt1", "--run", self.run_root, expected=2)
+
+        self.assertIn("3 or 4 distinct scholarly papers", completed.stderr)
 
     def test_cli_scripts_do_not_import_network_search_or_model_sdks(self):
         forbidden_roots = {

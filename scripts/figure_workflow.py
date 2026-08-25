@@ -36,6 +36,7 @@ try:
         validate_diagnosis,
         validate_palette,
         validate_reference_coverage,
+        validate_web_manifest,
         write_json_atomic,
         write_bundle,
     )
@@ -135,6 +136,9 @@ def _cmd_validate_palette(arguments: argparse.Namespace) -> dict[str, Any]:
 def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
     context1, context2, context3 = _contexts(root)
+    validate_web_manifest(
+        load_json_object(root / _RUN_ARTIFACTS["web_manifest"]), root, context1
+    )
     methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
     bundle = build_prompt1_bundle(
         methodology, context1, context2, context3, find_user_reference(root), root

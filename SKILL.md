@@ -204,15 +204,19 @@ verdict per Context 2 component in `svg-diagnostic/diagnosis.json`:
 - `keep`: faithfully preserved and reusable;
 - `accept_variation`: changed or simplified but scientifically sound;
 - `patch`: correct a bounded defect in size, position, colour, label, or geometry;
-- `reject`: the idea is fake, decorative, unstable, or semantically invalid;
-- `replace`: retrieve a mature human-authored treatment.
+- `reject`: remove an element that is fake, decorative, unstable, or has no valid
+  scientific role; if a scientific role must remain, use `replace` instead;
+- `replace`: retrieve a mature human-authored treatment and supply at least one
+  mapped replacement crop for that component.
 
 Scientific logic outranks polish. Slight position/angle variation in clear simple
 geometry may pass. A complex diffusion view may simplify when its meaning survives.
 A fake bulb, cartoon substitute, wrong photo/object, meaningless abstraction, or
-directional/logical error must be rejected or replaced. For `reject`/`replace`,
-return to domain-paper SVG/figure crops or FigureBench and save a mapped replacement
-under `references/web/crops/replacements/` with its manifest.
+directional/logical error must be rejected or replaced. For `replace` (and for any
+`reject` that will be substituted rather than deleted), return to domain-paper
+SVG/figure crops or FigureBench and save a mapped replacement under
+`references/web/crops/replacements/` with its manifest. Prompt 2 compilation must
+fail when a `replace` component has no mapped replacement crop.
 
 Only visually useful `keep`, `accept_variation`, or `patch` regions may enter the
 approved SVG crop request. Save VLM coordinates in

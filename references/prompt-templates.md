@@ -32,6 +32,8 @@ No HTML or canvas wrapper. No embedded raster wrapper. No Python, local scriptin
 Modify PNG1 once into PNG2 using the compiled Prompt 2 bundle. Respect all five
 diagnostic blocks: preserve, accept variation, patch, reject, and replace. Treat
 approved SVG crops and replacement crops as component-specific evidence, never as a
-reason to redesign the whole figure. PNG1.5 and SVG diagnostic renders are forbidden
-attachments. This is the second and final image-generation pass; do not start a
-PNG2-to-SVG loop.
+reason to redesign the whole figure. `reject` deletes an element with no valid
+scientific role; if the role must remain, use `replace`. Every `replace` verdict
+requires at least one mapped replacement crop. PNG1.5 and SVG diagnostic renders are
+forbidden attachments. This is the second and final image-generation pass; do not
+start a PNG2-to-SVG loop.

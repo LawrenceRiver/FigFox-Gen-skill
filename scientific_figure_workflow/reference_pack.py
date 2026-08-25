@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import copy
 import json
+import os
+import re
 from collections.abc import Mapping, Sequence
 from pathlib import Path
+import tempfile
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -32,6 +35,35 @@ _FIGUREBENCH_LICENSE_NOTICE = (
     "CC-BY-4.0; metadata: "
     "https://huggingface.co/datasets/WestlakeNLP/FigureBench/blob/main/README.md."
 )
+_TOKEN_PATTERN = re.compile(r"[a-z0-9]+")
+_MATCH_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "as",
+    "at",
+    "basic",
+    "block",
+    "by",
+    "component",
+    "editable",
+    "flow",
+    "for",
+    "from",
+    "geometry",
+    "in",
+    "model",
+    "of",
+    "on",
+    "or",
+    "path",
+    "pipeline",
+    "stage",
+    "the",
+    "to",
+    "visual",
+    "with",
+}
 
 
 def _non_empty_string(value: Any, location: str) -> str:
@@ -162,6 +194,54 @@ def _strings(value: Any) -> set[str]:
     return set()
 
 
+def _token(value: str) -> str:
+    if len(value) > 4 and value.endswith("ies"):
+        return value[:-3] + "y"
+    if len(value) > 3 and value.endswith("s") and not value.endswith("ss"):
+        return value[:-1]
+    return value
+
+
+def _tokens(value: str) -> set[str]:
+    return {
+        normalized
+        for raw in _TOKEN_PATTERN.findall(value.casefold())
+        if (normalized := _token(raw)) not in _MATCH_STOPWORDS
+    }
+
+
+def _all_context_tokens(value: Any) -> set[str]:
+    if isinstance(value, str):
+        return _tokens(value)
+    if isinstance(value, Mapping):
+        tokens: set[str] = set()
+        for item in value.values():
+            tokens |= _all_context_tokens(item)
+        return tokens
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+        tokens: set[str] = set()
+        for item in value:
+            tokens |= _all_context_tokens(item)
+        return tokens
+    return set()
+
+
+def _canonical_tag(value: str) -> str:
+    return "_".join(_token(token) for token in _TOKEN_PATTERN.findall(value.casefold()))
+
+
+def _matched_reference_tags(
+    requested: set[str], reference_tags: set[str], context_tokens: set[str]
+) -> list[str]:
+    exact = {_canonical_tag(value) for value in requested}
+    matched = []
+    for tag in reference_tags:
+        tag_tokens = _tokens(tag)
+        if _canonical_tag(tag) in exact or (tag_tokens and tag_tokens & context_tokens):
+            matched.append(tag)
+    return sorted(matched)
+
+
 def _context_component_tags(context2: Mapping[str, Any]) -> set[str]:
     tags = _strings(context2.get("components_needed")) | _strings(context2.get("geometry_tags"))
     components = context2.get("components", [])
@@ -207,6 +287,7 @@ def rank_candidates(
     needed_components = _context_component_tags(context2)
     needed_layouts = _context_layouts(context2)
     needed_editability = _context_editability(context2)
+    context_tokens = _all_context_tokens(context2)
     scored: list[dict[str, Any]] = []
     for position, reference in enumerate(references):
         if not isinstance(reference, Mapping):
@@ -220,9 +301,15 @@ def rank_candidates(
         components = _strings(normalized.get("components"))
         layout_family = _non_empty_string(normalized.get("layout_family"), f"references[{position}] layout_family")
         editability = _strings(normalized.get("human_editable_signals"))
-        matched_components = sorted(needed_components & components)
-        matched_layouts = sorted(needed_layouts & {layout_family})
-        matched_editability = sorted(needed_editability & editability)
+        matched_components = _matched_reference_tags(
+            needed_components, components, context_tokens
+        )
+        matched_layouts = _matched_reference_tags(
+            needed_layouts, {layout_family}, context_tokens
+        )
+        matched_editability = _matched_reference_tags(
+            needed_editability, editability, context_tokens
+        )
         normalized.update(
             {
                 "id": reference_id,
@@ -338,6 +425,40 @@ def _normalise_crops(crop_manifest: Mapping[str, Any]) -> list[dict[str, Any]]:
     return normalized
 
 
+def _reject_output_symlinks(path: Path) -> None:
+    absolute = Path(os.path.abspath(os.fspath(path)))
+    anchor = Path(absolute.anchor)
+    current = anchor
+    for part in absolute.parts[1:]:
+        current = current / part
+        if current.is_symlink() and current.parent != anchor:
+            raise ValueError("FigureBench crop output must not contain a symlink destination")
+
+
+def _write_png_atomic(image: Image.Image, target: Path) -> None:
+    _reject_output_symlinks(target)
+    if target.is_symlink():
+        raise ValueError("FigureBench crop output must not be a symlink")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{target.name}.", suffix=".png", dir=target.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "wb") as output:
+            image.save(output, format="PNG")
+            output.flush()
+            os.fsync(output.fileno())
+        _reject_output_symlinks(target)
+        if target.is_symlink():
+            raise ValueError("FigureBench crop output must not be a symlink")
+        os.replace(temporary, target)
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+
+
 def apply_crop_manifest(
     reference_root: Path, manifest: Mapping[str, Any], output_dir: Path
 ) -> dict[str, Any]:
@@ -348,7 +469,11 @@ def apply_crop_manifest(
     crops = _normalise_crops(manifest)
     normalized: list[dict[str, Any]] = []
     destination = Path(output_dir)
+    _reject_output_symlinks(destination)
     destination.mkdir(parents=True, exist_ok=True)
+    _reject_output_symlinks(destination)
+    if not destination.is_dir():
+        raise ValueError("FigureBench crop output must be a directory")
 
     for crop in crops:
         reference_id = crop["reference_id"]
@@ -370,7 +495,7 @@ def apply_crop_manifest(
         if coordinates[0] >= coordinates[2] or coordinates[1] >= coordinates[3]:
             raise ValueError(f"crop manifest bounds select no pixels for {crop['id']}")
         crop_path = f"{crop['id']}.png"
-        image.crop(coordinates).save(destination / crop_path, format="PNG")
+        _write_png_atomic(image.crop(coordinates), destination / crop_path)
         normalized_crop = copy.deepcopy(crop)
         normalized_crop["crop_id"] = crop["id"]
         normalized_crop["crop_path"] = crop_path

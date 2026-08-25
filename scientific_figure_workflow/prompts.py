@@ -179,7 +179,25 @@ def _component_lines(context2: Mapping[str, Any]) -> list[str]:
 
 def _palette_lines(context3: Mapping[str, Any]) -> list[str]:
     palette = context3["palette"]
-    return [f"Use only base palette group `{palette['base_palette_id']}` and its evidenced extensions.", *(f"- {colour['role']}: {colour['hex']} ({colour['rgb']})" for colour in palette["colours"]), "Do not sample, infer, or add colours from the user reference, FigureBench, or another palette group."]
+    lines = [
+        f"Use only base palette group `{palette['base_palette_id']}` and its evidenced extensions.",
+        "Base palette colours:",
+        *(f"- {colour['role']}: {colour['hex']} ({colour['rgb']})" for colour in palette["colours"]),
+        "Evidenced related-colour extensions:",
+    ]
+    if palette["extensions"]:
+        lines.extend(
+            f"- {colour['role']}: {colour['hex']} ({colour['rgb']}); relationship "
+            f"`{colour['relationship']}`; evidence {colour['evidence_url']}; "
+            f"{colour['evidence_summary']}"
+            for colour in palette["extensions"]
+        )
+    else:
+        lines.append("- None; do not invent an extension.")
+    lines.append(
+        "Do not sample, infer, or add colours from the user reference, FigureBench, or another palette group."
+    )
+    return lines
 
 
 def _coverage_lines(context3: Mapping[str, Any]) -> list[str]:
@@ -310,7 +328,29 @@ def build_prompt2_bundle(methodology: str, context1: Mapping[str, Any], context2
     png1_path = _resolve_attachment(png1, root=run_root, expected_root=None, exact_path=PurePosixPath("png1.png"), location="png1", prompt2=True)
     attachments = [_attachment(png1_path, "png1_visual_truth")]
     attachments.extend(_prompt2_crops(svg_crops, "approved_svg_crop", "svg_crops", component_ids, verdicts, run_root))
-    attachments.extend(_prompt2_crops(replacement_crops, "replacement_crop", "replacement_crops", component_ids, verdicts, run_root))
+    replacement_attachments = _prompt2_crops(
+        replacement_crops,
+        "replacement_crop",
+        "replacement_crops",
+        component_ids,
+        verdicts,
+        run_root,
+    )
+    required_replacements = {
+        component_id
+        for component_id, record in verdicts.items()
+        if record["verdict"] == "replace"
+    }
+    supplied_replacements = {
+        item["target_component_id"] for item in replacement_attachments
+    }
+    missing_replacements = sorted(required_replacements - supplied_replacements)
+    if missing_replacements:
+        raise ValueError(
+            "replace verdicts require mapped replacement crops: "
+            + ", ".join(missing_replacements)
+        )
+    attachments.extend(replacement_attachments)
     blocks: dict[str, list[str]] = {verdict: [] for verdict, _ in _VERDICT_BLOCKS}
     for component in normalized2["components"]:
         record = verdicts[component["id"]]

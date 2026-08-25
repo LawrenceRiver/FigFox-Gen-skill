@@ -144,6 +144,23 @@ class SvgInspectionTests(unittest.TestCase):
             self.assertEqual(summary["raster_nodes"], 1)
             self.assertFalse(summary["raster_only"])
 
+    def test_rejects_svg_event_handler_attributes(self):
+        cases = {
+            "root-onload": ("<rect width='20' height='20'/>", "onload='alert(1)'"),
+            "shape-onclick": ("<rect width='20' height='20' onclick='alert(1)'/>", ""),
+            "animate-onbegin": (
+                "<rect width='20' height='20'/><animate attributeName='x' onbegin='alert(1)'/>",
+                "",
+            ),
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, (child, root_attributes) in cases.items():
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "event handler"):
+                    inspect_editable_svg(
+                        write_svg(root, name, child, root_attributes=root_attributes)
+                    )
+
     def test_rejects_every_non_fragment_resource_reference(self):
         references = {
             "relative": "image.png",

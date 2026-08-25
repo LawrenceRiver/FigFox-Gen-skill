@@ -6,6 +6,7 @@ from .artifacts import (
     validate_context3,
     validate_diagnosis,
     validate_run_manifest,
+    validate_web_manifest,
 )
 from .palette import palette_hex_set, validate_palette
 from .prompts import (
@@ -41,6 +42,7 @@ __all__ = [
     "validate_context3",
     "validate_diagnosis",
     "validate_run_manifest",
+    "validate_web_manifest",
     "validate_palette",
     "palette_hex_set",
     "load_reference_index",

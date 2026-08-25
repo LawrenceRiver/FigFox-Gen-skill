@@ -7,7 +7,7 @@ from PIL import Image
 
 import scientific_figure_workflow
 from tests.test_artifacts import MANIFEST_PATHS
-from tests.test_cli import ROOT, initialize_run, materialize_complete_run, write_json
+from tests.test_cli import ROOT, initialize_run, materialize_complete_run, write_json, write_png
 
 
 REFERENCE_PACK = ROOT / "assets/figurebench-references"
@@ -99,6 +99,34 @@ class CompleteRunValidationTests(unittest.TestCase):
         write_json(path, attachments)
 
         with self.assertRaisesRegex(ValueError, "PNG1.5"):
+            self.validate()
+
+    def test_web_manifest_requires_three_or_four_distinct_scholarly_papers(self):
+        write_json(
+            self.run_root / MANIFEST_PATHS["web_manifest"],
+            {"format": "scholarly-domain-figure-manifest-v1", "sources": []},
+        )
+
+        with self.assertRaisesRegex(ValueError, "3 or 4 distinct scholarly papers"):
+            self.validate()
+
+    def test_web_manifest_covers_every_context1_mapped_domain_crop(self):
+        manifest_path = self.run_root / MANIFEST_PATHS["web_manifest"]
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["sources"][0]["crop_path"] = "references/web/crops/unmapped.png"
+        write_png(self.run_root / "references/web/crops/unmapped.png")
+        write_json(manifest_path, manifest)
+
+        with self.assertRaisesRegex(ValueError, "Context 1 mapped domain crops"):
+            self.validate()
+
+    def test_web_manifest_requires_https_evidence(self):
+        manifest_path = self.run_root / MANIFEST_PATHS["web_manifest"]
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest["sources"][0]["evidence_url"] = "http://example.test/figure.png"
+        write_json(manifest_path, manifest)
+
+        with self.assertRaisesRegex(ValueError, "HTTPS"):
             self.validate()
 
     def test_svg_chain_summary_never_returns_png15_as_attachment(self):

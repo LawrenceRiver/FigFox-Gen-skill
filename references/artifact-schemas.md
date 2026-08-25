@@ -29,6 +29,34 @@ crop-request/materialized-manifest pairs. Paths are run-relative. Keep
   ]
 }
 ```
+## Scholarly web manifest — `references/web/manifest.json`
+
+Retain cropped visual evidence from three or four distinct scholarly papers. More
+than one crop may come from the same paper, but `source_url` must identify exactly
+three or four distinct HTTPS paper pages. Every mapped Context 1 domain crop must
+be declared here, and every crop path must be a real run-local file under
+`references/web/crops/` (not the later `replacements/` area).
+
+```json
+{
+  "format": "scholarly-domain-figure-manifest-v1",
+  "sources": [
+    {
+      "id": "paper-1-piano-roll",
+      "title": "Paper title",
+      "figure": "Figure 2",
+      "source_url": "https://arxiv.org/html/2402.14285",
+      "evidence_url": "https://arxiv.org/html/2402.14285v4/VAE_new.png",
+      "crop_path": "references/web/crops/piano-roll-panel.png",
+      "inspection": "Visible time-pitch grid, sparse note bars, encoder, and latent tiles."
+    }
+  ]
+}
+```
+
+`id` and `crop_path` values are unique. Both URLs must use HTTPS. `inspection`
+records visible pixel evidence rather than a title/abstract inference.
+
 ## Context 2 — `context/context-2-content-visual-plan.json`
 
 ```json

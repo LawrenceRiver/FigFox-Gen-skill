@@ -250,6 +250,36 @@ class Prompt1BundleTests(PromptTestCase):
         ):
             self.assertIn(phrase, bundle["prompt"])
 
+    def test_prompt1_explicit_palette_section_lists_evidenced_extensions(self):
+        context3 = c3()
+        context3["palette"]["extensions"] = [
+            {
+                "role": "quiet_accent",
+                "hex": "#6E8FA3",
+                "rgb": [110, 143, 163],
+                "relationship": "analogous_neighbour",
+                "evidence_url": "https://color.adobe.com/create/color-wheel",
+                "evidence_summary": "A blue-grey neighbour compatible with the base blue.",
+            }
+        ]
+
+        prompt = build_prompt1_bundle(
+            "method", c1(), c2(), context3, None, self.root
+        )["prompt"]
+        palette_section = prompt.split("## 6. Single-palette contract", 1)[1].split(
+            "## 7. Layout and taste constraints", 1
+        )[0]
+
+        for detail in (
+            "quiet_accent",
+            "#6E8FA3",
+            "[110, 143, 163]",
+            "analogous_neighbour",
+            "https://color.adobe.com/create/color-wheel",
+            "A blue-grey neighbour compatible with the base blue.",
+        ):
+            self.assertIn(detail, palette_section)
+
     def test_prompt1_allows_only_the_two_narrow_user_requirement_overrides(self):
         prompt = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root)["prompt"]
 
@@ -344,6 +374,27 @@ class Prompt2BundleTests(PromptTestCase):
         write_bundle(bundle, output_dir)
         written = json.loads((output_dir / "attachments.json").read_text(encoding="utf-8"))
         self.assertIn(replacement, written)
+
+    def test_prompt2_requires_a_mapped_crop_for_every_replace_verdict(self):
+        replacement_diagnosis = {
+            "verdicts": [
+                {"component_id": "encoder", "verdict": "keep", "reason": "faithful"},
+                {"component_id": "audio", "verdict": "replace", "reason": "fake icon"},
+            ]
+        }
+
+        with self.assertRaisesRegex(ValueError, "replace verdicts require mapped replacement crops"):
+            build_prompt2_bundle(
+                "method",
+                c1(),
+                c2(),
+                c3(),
+                "png1.png",
+                replacement_diagnosis,
+                svg_crops(),
+                {"crops": []},
+                self.root,
+            )
 
     def test_prompt2_carries_context1_conventions_context2_structure_and_context3_palette(self):
         methodology = "methodology source-of-truth: do not omit this requirement"

@@ -145,7 +145,10 @@ Special constructions are explicit:
 
 ## FigureBench inspection and adaptive coverage
 
-The rank command returned 30 candidates tied at score zero. I therefore used candidate metadata only to order pixel inspection.
+The rank command returned 30 candidates with non-zero natural-language matches.
+The highest-ranked candidates exposed their matched component, layout, and
+human-editable tags; ranking was used only to order pixel inspection, not to replace
+visual judgment.
 
 I inspected three distinct complete bundled images at original detail:
 
@@ -585,7 +588,7 @@ cp: .../nested-music-transformer-architecture.png: No such file or directory
 SyntaxError: unexpected character after line continuation character
 ```
 
-- FigureBench ranking produced tied scores, so selection required actual pixel inspection and adaptive judgment.
+- FigureBench ranking provided a useful non-zero ordering, but final selection still required actual pixel inspection and adaptive coverage judgment.
 - No network was used; provenance came from the supplied authoritative HTTPS records and real retained panels.
 - No image generator was called, as required. The scenario stops at the validated Prompt 1 bundle.
 - A separately requested fresh-context Scenario C child spawn was attempted exactly as instructed but failed with `agent thread limit reached`; no canonical child path was created.

@@ -169,6 +169,8 @@ def _validate_resources(element: Any, tag: str) -> bool:
         if not isinstance(raw_value, str):
             continue
         name = _local_name(attribute).casefold()
+        if name.startswith("on"):
+            raise ValueError("SVG1 must not contain event handler attributes")
         value = raw_value.strip()
         if name in _DIRECT_RESOURCE_ATTRIBUTES:
             if _FRAGMENT.fullmatch(value):

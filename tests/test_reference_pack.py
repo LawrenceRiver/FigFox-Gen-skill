@@ -288,6 +288,67 @@ class ReferenceCropTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "ids must be unique"):
                 apply_crop_manifest(self.make_pack(root), {"crops": [self.crop(), self.crop()]}, root / "crops")
 
+    def test_crop_manifest_rejects_symlinked_output_directory(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pack_root = self.make_pack(root)
+            outside = root / "outside"
+            outside.mkdir()
+            output = root / "run/references/figurebench/crops"
+            output.parent.mkdir(parents=True)
+            output.symlink_to(outside, target_is_directory=True)
+
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                apply_crop_manifest(pack_root, {"crops": [self.crop()]}, output)
+
+            self.assertFalse((outside / "crop-container.png").exists())
+
+    def test_crop_manifest_rejects_symlinked_output_file(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pack_root = self.make_pack(root)
+            output = root / "crops"
+            output.mkdir()
+            outside = root / "outside.png"
+            outside.write_bytes(b"preserve")
+            (output / "crop-container.png").symlink_to(outside)
+
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                apply_crop_manifest(pack_root, {"crops": [self.crop()]}, output)
+
+            self.assertEqual(outside.read_bytes(), b"preserve")
+
+    def test_candidate_ranking_matches_natural_language_context2(self):
+        context = {
+            "mainline": "Text Prompt to Text Encoder to a diffusion enclosure and audio decoder",
+            "components": [
+                {
+                    "id": "text_encoder",
+                    "label": "Text Encoder",
+                    "semantic_role": "text transformation",
+                    "visual_treatment": "compact rounded process container with centered label",
+                },
+                {
+                    "id": "training_lane",
+                    "label": "TRAINING",
+                    "semantic_role": "subordinate supervision path",
+                    "visual_treatment": "quiet lower dashed enclosure with orthogonal connectors",
+                },
+            ],
+            "relationships": [],
+        }
+
+        ranked = rank_candidates(
+            context, load_reference_index(ROOT / "assets/figurebench-references")
+        )
+
+        self.assertGreater(ranked[0]["score"], 0)
+        self.assertTrue(
+            ranked[0]["matched_components"]
+            or ranked[0]["matched_layouts"]
+            or ranked[0]["matched_human_editable_signals"]
+        )
+
     def test_coverage_requires_two_distinct_references(self):
         context = {"components": [{"id": "encoder"}, {"id": "decoder"}]}
         manifest = {"crops": [self.crop(target="encoder"), self.crop("crop-decoder", target="decoder")]}

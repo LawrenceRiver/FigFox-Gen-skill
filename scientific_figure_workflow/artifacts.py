@@ -5,13 +5,17 @@ from __future__ import annotations
 import copy
 import json
 from collections.abc import Collection, Mapping
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import urlparse
 
 from .palette import validate_palette
 
 
 VERDICTS = {"keep", "accept_variation", "patch", "reject", "replace"}
+WEB_MANIFEST_FORMAT = "scholarly-domain-figure-manifest-v1"
+_WEB_CROP_ROOT = PurePosixPath("references/web/crops")
+_WEB_REPLACEMENT_ROOT = PurePosixPath("references/web/crops/replacements")
 
 _RUN_ARTIFACTS = {
     "methodology": "input/methodology.md",
@@ -114,6 +118,123 @@ def validate_context1(value: Mapping[str, Any]) -> dict[str, Any]:
         normalized["conventions"].append(_normalized_record(convention, required))
     normalized["mainline"] = _required_string(source, "mainline", "context1")
     return normalized
+
+
+def _https_url(record: Mapping[str, Any], key: str, location: str) -> str:
+    value = _required_string(record, key, location)
+    parsed = urlparse(value)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError(f"{location} requires HTTPS {key}")
+    return value
+
+
+def _safe_web_crop(value: Any, root: Path, location: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{location} requires non-empty crop_path")
+    raw = value.strip()
+    if "\\" in raw:
+        raise ValueError(f"{location} crop_path must be a safe run-relative path")
+    relative = PurePosixPath(raw)
+    if (
+        relative.is_absolute()
+        or any(part in {"", ".", ".."} for part in raw.split("/"))
+        or not relative.is_relative_to(_WEB_CROP_ROOT)
+        or relative.is_relative_to(_WEB_REPLACEMENT_ROOT)
+    ):
+        raise ValueError(
+            f"{location} crop_path must be under references/web/crops and outside replacements"
+        )
+    declared = root.joinpath(*relative.parts)
+    if not declared.is_file():
+        raise ValueError(f"{location} crop_path requires an existing file")
+    resolved_root = root.resolve(strict=True)
+    resolved = declared.resolve(strict=True)
+    if not resolved.is_relative_to(resolved_root):
+        raise ValueError(f"{location} crop_path must stay under the run root")
+    current = resolved_root
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            raise ValueError(f"{location} crop_path must not use a symlink alias")
+    return relative.as_posix()
+
+
+def _context1_mapped_crop_paths(context1: Mapping[str, Any]) -> set[str]:
+    normalized = validate_context1(context1)
+    paths: set[str] = set()
+    for convention_index, convention in enumerate(normalized["conventions"]):
+        for field in ("eligible_source_crops", "source_crops"):
+            records = convention.get(field, [])
+            if records is None:
+                continue
+            if not isinstance(records, list):
+                raise ValueError(
+                    f"context1 conventions[{convention_index}] {field} must be a list"
+                )
+            for crop_index, record in enumerate(records):
+                if not isinstance(record, Mapping):
+                    raise ValueError(
+                        f"context1 conventions[{convention_index}] {field}[{crop_index}] must be an object"
+                    )
+                path = record.get("path", record.get("crop_path"))
+                if not isinstance(path, str) or not path.strip():
+                    raise ValueError(
+                        f"context1 conventions[{convention_index}] {field}[{crop_index}] requires crop path"
+                    )
+                paths.add(PurePosixPath(path.strip()).as_posix())
+    return paths
+
+
+def validate_web_manifest(
+    value: Mapping[str, Any], root: Path, context1: Mapping[str, Any]
+) -> dict[str, Any]:
+    """Validate 3–4 scholarly paper sources and their retained visual evidence."""
+
+    source = _mapping(value, "web manifest")
+    if source.get("format") != WEB_MANIFEST_FORMAT:
+        raise ValueError(f"web manifest format must be {WEB_MANIFEST_FORMAT}")
+    records = source.get("sources")
+    if not isinstance(records, list):
+        raise ValueError("web manifest requires sources list")
+
+    normalized: list[dict[str, Any]] = []
+    ids: list[str] = []
+    paper_urls: list[str] = []
+    crop_paths: list[str] = []
+    for index, item in enumerate(records):
+        location = f"web manifest sources[{index}]"
+        record = _mapping(item, location)
+        source_id = _required_string(record, "id", location)
+        ids.append(source_id)
+        paper_url = _https_url(record, "source_url", location)
+        paper_urls.append(paper_url)
+        crop_path = _safe_web_crop(record.get("crop_path"), Path(root), location)
+        crop_paths.append(crop_path)
+        normalized.append(
+            {
+                "id": source_id,
+                "title": _required_string(record, "title", location),
+                "figure": _required_string(record, "figure", location),
+                "source_url": paper_url,
+                "evidence_url": _https_url(record, "evidence_url", location),
+                "crop_path": crop_path,
+                "inspection": _required_string(record, "inspection", location),
+            }
+        )
+    if not 3 <= len(set(paper_urls)) <= 4:
+        raise ValueError("web manifest requires 3 or 4 distinct scholarly papers")
+    if len(ids) != len(set(ids)):
+        raise ValueError("web manifest source ids must be unique")
+    if len(crop_paths) != len(set(crop_paths)):
+        raise ValueError("web manifest crop paths must be unique")
+
+    mapped = _context1_mapped_crop_paths(context1)
+    missing = sorted(mapped - set(crop_paths))
+    if missing:
+        raise ValueError(
+            "web manifest must cover all Context 1 mapped domain crops: " + ", ".join(missing)
+        )
+    return {"format": WEB_MANIFEST_FORMAT, "sources": normalized}
 
 
 def _relationship_endpoint(record: Mapping[str, Any], endpoint: str, location: str) -> str:

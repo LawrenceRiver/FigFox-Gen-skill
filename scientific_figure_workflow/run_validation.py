@@ -20,6 +20,7 @@ from .artifacts import (
     validate_context3,
     validate_diagnosis,
     validate_run_manifest,
+    validate_web_manifest,
 )
 from .palette import validate_palette
 from .prompts import (
@@ -362,7 +363,9 @@ def validate_complete_run(
         load_json_object(root / artifacts["context3"]), component_ids
     )
     validate_palette(context3["palette"], load_palette_library(palette_library_path))
-    load_json_object(root / artifacts["web_manifest"])
+    validate_web_manifest(
+        load_json_object(root / artifacts["web_manifest"]), root, context1
+    )
 
     candidates = load_json_object(root / artifacts["figurebench_candidates"])
     expected_candidates = rank_candidates(context2, load_reference_index(references))
