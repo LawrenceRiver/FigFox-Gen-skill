@@ -218,6 +218,10 @@ def validate_complete_run(
     component_ids = [component["id"] for component in context2["components"]]
     context3 = validate_context3(load_json_object(root / artifacts["context3"]), component_ids)
     validate_palette(context3["palette"], load_palette_library(palette_library_path))
+    if len(context3["palette"]["dominant_colour_roles"]) != context1["dominant_colour_count"]:
+        raise ValueError(
+            "Context 1 dominant_colour_count must match Context 3 dominant_colour_roles"
+        )
     validate_web_manifest(load_json_object(root / artifacts["web_manifest"]), root, context1)
 
     candidates = load_json_object(root / artifacts["figurebench_candidates"])

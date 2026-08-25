@@ -4,9 +4,9 @@
 
 ### Evidence-guided scientific figures with a human-editable construction plan.
 
-**Domain conventions · human-producible planning · mapped FigureBench crops · one palette lineage · final PNG1**
+**Domain conventions · human-producible planning · mapped FigureBench crops · named multi-colour palette groups · final PNG1**
 
-[中文说明](./README_ZH.md) · [Workflow](#workflow) · [Reference pack](#bundled-reference-pack) · [Installation](#installation)
+[中文说明](./README_ZH.md) · [Why FigFox-Gen](#why-figfox-gen) · [Workflow](#workflow) · [Reference pack](#bundled-reference-pack) · [Installation](#installation)
 
 </div>
 
@@ -37,6 +37,19 @@ copies of the cited papers' figures.
   <a href="assets/generated-figures/04-alphafold3.png">AlphaFold 3</a>
 </p>
 
+## Why FigFox-Gen
+
+The central hook is the evidence chain below: the Methodology determines which
+domain visual conventions matter; content-to-visual planning turns those conventions
+into human-producible components; FigureBench and scholarly SVG figures contribute
+construction evidence; the Creative Director rejects AI-looking treatments; and one
+named palette group contributes several compatible colours before the final context is
+generated.
+
+<p align="center">
+  <img src="assets/generated-figures/figfox-hook-contrast-zh.png" alt="Top-to-bottom contrast between generic image generation and the FigFox-Gen evidence chain" width="100%" />
+</p>
+
 ## Installation
 
 ```bash
@@ -53,7 +66,7 @@ a colour source.
 Methodology + optional reference
   -> Context 1: domain visual conventions
   -> Context 2: content-to-visual plan
-  -> Context 3: mapped FigureBench crops + one palette lineage + taste
+  -> Context 3: mapped FigureBench crops + selected palette group + taste
   -> Creative Director prompt -> brief + targeted paper-SVG crops
   -> Prompt 1 with all mapped crops -> PNG1
   -> stop
@@ -64,8 +77,10 @@ Methodology + optional reference
 The model identifies the field and screens figure panels from 3–4 scholarly papers,
 preferably accessible arXiv SVG/HTML sources and otherwise credible extractable
 figures. It compares actual panels and records only recurring, Methodology-relevant
-objects, intermediate representations, relationships, drawing treatments,
-grouping, and professional terminology. One-off treatments remain marked as such.
+objects, intermediate representations, relationships, drawing treatments, grouping,
+professional terminology, and the recurring dominant-colour count. The count is
+recorded as `dominant_colour_count` (1–3); source-figure colours themselves are not
+copied. One-off treatments remain marked as such.
 
 ### Context 2: content-to-visual planning
 
@@ -76,7 +91,7 @@ a deliberate manual drawing, a draw.io-like construction, or a scientifically
 necessary real photo crop. Any special visual explains why it is needed and how a
 human would make it. Decorative generated-looking elements are rejected.
 
-### Context 3: inspected construction evidence and one palette
+### Context 3: inspected construction evidence and named palette groups
 
 The model inspects the pixels of at least two distinct bundled FigureBench images,
 then continues adaptively until every required geometry, frame, connector, layout
@@ -84,12 +99,18 @@ relationship, and special visualization is covered. Useful regions become mapped
 crops with a target component, what to borrow, what must change, and why the result
 remains human-editable. Complete reference images are not dumped into Prompt 1.
 
-Each run uses exactly one complete group from the local palette library. If that
-group lacks a functional colour, only an evidenced tint, shade, tone, analogous
-neighbour, compatible neutral, or controlled contrast may extend it. FigureBench,
-domain figures, and the user reference never supply active palette colours. Taste
-guidance is subordinate to scientific meaning, user constraints, domain evidence,
-human editability, and palette lineage.
+The local palette library stores every named palette group (each `palettes` record is
+one group), with multiple role-labelled colours in each group. Each run selects one
+group and may use several colours from it;
+this is not a single-colour or monochrome rule. If that group lacks a functional
+colour, only an evidenced tint, shade, tone, analogous neighbour, compatible neutral,
+or controlled contrast may extend it. FigureBench, domain figures, and the user
+reference never supply active palette colours. Taste guidance is subordinate to
+scientific meaning, user constraints, domain evidence, human editability, and the
+selected palette-group lineage. The final figure uses at most three dominant colours
+from that group and matches Context 1's observed dominant-colour count; other swatches
+remain subordinate neutral, tint, shade, or support roles and cannot become a fourth
+dominant hue.
 
 ### Creative Director: pre-PNG1 visual ideation
 

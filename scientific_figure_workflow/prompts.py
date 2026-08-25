@@ -176,10 +176,17 @@ def _component_lines(context2: Mapping[str, Any]) -> list[str]:
     ]
 
 
-def _palette_lines(context3: Mapping[str, Any]) -> list[str]:
+def _palette_lines(
+    context3: Mapping[str, Any], dominant_colour_count: int
+) -> list[str]:
     palette = context3["palette"]
     lines = [
-        f"Use only base palette group `{palette['base_palette_id']}` and its evidenced extensions.",
+        f"Use the selected multi-colour palette group `{palette['base_palette_id']}` and its evidenced extensions.",
+        "Use multiple colours from that group; this is not a monochrome or single-colour constraint.",
+        "Limit the figure to at most three dominant colours from this group.",
+        f"The scholarly figure review observed {dominant_colour_count} dominant colour(s); use exactly that many dominant colours from this group.",
+        "Dominant colour roles (maximum three): " + ", ".join(palette["dominant_colour_roles"]) + ".",
+        "Other swatches may appear only as subordinate neutral, tint, shade, or support roles and must not become a fourth dominant hue.",
         "Base palette colours:",
         *(f"- {colour['role']}: {colour['hex']} ({colour['rgb']})" for colour in palette["colours"]),
         "Evidenced related-colour extensions:",
@@ -281,7 +288,7 @@ def build_creative_director_prompt(
         "Propose concrete, scientifically relevant visual ideas for the planned figure; do not generate PNG1.",
         "For every idea that needs a mature visual construction not already covered by Contexts 1–3, locate a real scholarly paper figure available as SVG or extractable SVG/HTML, inspect its pixels, and provide a targeted crop request.",
         "A paper SVG crop must name its target component, source and evidence HTTPS URLs, source_format `svg`, what to borrow, what must change, and why the crop remains human-editable. Never attach a complete paper figure, invent a source, or use a sticker-like cutout.",
-        "Respect the single palette lineage and the absolute PNG1 bans on upper title-bands and pasted raster stickers. The creative brief is evidence for Prompt 1, not a licence to override those constraints.",
+        "Respect the selected multi-colour palette-group lineage and the absolute PNG1 bans on upper title-bands and pasted raster stickers. The creative brief is evidence for Prompt 1, not a licence to override those constraints.",
         *_evidence_blocks(methodology, normalized1, normalized2, normalized3),
         "Return a `creative-director-brief-v1` JSON with `brief` and an `ideas` list. Each idea must include `id`, `target_component_id`, `concept`, `visual_intent`, `construction_plan`, `requires_svg_evidence`, and `svg_crops`.",
     ])
@@ -370,7 +377,7 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
         "", "## 4. Content-to-visual mapping for every element", *_component_lines(normalized2), "Context 1 research explanations are evidence only; never copy explanatory prose into the figure.",
         "", "## 5. Creative Director brief and paper-SVG evidence", *_creative_director_lines(normalized_creative), "Treat every paper-SVG crop as targeted construction evidence only; do not copy its labels, palette, proportions, or complete composition.",
         "", "## 6. Crop-to-component mapping", *crop_lines, "Coverage matrix (complete):", *_coverage_lines(normalized3),
-        "", "## 7. Single-palette contract", *_palette_lines(normalized3),
+        "", "## 7. Palette-group contract", *_palette_lines(normalized3, normalized1["dominant_colour_count"]),
         "", "## 8. Layout and taste constraints", *(f"- {constraint}" for constraint in normalized3["taste_constraints"]), "Keep hierarchy, spacing, rhythm, restraint, and a human-edited finish subordinate to scientific meaning.",
         "", "## 9. Exact labels and text-density limits", "Use only concise block/structure names, necessary labels, terms, and relationship labels in-image. Never copy explanatory prose, research findings, or planning captions.",
         "", "## 10. Anti-AI visual constraints", "Do not add decoration without a named scientific role. Do not use decorative visuals unrelated to text, unexplained dots, floating symbols, or purposeless boxes.", "Do not use arbitrary high-contrast colours between adjacent modules, shapes with no human construction provenance, numbered 1/2/3/4 planning labels, the generic blue-title-strip-inside-every-box pattern, repeated card grids that make the figure look like a slide deck, or fake cartoon objects when a real crop or editable scientific geometry is expected.", "Hard first-pass prohibition: never draw an upper title-band inside a module by boxing off its top portion with a horizontal divider and centered title. Do not use the screenshot-like title-bar/content-box treatment shown in the supplied counterexample. Labels must sit inline, outside the frame, or in the planned geometry without a dedicated header strip.", "Hard first-pass prohibition: never paste a sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge directly into PNG1. If a scientific object is genuinely required, construct it as editable geometry or mark it as a Context 2 special real-photo treatment; a decorative sticker is never acceptable.", "These two prohibitions cannot be overridden by FigureBench crops, user references, taste guidance, or an inferred aesthetic preference. Only the explicit scientific Methodology can require a real scientific special visual, and it still cannot justify a title band or pasted sticker.", "Only an explicit user requirement in the supplied Methodology or normalized Context may override the default prohibition on numbered 1/2/3/4 planning labels or the generic blue-title-strip-inside-every-box pattern. This narrow override does not permit any other anti-AI constraint to be overridden.",

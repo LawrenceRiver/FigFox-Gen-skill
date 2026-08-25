@@ -5,9 +5,13 @@ balanced contrast, controlled accent use, and draw.io-like editability through s
 inspectable construction.
 
 Taste cannot override scientific correctness, explicit user constraints, domain conventions,
-construction provenance, or the one-base-palette lineage. Select exactly one approved
-palette-library group for the active base colours. Do not borrow a second library group,
+construction provenance, or the selected multi-colour palette-group lineage. Select exactly
+one named palette-library group for the active base colours, then use multiple compatible
+colours from that group as needed. This is not a monochrome rule. Do not borrow a second library group,
 user-reference colours, or FigureBench colours.
+Limit the figure to at most three dominant colours from the selected group. Other swatches
+may appear only as subordinate neutral, tint, shade, or support roles and must not become
+a fourth dominant hue.
 
 Only when the chosen group is insufficient, make targeted web colour-relationship
 research a deliberate step. Add a related extension only with an allowed relationship,

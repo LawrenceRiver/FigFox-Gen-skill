@@ -15,6 +15,7 @@ from scientific_figure_workflow import (
 def valid_context1():
     return {
         "domain": "music generation",
+        "dominant_colour_count": 2,
         "mainline": "text prompt to synthesized audio",
         "conventions": [{
             "concept": "piano roll",
@@ -73,6 +74,7 @@ def valid_context3():
         ],
         "palette": {
             "base_palette_id": "workflow-role-01",
+            "dominant_colour_roles": ["primary", "accent"],
             "colours": [
                 {"hex": "#2E5BFF", "rgb": [46, 91, 255], "role": "primary"},
                 {"hex": "#F59E0B", "rgb": [245, 158, 11], "role": "accent"},
@@ -133,6 +135,12 @@ class ContextArtifactTests(unittest.TestCase):
         context2 = validate_context2(valid_context2())
         self.assertEqual([item["id"] for item in context2["components"]], ["encoder", "audio"])
         self.assertEqual(set(item["component_id"] for item in validate_context3(valid_context3(), {"encoder", "audio"})["coverage_matrix"]), {"encoder", "audio"})
+
+    def test_context1_rejects_more_than_three_observed_dominant_colours(self):
+        context = valid_context1()
+        context["dominant_colour_count"] = 4
+        with self.assertRaisesRegex(ValueError, "dominant_colour_count.*1 to 3"):
+            validate_context1(context)
 
     def test_context2_rejects_dangling_relationship(self):
         context = valid_context2()

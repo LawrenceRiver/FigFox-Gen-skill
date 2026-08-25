@@ -34,6 +34,7 @@ def base_colours():
 def valid_palette():
     return {
         "base_palette_id": "group-a",
+        "dominant_colour_roles": ["ink", "primary"],
         "colours": base_colours(),
         "extensions": [
             {
@@ -68,6 +69,12 @@ class PaletteLineageTests(unittest.TestCase):
                 },
                 palette_library_fixture(),
             )
+
+    def test_rejects_more_than_three_dominant_colour_roles(self):
+        palette = valid_palette()
+        palette["dominant_colour_roles"] = ["ink", "primary", "accent", "secondary"]
+        with self.assertRaisesRegex(ValueError, "at most three dominant"):
+            validate_palette(palette, palette_library_fixture())
 
     def test_related_colour_requires_web_evidence_and_relationship(self):
         palette = validate_palette(valid_palette(), palette_library_fixture())
@@ -174,7 +181,10 @@ class TasteGuidanceTests(unittest.TestCase):
             "explicit user constraints",
             "domain conventions",
             "construction provenance",
-            "one-base-palette lineage",
+            "selected multi-colour palette-group lineage",
+            "multi-colour palette-group",
+            "three dominant colours",
+            "fourth dominant hue",
             "web colour-relationship research",
             "exact evidence",
             "second library group",

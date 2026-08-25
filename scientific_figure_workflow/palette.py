@@ -1,4 +1,4 @@
-"""One-group palette lineage validation for Context 3 visual kits."""
+"""Named multi-colour palette-group validation for Context 3 visual kits."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ _USER_REFERENCE_FIELDS = frozenset({"user_reference_palette_id", "user_reference
 _FIGUREBENCH_FIELDS = frozenset({"figurebench_palette_id", "figurebench_colours"})
 _FORBIDDEN_SOURCE_FIELDS = frozenset({"base_palette", "palette_source", "palette_sources", "source"})
 _GRADIENT_FIELDS = frozenset({"gradient", "gradients", "gradient_stops"})
-_PALETTE_FIELDS = frozenset({"base_palette_id", "colours", "extensions"})
+_PALETTE_FIELDS = frozenset({"base_palette_id", "dominant_colour_roles", "colours", "extensions"})
 _BASE_COLOUR_FIELDS = frozenset({"role", "hex", "rgb"})
 _EXTENSION_FIELDS = _BASE_COLOUR_FIELDS | frozenset(
     {"relationship", "evidence_url", "evidence_summary"}
@@ -136,14 +136,35 @@ def _validate_extensions(value: Any, active_hexes: set[str]) -> list[dict[str, A
     return extensions
 
 
+def _validate_dominant_colour_roles(value: Any, colour_roles: set[str]) -> list[str]:
+    if not isinstance(value, list) or not 1 <= len(value) <= 3:
+        raise ValueError("palette dominant_colour_roles requires at most three dominant colours")
+    roles: list[str] = []
+    for index, role in enumerate(value):
+        if not isinstance(role, str) or not role.strip():
+            raise ValueError(f"palette dominant_colour_roles[{index}] must be a non-empty role")
+        role = role.strip()
+        if role not in colour_roles:
+            raise ValueError(f"palette dominant_colour_roles[{index}] must name a base palette colour role")
+        roles.append(role)
+    if len(roles) != len(set(roles)):
+        raise ValueError("palette dominant_colour_roles must be unique")
+    return roles
+
+
 def _palette_shape(value: Mapping[str, Any]) -> dict[str, Any]:
     palette = _mapping(value, "palette")
     _reject_disallowed_fields(palette)
     base_palette_id = _required_string(palette, "base_palette_id", "palette")
     colours = _validate_colours(palette.get("colours"), "palette colours")
+    dominant_colour_roles = _validate_dominant_colour_roles(
+        palette.get("dominant_colour_roles"),
+        {colour["role"] for colour in colours},
+    )
     extensions = _validate_extensions(palette.get("extensions", []), {colour["hex"] for colour in colours})
     return {
         "base_palette_id": base_palette_id,
+        "dominant_colour_roles": dominant_colour_roles,
         "colours": colours,
         "extensions": extensions,
     }
@@ -166,7 +187,7 @@ def _colour_identity(colour: Mapping[str, Any]) -> tuple[str, str, tuple[int, in
 def validate_palette(
     value: Mapping[str, Any], palette_library: Sequence[Mapping[str, Any]]
 ) -> dict[str, Any]:
-    """Return a Context 3-compatible palette from one library group and extensions."""
+    """Return a Context 3-compatible palette from one named multi-colour group and extensions."""
 
     normalized = _palette_shape(value)
     group = _library_group(palette_library, normalized["base_palette_id"])

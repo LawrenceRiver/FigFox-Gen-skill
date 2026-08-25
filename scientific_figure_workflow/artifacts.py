@@ -97,6 +97,14 @@ def validate_context1(value: Mapping[str, Any]) -> dict[str, Any]:
     source = _mapping(value, "context1")
     normalized = copy.deepcopy(dict(source))
     normalized["domain"] = _required_string(source, "domain", "context1")
+    dominant_colour_count = source.get("dominant_colour_count")
+    if (
+        not isinstance(dominant_colour_count, int)
+        or isinstance(dominant_colour_count, bool)
+        or not 1 <= dominant_colour_count <= 3
+    ):
+        raise ValueError("context1 dominant_colour_count must be an integer from 1 to 3")
+    normalized["dominant_colour_count"] = dominant_colour_count
     conventions = _records(source.get("conventions"), "context1 conventions")
     normalized["conventions"] = []
     required = (

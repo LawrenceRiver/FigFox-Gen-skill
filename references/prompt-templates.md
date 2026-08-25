@@ -6,8 +6,10 @@ Read the Methodology once. Extract the domain, core topic, scientific mainline,
 figure class, named concepts requiring domain-specific treatment, and explicit user
 constraints. Produce Context 1 as positive domain-convention evidence, Context 2 as
 an exact content-to-visual plan, and Context 3 as mapped FigureBench crops, complete
-coverage, and one validated palette lineage. Do not turn research explanations into
+coverage, and one selected validated multi-colour palette group. Do not turn research explanations into
 figure prose.
+Context 1 must record the observed dominant-colour count from the retained scholarly
+figures as an integer from 1 to 3; record the count, not the source colours.
 
 ## Creative Director prompt
 
@@ -30,9 +32,15 @@ Generate the final PNG1 from the compiled Prompt 1 bundle. The bundle includes t
 validated Creative Director brief and any targeted paper-SVG crops. Use each crop
 only for its declared component and construction contract; it is a variant
 reference, not a source composition. Use every FigureBench or domain crop only for
-its declared target component, borrow, and must_change contract. Use the single
-approved palette lineage only. Keep scientific labels sparse and preserve the
+its declared target component, borrow, and must_change contract. Use multiple colours
+from the selected approved palette group; do not mix a second group. Keep scientific
+labels sparse and preserve the
 planned semantic reading order.
+
+Use exactly the dominant-colour count observed in Context 1, never exceeding three.
+Other swatches may appear
+only as subordinate neutral, tint, shade, or support roles; they must not become a
+fourth dominant hue.
 
 PNG1 has two absolute first-pass prohibitions: no upper title-band formed by boxing
 off the top of a module with a horizontal divider and centered title, and no
@@ -47,6 +55,6 @@ conversion, temporary render, diagnosis loop, second prompt, or second image.
 ## Validation
 
 The deterministic validator checks the single Prompt 1 bundle, attachment
-provenance, one palette lineage, FigureBench crop replay, Creative Director source
+provenance, the selected palette-group lineage, FigureBench crop replay, Creative Director source
 contracts, and PNG1 validity. It does not inspect model calls or guarantee
 scientific correctness.

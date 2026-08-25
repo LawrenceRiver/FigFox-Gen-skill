@@ -14,6 +14,7 @@ from scientific_figure_workflow.prompts import (
 def c1():
     return {
         "domain": "music generation",
+        "dominant_colour_count": 2,
         "mainline": "prompt to encoded representation to audio",
         "conventions": [{
             "concept": "piano roll",
@@ -53,6 +54,7 @@ def c2():
 def palette():
     return {
         "base_palette_id": "workflow-role-01",
+        "dominant_colour_roles": ["primary", "accent"],
         "colours": [
             {"hex": "#2E5BFF", "rgb": [46, 91, 255], "role": "primary"},
             {"hex": "#F59E0B", "rgb": [245, 158, 11], "role": "accent"},
@@ -167,12 +169,17 @@ class Prompt1BundleTests(PromptTestCase):
         headings = [
             "## 1. Figure purpose and scientific mainline",
             "## 5. Creative Director brief and paper-SVG evidence",
-            "## 7. Single-palette contract",
+            "## 7. Palette-group contract",
             "## 10. Anti-AI visual constraints",
             "## 11. Direct PNG generation instruction",
         ]
         for heading in headings:
             self.assertIn(heading, prompt)
+        self.assertIn("selected multi-colour palette group", prompt)
+        self.assertIn("Use multiple colours from that group", prompt)
+        self.assertIn("at most three dominant colours", prompt)
+        self.assertIn("must not become a fourth dominant hue", prompt)
+        self.assertIn("Dominant colour roles (maximum three):", prompt)
         for phrase in ("upper title-band", "sticker-like cutout", "pasted raster badge"):
             self.assertIn(phrase, prompt)
 

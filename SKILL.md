@@ -15,7 +15,7 @@ Run exactly one image-generation pass and stop at PNG1:
 Methodology + optional reference
   -> Context 1: recurring domain visual language
   -> Context 2: content-to-visual plan
-  -> Context 3: inspected FigureBench construction evidence + one palette
+  -> Context 3: inspected FigureBench construction evidence + selected palette group
   -> Creative Director prompt: brief + targeted scholarly paper-SVG crops
   -> Prompt 1 bundle
   -> direct image generation
@@ -46,7 +46,9 @@ Inspect actual figure regions, not titles or abstracts alone.
 Compare the retained panels and record only Methodology-relevant recurrence:
 objects, intermediate representations, structural relations, drawing treatments,
 grouping, and professional terminology. Mark one-off treatments as one-off. Record
-source URLs and crop paths in `references/web/manifest.json` and
+the recurring dominant-colour count seen across the retained panels as
+`dominant_colour_count` (an integer from 1 to 3); record the count, not the source
+colours. Record source URLs and crop paths in `references/web/manifest.json` and
 `references/web/crops/`. Every mapped crop states its target component, what to
 borrow, what must change, and why the result remains human-editable.
 
@@ -81,7 +83,7 @@ construction provenance.
 python scripts/figure_workflow.py validate-context --run RUN --context 2
 ```
 
-## 3. Context 3: construction evidence, palette, and taste
+## 3. Context 3: construction evidence, palette groups, and taste
 
 Read [FigureBench visual selection](references/figurebench-visual-selection.md) and
 [taste rules](references/taste-rules.md).
@@ -107,15 +109,21 @@ python scripts/figure_workflow.py validate-reference-coverage --run RUN
 FigureBench supplies geometry, layout, spacing, connectors, and human-edited finish.
 It never supplies active palette colours.
 
-Choose exactly one complete group from `references/palette-library.json`. If it
-lacks a required functional role, only an evidenced tint, shade, tone, analogous
-neighbour, compatible neutral, or controlled contrast may extend it. Never use a
-second library group or take colours from the user reference, FigureBench, or domain
-papers. Taste is a low-priority soft constraint for spacing, hierarchy, rhythm,
-balance, restraint, and human-edited finish.
+The local `references/palette-library.json` stores named palette groups; each group
+contains several role-labelled colours, not one colour. Select one named group for a
+run and use multiple colours from that group as needed. This is a palette-group
+lineage rule, not a monochrome or single-colour rule. If the selected group lacks a
+required functional role, only an evidenced tint, shade, tone, analogous neighbour,
+compatible neutral, or controlled contrast may extend it. Never mix a second library
+group or take colours from the user reference, FigureBench, or domain papers. Taste
+is a low-priority soft constraint for spacing, hierarchy, rhythm, balance, restraint,
+and human-edited finish. The final figure may have at most three dominant colours
+from the selected group and must match Context 1's observed dominant-colour count.
+Other swatches are subordinate neutral, tint, shade, or support roles and must not
+become a fourth dominant hue.
 
 Write `context/context-3-visual-kit.json` from the materialized crops, coverage
-matrix, one palette lineage, and taste constraints, then validate:
+matrix, selected palette-group lineage, and taste constraints, then validate:
 
 ```bash
 python scripts/figure_workflow.py validate-palette --run RUN
@@ -168,7 +176,7 @@ its `borrow`/`must_change` contract. It cannot donate source labels, source
 colours, source proportions, or a complete composition.
 
 Prompt 1 contains exact mainline, block names, relationships, content-to-visual
-mapping, crop contracts, one-palette lineage, layout/taste constraints, concise
+mapping, crop contracts, selected palette-group lineage, layout/taste constraints, concise
 labels, and anti-AI invariants. Enforce these defaults:
 
 - no meaningless dots, tiles, floating symbols, purposeless boxes, irrelevant

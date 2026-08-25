@@ -7,6 +7,7 @@ All paths are run-relative. The workflow stops after one final PNG1.
 ```json
 {
   "domain": "music generation",
+  "dominant_colour_count": 2,
   "mainline": "text prompt to structured representation to audio",
   "conventions": [
     {
@@ -118,6 +119,7 @@ Context 3 must reproduce its selected references and coverage matrix exactly.
   ],
   "palette": {
     "base_palette_id": "workflow-role-01",
+    "dominant_colour_roles": ["primary", "accent"],
     "colours": [
       {"role": "primary", "hex": "#2E5BFF", "rgb": [46, 91, 255]},
       {"role": "accent", "hex": "#F59E0B", "rgb": [245, 158, 11]},
@@ -130,7 +132,10 @@ Context 3 must reproduce its selected references and coverage matrix exactly.
 }
 ```
 
-Use exactly one complete palette group. Extensions, if needed, have role, exact
+Use exactly one named multi-colour palette group; use multiple colours from that group.
+Declare at most three dominant colours for the final figure; the remaining swatches
+are subordinate support roles and must not become a fourth dominant hue.
+Extensions, if needed, have role, exact
 uppercase HEX, matching RGB, relationship, HTTPS evidence_url, and an evidence
 summary. FigureBench, scholarly figures, and the user reference are never active
 palette sources.

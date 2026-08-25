@@ -396,6 +396,7 @@ class ReferenceCropTests(unittest.TestCase):
                 "coverage_matrix": coverage_matrix,
                 "palette": {
                     "base_palette_id": "workflow-role-01",
+                    "dominant_colour_roles": ["primary", "accent"],
                     "colours": [
                         {"hex": "#2E5BFF", "rgb": [46, 91, 255], "role": "primary"},
                         {"hex": "#F59E0B", "rgb": [245, 158, 11], "role": "accent"},
