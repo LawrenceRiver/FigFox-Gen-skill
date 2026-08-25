@@ -49,6 +49,13 @@ visible flat-colour labels and geometry remains eligible. Python reports these
 structural facts; it does not infer whether an embedded raster depicts a genuine
 photograph.
 
+Structural editability and dominant-raster proof are separate. In a vector-only
+SVG, painted nonzero text and geometry inside transforms or nested SVG viewports
+still count as editable markup. When a dominant raster is present, those same
+nodes cannot satisfy the two-meaningful-node proof unless their final visibility
+and bounds are conservatively known. Hidden, non-rendering, zero-size, and
+unpainted structural content never counts in either category.
+
 `render_svg()` calls CairoSVG only after validation. It rejects symlink output
 targets, renders to an exclusive temporary sibling, verifies a real nonempty
 PNG, and atomically publishes `svg-diagnostic/png1.5.png`. Failure removes the

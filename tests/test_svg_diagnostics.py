@@ -74,6 +74,27 @@ class SvgInspectionTests(unittest.TestCase):
         self.assertEqual(summary["raster_nodes"], 0)
         self.assertFalse(summary["raster_only"])
 
+    def test_vector_only_transformed_and_nested_content_remains_structurally_editable(self):
+        cases = {
+            "transformed": (
+                "<g transform='translate(10 10)'><rect width='40' height='30'/>"
+                "<text x='5' y='20'>Moved label</text></g>"
+            ),
+            "nested": (
+                "<svg x='10' y='10' width='80' height='80'><rect width='40' height='30'/>"
+                "<text x='5' y='20'>Nested label</text></svg>"
+            ),
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, child in cases.items():
+                with self.subTest(name=name):
+                    summary = inspect_editable_svg(write_svg(root, name, child))
+                    self.assertEqual(summary["vector_nodes"], 1)
+                    self.assertEqual(summary["text_nodes"], 1)
+                    self.assertEqual(summary["editable_nodes"], 2)
+                    self.assertEqual(summary["meaningful_editable_nodes"], 0)
+
     def test_raster_wrapper_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "raster wrapper"):
             inspect_editable_svg(FIXTURES / "raster-wrapper.svg")

@@ -540,27 +540,35 @@ def inspect_editable_svg(path: str | Path) -> dict[str, int | bool]:
             name in local_properties and local_properties[name].strip().casefold() not in {"", "none"}
             for name in ("clip-path", "mask", "filter")
         )
-        rendered = not hidden and not non_rendering and not transformed
+        structurally_rendered = not hidden and not non_rendering
+        proof_eligible = structurally_rendered and not transformed
         order = paint_order
         if tag in _VECTOR_TAGS or tag in {"text", "image"}:
             paint_order += 1
-        if tag == "text" and rendered:
+        if tag == "text" and structurally_rendered:
             positive, meaningful, bounds = _text_measure(element, properties)
             visible = positive and bounds is not None and _has_visible_paint("text", True, properties)
-            if visible and (viewport is None or _intersects(bounds, viewport)):
+            structurally_visible = visible and (
+                transformed or viewport is None or _intersects(bounds, viewport)
+            )
+            if structurally_visible:
                 text_nodes += 1
-                candidate_bounds, visible_meaningful = _visible_bounds_meaningful(bounds, viewport, True)
-                candidates.append((
-                    order, candidate_bounds, meaningful and visible_meaningful,
-                    not uncertain_effect and not any(
-                        name in element.attrib
-                        for name in ("dx", "dy", "rotate", "textLength", "lengthAdjust", "text-anchor")
-                    ) and _paint_eligibility_certain(properties),
-                ))
-        elif tag in _VECTOR_TAGS and rendered:
+                if proof_eligible:
+                    candidate_bounds, visible_meaningful = _visible_bounds_meaningful(bounds, viewport, True)
+                    candidates.append((
+                        order, candidate_bounds, meaningful and visible_meaningful,
+                        not uncertain_effect and not any(
+                            name in element.attrib
+                            for name in ("dx", "dy", "rotate", "textLength", "lengthAdjust", "text-anchor")
+                        ) and _paint_eligibility_certain(properties),
+                    ))
+        elif tag in _VECTOR_TAGS and structurally_rendered:
             positive, meaningful, bounds, has_area = _geometry_measure(element, tag, viewport)
             visible = positive and bounds is not None and _has_visible_paint(tag, has_area, properties)
-            if visible and (viewport is None or _intersects(bounds, viewport)):
+            structurally_visible = visible and (
+                transformed or viewport is None or _intersects(bounds, viewport)
+            )
+            if structurally_visible:
                 vector_nodes += 1
         elif tag == "image":
             raster_nodes += 1
@@ -578,7 +586,9 @@ def inspect_editable_svg(path: str | Path) -> dict[str, int | bool]:
                             dominant_raster = dominant_raster or fraction >= 0.60
                             if fraction >= 0.60:
                                 dominant_rasters.append((order, bounds))
-        if tag in _VECTOR_TAGS and rendered and visible and (viewport is None or _intersects(bounds, viewport)):
+        if tag in _VECTOR_TAGS and proof_eligible and visible and (
+            viewport is None or _intersects(bounds, viewport)
+        ):
             candidate_bounds, visible_meaningful = _visible_bounds_meaningful(bounds, viewport, has_area)
             candidates.append((
                 order, candidate_bounds, meaningful and visible_meaningful,
