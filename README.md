@@ -6,8 +6,6 @@
 
 **Domain conventions · human-producible planning · mapped FigureBench crops · one palette lineage · final PNG1**
 
-<!-- FILL IN: approved example figures can be added after the next end-to-end run. -->
-
 [中文说明](./README_ZH.md) · [Workflow](#workflow) · [Reference pack](#bundled-reference-pack) · [Installation](#installation)
 
 </div>
@@ -15,6 +13,29 @@
 FigFox-Gen-skill turns a scientific Methodology and an optional reference image
 into one labelled, human-editable-style architecture figure. It performs one
 image-generation pass and delivers PNG1 as the final output.
+
+## Generated figure examples
+
+These are four PNG1 outputs made with the current Skill: the first visualizes the
+FigFox-Gen methodology itself, followed by the three recorded Methodology cases.
+They are examples of the workflow's human-editable-style interpretation, not
+copies of the cited papers' figures.
+
+<p align="center">
+  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen Skill methodology workflow" width="48%" />
+  <img src="assets/generated-figures/02-latent-diffusion.png" alt="Latent Diffusion methodology figure" width="48%" />
+</p>
+<p align="center">
+  <img src="assets/generated-figures/03-musicot.png" alt="MusiCoT methodology figure" width="48%" />
+  <img src="assets/generated-figures/04-alphafold3.png" alt="AlphaFold 3 methodology figure" width="48%" />
+</p>
+
+<p align="center">
+  <a href="assets/generated-figures/01-figfox-gen-workflow.png">FigFox-Gen workflow</a> ·
+  <a href="assets/generated-figures/02-latent-diffusion.png">Latent Diffusion</a> ·
+  <a href="assets/generated-figures/03-musicot.png">MusiCoT</a> ·
+  <a href="assets/generated-figures/04-alphafold3.png">AlphaFold 3</a>
+</p>
 
 ## Installation
 
@@ -112,9 +133,8 @@ inspect PNG1 before publication.
 
 These examples preserve the original Methodology inputs rather than replacing them
 with keyword-only summaries. They are recorded source inputs for the workflow, not
-reconstructions of the cited papers' figures. The generated figure remains an
-original interpretation and must not copy the source figure. The generated images
-are intentionally left as `FILL IN` until a new end-to-end run is approved.
+reconstructions of the cited papers' figures. The generated figures above are
+original interpretations and must not copy the source figures.
 
 ### Latent Diffusion · visual generation
 
@@ -131,6 +151,8 @@ are intentionally left as `FILL IN` until a new end-to-end run is approved.
 
 **Labels derived from the original Methodology:** `Image x`, `Encoder E`, `Latent z`, `Denoising U-Net`, `Cross-Attention`, `Condition y`, `Decoder D`, and `Generated image`.
 
+**Generated figure:** [Latent Diffusion PNG](assets/generated-figures/02-latent-diffusion.png)
+
 ### MusiCoT · music generation
 
 **Source:** [*MusiCoT: Analyzable Chain-of-Musical-Thought Prompting*](https://arxiv.org/abs/2503.19611), §4.1–§4.3. The following is the recorded Methodology input; the source paper remains authoritative.
@@ -146,6 +168,8 @@ are intentionally left as `FILL IN` until a new end-to-end run is approved.
 
 **Labels derived from the original Methodology:** `Text prompt`, `Audio clips`, `CLAP embeddings`, `RVQ codebooks`, `Coarse-to-fine thought tokens`, `Semantic LM`, `Audio tokens`, and `Music sample`.
 
+**Generated figure:** [MusiCoT PNG](assets/generated-figures/03-musicot.png)
+
 ### AlphaFold 3 · biomolecular structure
 
 **Source:** Abramson et al., [*Accurate structure prediction of biomolecular interactions with AlphaFold 3*](https://www.nature.com/articles/s41586-024-07487-w), “Network architecture and training.” The following is the recorded Methodology input; the source article remains authoritative.
@@ -160,6 +184,8 @@ are intentionally left as `FILL IN` until a new end-to-end run is approved.
 </details>
 
 **Labels derived from the original Methodology:** `Chemical complex`, `MSA embedding`, `Pair representation`, `Single representation`, `Pairformer`, `Noised atom coordinates`, `Diffusion Module`, and `Final structure`.
+
+**Generated figure:** [AlphaFold 3 PNG](assets/generated-figures/04-alphafold3.png)
 
 ## Bundled reference pack
 
