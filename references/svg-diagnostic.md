@@ -15,16 +15,30 @@ an image-generation attachment and never becomes an input to a PNG2-to-SVG loop.
 
 ## Inspection and rendering
 
-`inspect_editable_svg()` uses defused XML parsing and requires an SVG namespace
-root plus at least one editable text or vector node. It counts `text`, `rect`,
-`circle`, `ellipse`, `line`, `polyline`, `polygon`, and `path` nodes; reports
-embedded raster `image` nodes; and rejects malformed XML, HTML/non-SVG roots,
-scripts, `foreignObject`, remote references, and raster-only wrappers. A local
-or `data:` image beside genuine editable content is only a reported fact. Python
-does not infer whether it depicts a genuine photographic crop.
+`inspect_editable_svg()` uses defused XML parsing and requires the root and every
+child element to be in the SVG namespace. Foreign-namespace and no-namespace
+children, scripts, and `foreignObject` fail closed. Before CairoSVG can run, the
+inspector rejects `xml:base`, file/relative/absolute/HTTP/protocol-relative
+resources, unsafe `href` and `xlink:href` values on every element (including
+`use`), CSS `@import`, and every `url(...)` except an internal `url(#fragment)`.
+Only an `image` `href` may carry base64 `data:image/png`, `data:image/jpeg`, or
+`data:image/webp`; SVG data URIs are forbidden.
 
-`render_svg()` calls CairoSVG only after this validation and writes the
-deterministic diagnostic render at `svg-diagnostic/png1.5.png`.
+Editable counts include only visible, positive-size SVG-namespace `text`,
+`rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon`, and `path` nodes.
+Definitions, display-none or visibility-hidden branches, zero-opacity content,
+zero-size geometry, and zero-length geometry cannot satisfy editability. The
+summary reports visible and total raster counts, meaningful editable-node count,
+large/full-canvas raster counts, and dominant-raster status for VLM diagnosis.
+A conservative structural check rejects a dominant raster paired only with
+zero, microscopic, or trivial vector content. A mixed SVG with meaningful
+labels and geometry remains eligible. Python reports these structural facts; it
+does not infer whether an embedded raster depicts a genuine photograph.
+
+`render_svg()` calls CairoSVG only after validation. It rejects symlink output
+targets, renders to an exclusive temporary sibling, verifies a real nonempty
+PNG, and atomically publishes `svg-diagnostic/png1.5.png`. Failure removes the
+temporary and any stale regular canonical PNG1.5; SVG1 is never modified.
 
 ## VLM diagnosis
 
@@ -51,11 +65,13 @@ whether a simplification keeps the intended scientific logic.
 `apply_svg_crop_manifest(rendered_png, manifest, output_dir)` accepts only
 `svg-diagnostic/png1.5.png` and only writes below the same run's
 `svg-diagnostic/approved-crops/` root. Its manifest contains a Task 1-valid
-`diagnosis`, optional complete `component_ids`, and crop records with
+`diagnosis`, a mandatory non-empty complete `component_ids` list copied by the
+caller from Context 2, and crop records with
 `crop_id`, `target_component_id`, `diagnosis_id`, and normalized `bounds`:
 
 ```json
 {
+  "component_ids": ["encoder"],
   "diagnosis": {"verdicts": [{"component_id": "encoder", "verdict": "keep", "reason": "faithful label and geometry"}]},
   "crops": [{
     "crop_id": "encoder-detail",
@@ -67,6 +83,12 @@ whether a simplification keeps the intended scientific logic.
 ```
 
 Every crop must cite a real diagnosis record for the same Context 2 component.
+The diagnosis is validated against the supplied Context 2 identity anchor; the
+expected IDs are never inferred from diagnosis claims. Crop IDs are unique safe
+filenames, bounds must remain inside normalized PNG1.5 coordinates, and the
+output directory, its in-run parents, and final destinations must not redirect
+through symlinks. Each PNG is encoded to an exclusive temporary sibling and
+atomically replaces its approved-crop directory entry.
 Only `keep`, `accept_variation`, and `patch` records may be cropped;
 `reject` and `replace` fail. The result is a Task 5-compatible `svg_crops`
 object: each record has a run-relative approved-crop path, target component,

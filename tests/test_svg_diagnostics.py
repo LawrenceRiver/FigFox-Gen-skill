@@ -1,7 +1,10 @@
+import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
+from scientific_figure_workflow.prompts import build_prompt2_bundle
 from scientific_figure_workflow.svg_diagnostics import (
     apply_svg_crop_manifest,
     inspect_editable_svg,
@@ -12,16 +15,41 @@ from scientific_figure_workflow.svg_diagnostics import (
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
-def diagnosis(verdict: str = "keep"):
+def diagnosis(verdict: str = "keep", component_id: str = "encoder"):
     return {
         "verdicts": [
             {
-                "component_id": "encoder",
+                "component_id": component_id,
                 "verdict": verdict,
                 "reason": "clear editable geometry",
             }
         ]
     }
+
+
+def crop_manifest(*, verdict: str = "keep", component_ids=None, crops=None):
+    return {
+        "component_ids": ["encoder"] if component_ids is None else component_ids,
+        "diagnosis": diagnosis(verdict),
+        "crops": crops or [
+            {
+                "crop_id": "encoder-detail",
+                "target_component_id": "encoder",
+                "diagnosis_id": "encoder",
+                "bounds": {"x": 0.0, "y": 0.0, "width": 0.5, "height": 0.5},
+            }
+        ],
+    }
+
+
+def write_svg(directory: Path, name: str, child: str, root_attributes: str = "") -> Path:
+    path = directory / f"{name}.svg"
+    path.write_text(
+        f"<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' {root_attributes}>"
+        f"{child}</svg>",
+        encoding="utf-8",
+    )
+    return path
 
 
 class SvgInspectionTests(unittest.TestCase):
@@ -83,6 +111,108 @@ class SvgInspectionTests(unittest.TestCase):
             self.assertEqual(summary["raster_nodes"], 1)
             self.assertFalse(summary["raster_only"])
 
+    def test_rejects_every_non_fragment_resource_reference(self):
+        references = {
+            "relative": "image.png",
+            "absolute": "/tmp/image.png",
+            "file": "file:///tmp/image.png",
+            "http": "https://example.test/image.png",
+            "protocol-relative": "//example.test/image.png",
+            "unc-ish": r"\\server\share\image.png",
+            "windows": r"C:\image.png",
+            "svg-data": "data:image/svg+xml;base64,PHN2Zy8+",
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, reference in references.items():
+                path = write_svg(
+                    root,
+                    name,
+                    f"<rect width='20' height='20'/><image href='{reference}' width='50' height='50'/>",
+                )
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "resource"):
+                    inspect_editable_svg(path)
+
+    def test_rejects_unsafe_use_xlink_xml_base_and_resource_attributes(self):
+        cases = {
+            "use-relative": "<rect width='20' height='20'/><use href='symbols.svg#shape'/>",
+            "use-http": "<rect width='20' height='20'/><use href='https://example.test/a.svg#x'/>",
+            "xlink": (
+                "<rect width='20' height='20'/><image xmlns:xlink='http://www.w3.org/1999/xlink' "
+                "xlink:href='local.png' width='20' height='20'/>"
+            ),
+            "xml-base": "<g xml:base='https://example.test/'><rect width='20' height='20'/></g>",
+            "cursor": "<rect width='20' height='20' cursor='local.cur'/>",
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, child in cases.items():
+                with self.subTest(name=name), self.assertRaises(ValueError):
+                    inspect_editable_svg(write_svg(root, name, child))
+
+    def test_allows_fragments_and_only_explicit_base64_raster_image_data(self):
+        safe = (
+            "<defs><linearGradient id='g'/><path id='shape' d='M0 0 L10 10'/></defs>"
+            "<rect width='30' height='30' fill='url(#g)'/>"
+            "<use href='#shape'/><image href='data:image/png;base64,AA==' x='60' y='60' width='20' height='20'/>"
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            summary = inspect_editable_svg(write_svg(Path(temporary_directory), "safe-resources", safe))
+        self.assertEqual(summary["raster_nodes"], 1)
+
+    def test_rejects_css_import_and_every_non_fragment_css_url(self):
+        cases = {
+            "import-string": "<style>@import 'local.css';</style><rect width='20' height='20'/>",
+            "import-url": "<style>@import url(https://example.test/a.css);</style><rect width='20' height='20'/>",
+            "style-relative": "<rect width='20' height='20' style=\"fill:url('paint.svg#g')\"/>",
+            "style-data": "<rect width='20' height='20' style=\"fill:url(data:image/png;base64,AA==)\"/>",
+            "presentation-url": "<rect width='20' height='20' filter='url(/tmp/filter.svg#f)'/>",
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, child in cases.items():
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "resource|CSS"):
+                    inspect_editable_svg(write_svg(root, name, child))
+
+    def test_rejects_foreign_and_no_namespace_child_elements(self):
+        cases = {
+            "foreign": "<html:div xmlns:html='http://www.w3.org/1999/xhtml'/><rect width='20' height='20'/>",
+            "no-namespace": "<g xmlns=''><rect width='20' height='20'/></g><rect width='20' height='20'/>",
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, child in cases.items():
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "namespace"):
+                    inspect_editable_svg(write_svg(root, name, child))
+
+    def test_dominant_raster_rejects_hidden_zero_and_microscopic_vector_bypasses(self):
+        bypasses = {
+            "display": "<rect style='display:none' width='100' height='100'/>",
+            "visibility": "<rect visibility='hidden' width='100' height='100'/>",
+            "opacity": "<rect opacity='0' width='100' height='100'/>",
+            "zero-size": "<rect width='0' height='100'/>",
+            "zero-line": "<line x1='2' y1='2' x2='2' y2='2'/>",
+            "microscopic": "<rect width='0.01' height='0.01'/>",
+        }
+        raster = "<image href='data:image/jpeg;base64,AA==' width='100' height='100'/>"
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, vector in bypasses.items():
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "raster wrapper"):
+                    inspect_editable_svg(write_svg(root, name, raster + vector))
+
+    def test_meaningful_mixed_vector_raster_passes_and_reports_dominance_facts(self):
+        child = (
+            "<image href='data:image/webp;base64,AA==' width='80' height='100'/>"
+            "<rect x='5' y='5' width='90' height='90' fill='none' stroke='black'/>"
+            "<line x1='10' y1='50' x2='90' y2='50'/><text x='10' y='20'>Measured sample</text>"
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            summary = inspect_editable_svg(write_svg(Path(temporary_directory), "mixed-meaningful", child))
+        self.assertTrue(summary["dominant_raster"])
+        self.assertGreaterEqual(summary["meaningful_editable_nodes"], 2)
+        self.assertEqual(summary["large_raster_nodes"], 1)
+
     def test_raster_wrapper_cannot_hide_vectors_only_in_defs(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             path = Path(temporary_directory) / "defs-wrapper.svg"
@@ -111,17 +241,7 @@ class SvgRenderAndCropTests(unittest.TestCase):
             rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
             result = apply_svg_crop_manifest(
                 rendered,
-                {
-                    "diagnosis": diagnosis(),
-                    "crops": [
-                        {
-                            "crop_id": "encoder-detail",
-                            "target_component_id": "encoder",
-                            "diagnosis_id": "encoder",
-                            "bounds": {"x": 0.0, "y": 0.0, "width": 0.5, "height": 0.5},
-                        }
-                    ],
-                },
+                crop_manifest(),
                 root / "svg-diagnostic/approved-crops",
             )
 
@@ -137,15 +257,7 @@ class SvgRenderAndCropTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
             rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
-            manifest = {
-                "diagnosis": diagnosis("replace"),
-                "crops": [{
-                    "crop_id": "encoder-detail",
-                    "target_component_id": "encoder",
-                    "diagnosis_id": "encoder",
-                    "bounds": {"x": 0.0, "y": 0.0, "width": 0.5, "height": 0.5},
-                }],
-            }
+            manifest = crop_manifest(verdict="replace")
             with self.assertRaisesRegex(ValueError, "approved diagnosis"):
                 apply_svg_crop_manifest(rendered, manifest, root / "svg-diagnostic/approved-crops")
 
@@ -157,3 +269,156 @@ class SvgRenderAndCropTests(unittest.TestCase):
             manifest["crops"][0]["diagnosis_id"] = "encoder"
             with self.assertRaisesRegex(ValueError, "approved-crops"):
                 apply_svg_crop_manifest(rendered, manifest, root / "crops")
+
+    def test_render_rejects_symlink_target_and_cleans_partial_or_stale_png15(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            target = root / "svg-diagnostic/png1.5.png"
+            target.parent.mkdir(parents=True)
+            outside = root / "outside.png"
+            outside.write_bytes(b"do not overwrite")
+            os.symlink(outside, target)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                render_svg(FIXTURES / "editable.svg", target)
+            self.assertEqual(outside.read_bytes(), b"do not overwrite")
+
+            target.unlink()
+            target.write_bytes(b"stale canonical output")
+
+            def partial_then_fail(*, url, write_to):
+                Path(write_to).write_bytes(b"partial")
+                raise RuntimeError("simulated CairoSVG failure")
+
+            with patch("cairosvg.svg2png", side_effect=partial_then_fail):
+                with self.assertRaisesRegex(RuntimeError, "simulated"):
+                    render_svg(FIXTURES / "editable.svg", target)
+            self.assertFalse(target.exists())
+            self.assertEqual(list(target.parent.glob(".*png1.5.png.*")), [])
+
+    def test_render_rejects_symlink_parent_without_unlinking_redirected_file(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            outside = root / "outside"
+            outside.mkdir()
+            redirected = outside / "png1.5.png"
+            redirected.write_bytes(b"preserve redirected file")
+            os.symlink(outside, root / "svg-diagnostic")
+
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
+
+            self.assertEqual(redirected.read_bytes(), b"preserve redirected file")
+
+    def test_render_rejects_non_png_output_and_removes_stale_target(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            target = Path(temporary_directory) / "svg-diagnostic/png1.5.png"
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b"stale")
+
+            def fake_success(*, url, write_to):
+                Path(write_to).write_bytes(b"not a png")
+
+            with patch("cairosvg.svg2png", side_effect=fake_success):
+                with self.assertRaisesRegex(RuntimeError, "PNG1.5"):
+                    render_svg(FIXTURES / "editable.svg", target)
+            self.assertFalse(target.exists())
+
+    def test_crop_rejects_symlink_output_and_destination(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
+            output = root / "svg-diagnostic/approved-crops"
+            outside = root / "outside"
+            outside.mkdir()
+            os.symlink(outside, output)
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                apply_svg_crop_manifest(rendered, crop_manifest(), output)
+
+            output.unlink()
+            output.mkdir()
+            outside_file = root / "outside.png"
+            outside_file.write_bytes(b"preserve")
+            os.symlink(outside_file, output / "encoder-detail.png")
+            with self.assertRaisesRegex(ValueError, "symlink"):
+                apply_svg_crop_manifest(rendered, crop_manifest(), output)
+            self.assertEqual(outside_file.read_bytes(), b"preserve")
+
+    def test_crop_cleans_exclusive_temporary_file_when_encoding_fails(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
+            output = root / "svg-diagnostic/approved-crops"
+            with patch("PIL.Image.Image.save", side_effect=OSError("simulated crop encoding failure")):
+                with self.assertRaisesRegex(OSError, "simulated"):
+                    apply_svg_crop_manifest(rendered, crop_manifest(), output)
+            self.assertEqual(list(output.glob(".*.tmp")), [])
+
+    def test_crop_rejects_invalid_bounds_duplicate_or_unsafe_ids_and_path_escape(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
+            valid = crop_manifest()["crops"][0]
+            bad_crops = {
+                "invalid-bounds": [{**valid, "bounds": {"x": 0.9, "y": 0, "width": 0.2, "height": 1}}],
+                "duplicate": [valid, dict(valid)],
+                "escape": [{**valid, "crop_id": "../escape"}],
+                "absolute": [{**valid, "crop_id": "/tmp/escape"}],
+            }
+            for name, crops in bad_crops.items():
+                with self.subTest(name=name), self.assertRaises(ValueError):
+                    apply_svg_crop_manifest(rendered, crop_manifest(crops=crops), root / "svg-diagnostic/approved-crops")
+            self.assertFalse((root / "escape.png").exists())
+
+    def test_crop_requires_complete_context2_component_identity_anchor(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
+            missing = crop_manifest()
+            del missing["component_ids"]
+            with self.assertRaisesRegex(ValueError, "component_ids"):
+                apply_svg_crop_manifest(rendered, missing, root / "svg-diagnostic/approved-crops")
+
+            invented = crop_manifest(component_ids=["invented"])
+            with self.assertRaisesRegex(ValueError, "exactly one verdict"):
+                apply_svg_crop_manifest(rendered, invented, root / "svg-diagnostic/approved-crops")
+
+            incomplete = crop_manifest(component_ids=["encoder", "audio"])
+            with self.assertRaisesRegex(ValueError, "exactly one verdict"):
+                apply_svg_crop_manifest(rendered, incomplete, root / "svg-diagnostic/approved-crops")
+
+    def test_crop_result_is_an_actual_task5_prompt2_handoff(self):
+        from tests.test_prompts import c1, c2, c3
+
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for relative in (
+                "references/web/crops/piano-roll.png",
+                "references/figurebench/crops/container.png",
+                "references/figurebench/crops/arrow.png",
+                "png1.png",
+            ):
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"fixture")
+            rendered = render_svg(FIXTURES / "editable.svg", root / "svg-diagnostic/png1.5.png")
+            complete_diagnosis = {
+                "verdicts": [
+                    {"component_id": "encoder", "verdict": "keep", "reason": "faithful"},
+                    {"component_id": "audio", "verdict": "patch", "reason": "repair label"},
+                ]
+            }
+            result = apply_svg_crop_manifest(
+                rendered,
+                {
+                    "component_ids": ["encoder", "audio"],
+                    "diagnosis": complete_diagnosis,
+                    "crops": crop_manifest()["crops"],
+                },
+                root / "svg-diagnostic/approved-crops",
+            )
+            bundle = build_prompt2_bundle(
+                "method", c1(), c2(), c3(), "png1.png", complete_diagnosis, result, {}, root
+            )
+            approved = [item for item in bundle["attachments"] if item["role"] == "approved_svg_crop"]
+            self.assertEqual(approved[0]["path"], result["crops"][0]["path"])
+            self.assertNotIn("png1.5.png", {item["path"] for item in bundle["attachments"]})
