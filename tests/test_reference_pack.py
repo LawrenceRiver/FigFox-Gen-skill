@@ -3,9 +3,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from PIL import Image
+
 from scientific_figure_workflow.reference_pack import (
+    apply_crop_manifest,
     load_reference_index,
     rank_candidates,
+    validate_reference_coverage,
     validate_reference_pack,
 )
 
@@ -184,3 +188,127 @@ class ReferencePackTests(unittest.TestCase):
         self.assertEqual([item["id"] for item in ranked[:3]], [
             "reference-001", "reference-002", "reference-004"
         ])
+
+
+class ReferenceCropTests(unittest.TestCase):
+    def make_pack(self, root: Path) -> Path:
+        pack_root = root / "pack"
+        pack_root.mkdir()
+        records = []
+        for position, colour in enumerate(((12, 34, 56), (78, 90, 123)), start=1):
+            reference_id = f"reference-{position:03d}"
+            file_name = f"{reference_id}.png"
+            Image.new("RGB", (100, 50), colour).save(pack_root / file_name)
+            records.append({
+                "id": reference_id,
+                "file": file_name,
+                "partition": "dev",
+                "source_id": f"crop-fixture-{position:03d}",
+                "source_kind": "paper",
+                "license": "CC-BY-4.0",
+                "attribution": attribution_for(f"crop-fixture-{position:03d}"),
+                "components": ["rounded_container"],
+                "layout_family": "horizontal_flow",
+                "human_editable_signals": ["flat fill"],
+                "description": "Crop fixture reference",
+            })
+        (pack_root / "index.json").write_text(json.dumps({"references": records}), encoding="utf-8")
+        return pack_root
+
+    def crop(self, crop_id="crop-container", reference_id="reference-001", target="encoder"):
+        return {
+            "id": crop_id,
+            "reference_id": reference_id,
+            "bounds": [0.1, 0.2, 0.6, 0.8],
+            "target_component_id": target,
+            "crop_contract": {
+                "borrow": ["corner family", "stroke rhythm"],
+                "must_change": ["label", "proportions"],
+                "human_editable_reason": "flat primitives with a consistent outline",
+            },
+        }
+
+    def test_crop_manifest_writes_mapped_rgb_crop_and_contract(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pack_root = self.make_pack(root)
+            output = root / "crops"
+
+            result = apply_crop_manifest(pack_root, {"crops": [self.crop()]}, output)
+
+            crop = result["crops"][0]
+            self.assertTrue((output / crop["crop_path"]).is_file())
+            self.assertEqual(crop["crop_contract"], self.crop()["crop_contract"])
+            with Image.open(output / crop["crop_path"]) as image:
+                self.assertEqual(image.mode, "RGB")
+                self.assertEqual(image.size, (50, 30))
+                self.assertEqual(image.getpixel((0, 0)), (12, 34, 56))
+
+    def test_crop_manifest_rejects_unknown_reference_id(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            with self.assertRaisesRegex(ValueError, "reference_id"):
+                apply_crop_manifest(self.make_pack(root), {"crops": [self.crop(reference_id="unknown")]}, root / "crops")
+
+    def test_crop_manifest_rejects_out_of_range_bounds(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            crop = self.crop()
+            crop["bounds"] = [0, 0, 1.1, 0.5]
+            with self.assertRaisesRegex(ValueError, "bounds"):
+                apply_crop_manifest(self.make_pack(root), {"crops": [crop]}, root / "crops")
+
+    def test_crop_manifest_rejects_empty_contract(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            crop = self.crop()
+            crop["crop_contract"] = {}
+            with self.assertRaisesRegex(ValueError, "crop_contract"):
+                apply_crop_manifest(self.make_pack(root), {"crops": [crop]}, root / "crops")
+
+    def test_crop_manifest_rejects_duplicate_crop_ids(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            with self.assertRaisesRegex(ValueError, "ids must be unique"):
+                apply_crop_manifest(self.make_pack(root), {"crops": [self.crop(), self.crop()]}, root / "crops")
+
+    def test_coverage_requires_two_distinct_references(self):
+        context = {"components": [{"id": "encoder"}, {"id": "decoder"}]}
+        manifest = {"crops": [self.crop(target="encoder"), self.crop("crop-decoder", target="decoder")]}
+
+        with self.assertRaisesRegex(ValueError, "two distinct reference_id"):
+            validate_reference_coverage(context, manifest, [])
+
+    def test_coverage_requires_every_component_to_have_crop_or_complete_basic_geometry(self):
+        context = {"components": [{"id": "encoder"}, {"id": "decoder"}, {"id": "legend"}]}
+        manifest = {
+            "crops": [
+                self.crop(target="encoder"),
+                self.crop("crop-decoder", reference_id="reference-002", target="decoder"),
+            ]
+        }
+
+        with self.assertRaisesRegex(ValueError, "cover every Context 2 component"):
+            validate_reference_coverage(context, manifest, [])
+
+        basic_geometry = [{
+            "component_id": "legend",
+            "primitive": "rectangle and text",
+            "construction_steps": ["draw rectangle", "place label"],
+            "human_editable_reason": "simple editable SVG primitives",
+        }]
+        result = validate_reference_coverage(context, manifest, basic_geometry)
+        self.assertEqual(result["covered_component_ids"], ["decoder", "encoder", "legend"])
+
+    def test_coverage_rejects_incomplete_basic_geometry_exception(self):
+        context = {"components": [{"id": "encoder"}, {"id": "decoder"}, {"id": "legend"}]}
+        manifest = {
+            "crops": [
+                self.crop(target="encoder"),
+                self.crop("crop-decoder", reference_id="reference-002", target="decoder"),
+            ]
+        }
+        incomplete_geometry = [{"component_id": "legend", "primitive": "rectangle"}]
+
+        with self.assertRaisesRegex(ValueError, "construction_steps"):
+            validate_reference_coverage(context, manifest, incomplete_geometry)

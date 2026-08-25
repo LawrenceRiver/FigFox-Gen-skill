@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 
+from PIL import Image
+
 
 INDEX_FIELDS = {
     "id",
@@ -257,3 +259,198 @@ def rank_candidates(
             seen_layouts.add(selected["layout_family"])
             seen_sources.add(selected["source_id"])
     return ranked
+
+
+def _crop_id(value: Any, location: str) -> str:
+    crop_id = _non_empty_string(value, location)
+    if Path(crop_id).name != crop_id or crop_id in {".", ".."}:
+        raise ValueError(f"{location} must be a filename-safe crop id")
+    return crop_id
+
+
+def _crop_bounds(value: Any, location: str) -> list[float]:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)) or len(value) != 4:
+        raise ValueError(f"{location} bounds requires [left, top, right, bottom]")
+    if any(not isinstance(coordinate, (int, float)) or isinstance(coordinate, bool) for coordinate in value):
+        raise ValueError(f"{location} bounds requires numeric coordinates")
+    bounds = [float(coordinate) for coordinate in value]
+    left, top, right, bottom = bounds
+    if not (0 <= left < right <= 1 and 0 <= top < bottom <= 1):
+        raise ValueError(f"{location} bounds must be normalized and increasing within [0, 1]")
+    return bounds
+
+
+def _contract_strings(value: Any, location: str) -> list[str]:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)) or not value:
+        raise ValueError(f"{location} requires a non-empty list")
+    strings = [_non_empty_string(item, location) for item in value]
+    if len(strings) != len(set(strings)):
+        raise ValueError(f"{location} values must be unique")
+    return strings
+
+
+def _crop_contract(value: Any, location: str) -> dict[str, Any]:
+    if not isinstance(value, Mapping):
+        raise ValueError(f"{location} requires an object")
+    required_fields = {"borrow", "must_change", "human_editable_reason"}
+    if set(value) != required_fields:
+        raise ValueError(f"{location} requires borrow, must_change, and human_editable_reason")
+    return {
+        "borrow": _contract_strings(value["borrow"], f"{location} borrow"),
+        "must_change": _contract_strings(value["must_change"], f"{location} must_change"),
+        "human_editable_reason": _non_empty_string(
+            value["human_editable_reason"], f"{location} human_editable_reason"
+        ),
+    }
+
+
+def _normalise_crops(crop_manifest: Mapping[str, Any]) -> list[dict[str, Any]]:
+    if not isinstance(crop_manifest, Mapping):
+        raise ValueError("crop manifest requires an object")
+    crops = crop_manifest.get("crops")
+    if not isinstance(crops, Sequence) or isinstance(crops, (str, bytes)) or not crops:
+        raise ValueError("crop manifest requires a non-empty crops list")
+
+    normalized: list[dict[str, Any]] = []
+    crop_ids: list[str] = []
+    for index, crop in enumerate(crops):
+        location = f"crop manifest crops[{index}]"
+        if not isinstance(crop, Mapping):
+            raise ValueError(f"{location} requires an object")
+        required_fields = {"id", "reference_id", "bounds", "target_component_id", "crop_contract"}
+        if set(crop) != required_fields:
+            raise ValueError(
+                f"{location} requires exactly id, reference_id, bounds, target_component_id, and crop_contract"
+            )
+        crop_id = _crop_id(crop["id"], f"{location} id")
+        crop_ids.append(crop_id)
+        normalized.append({
+            "id": crop_id,
+            "reference_id": _non_empty_string(crop["reference_id"], f"{location} reference_id"),
+            "bounds": _crop_bounds(crop["bounds"], location),
+            "target_component_id": _non_empty_string(
+                crop["target_component_id"], f"{location} target_component_id"
+            ),
+            "crop_contract": _crop_contract(crop["crop_contract"], f"{location} crop_contract"),
+        })
+    if len(crop_ids) != len(set(crop_ids)):
+        raise ValueError("crop manifest crop ids must be unique")
+    return normalized
+
+
+def apply_crop_manifest(
+    reference_root: Path, manifest: Mapping[str, Any], output_dir: Path
+) -> dict[str, Any]:
+    """Write deterministic RGB crops from indexed complete FigureBench references."""
+
+    records = load_reference_index(reference_root)
+    files_by_id = {record["id"]: record["file"] for record in records}
+    crops = _normalise_crops(manifest)
+    normalized: list[dict[str, Any]] = []
+    destination = Path(output_dir)
+    destination.mkdir(parents=True, exist_ok=True)
+
+    for crop in crops:
+        reference_id = crop["reference_id"]
+        if reference_id not in files_by_id:
+            raise ValueError(f"crop manifest reference_id is not indexed: {reference_id}")
+        source_path = Path(reference_root) / files_by_id[reference_id]
+        try:
+            with Image.open(source_path) as source:
+                image = source.convert("RGB")
+        except OSError as error:
+            raise ValueError(f"crop manifest cannot read complete reference image: {source_path}") from error
+        left, top, right, bottom = crop["bounds"]
+        coordinates = (
+            int(left * image.width),
+            int(top * image.height),
+            int(right * image.width),
+            int(bottom * image.height),
+        )
+        if coordinates[0] >= coordinates[2] or coordinates[1] >= coordinates[3]:
+            raise ValueError(f"crop manifest bounds select no pixels for {crop['id']}")
+        crop_path = f"{crop['id']}.png"
+        image.crop(coordinates).save(destination / crop_path, format="PNG")
+        normalized_crop = copy.deepcopy(crop)
+        normalized_crop["crop_id"] = crop["id"]
+        normalized_crop["crop_path"] = crop_path
+        normalized.append(normalized_crop)
+    return {"crops": normalized}
+
+
+def _context_component_ids(context2: Mapping[str, Any]) -> set[str]:
+    if not isinstance(context2, Mapping):
+        raise ValueError("context2 requires an object")
+    components = context2.get("components")
+    if not isinstance(components, Sequence) or isinstance(components, (str, bytes)) or not components:
+        raise ValueError("context2 requires a non-empty components list")
+    component_ids = [
+        _non_empty_string(component.get("id"), f"context2 components[{index}] id")
+        if isinstance(component, Mapping)
+        else None
+        for index, component in enumerate(components)
+    ]
+    if any(component_id is None for component_id in component_ids):
+        raise ValueError("context2 components must be objects")
+    if len(component_ids) != len(set(component_ids)):
+        raise ValueError("context2 component ids must be unique")
+    return set(component_ids)
+
+
+def _normalise_basic_geometry(
+    basic_geometry: Sequence[Mapping[str, Any]], component_ids: set[str]
+) -> list[dict[str, Any]]:
+    if not isinstance(basic_geometry, Sequence) or isinstance(basic_geometry, (str, bytes)):
+        raise ValueError("basic_geometry requires a list")
+    normalized: list[dict[str, Any]] = []
+    covered_ids: list[str] = []
+    for index, record in enumerate(basic_geometry):
+        location = f"basic_geometry[{index}]"
+        if not isinstance(record, Mapping):
+            raise ValueError(f"{location} requires an object")
+        required_fields = {"component_id", "primitive", "construction_steps", "human_editable_reason"}
+        if set(record) != required_fields:
+            raise ValueError(
+                f"{location} requires component_id, primitive, construction_steps, and human_editable_reason"
+            )
+        component_id = _non_empty_string(record["component_id"], f"{location} component_id")
+        if component_id not in component_ids:
+            raise ValueError(f"{location} component_id must name a Context 2 component")
+        covered_ids.append(component_id)
+        normalized.append({
+            "component_id": component_id,
+            "primitive": _non_empty_string(record["primitive"], f"{location} primitive"),
+            "construction_steps": _contract_strings(record["construction_steps"], f"{location} construction_steps"),
+            "human_editable_reason": _non_empty_string(
+                record["human_editable_reason"], f"{location} human_editable_reason"
+            ),
+        })
+    if len(covered_ids) != len(set(covered_ids)):
+        raise ValueError("basic_geometry component ids must be unique")
+    return normalized
+
+
+def validate_reference_coverage(
+    context2: Mapping[str, Any], crop_manifest: Mapping[str, Any], basic_geometry: Sequence[Mapping[str, Any]]
+) -> dict[str, Any]:
+    """Require two complete references and coverage for every planned component."""
+
+    component_ids = _context_component_ids(context2)
+    crops = _normalise_crops(crop_manifest)
+    crop_reference_ids = {crop["reference_id"] for crop in crops}
+    if len(crop_reference_ids) < 2:
+        raise ValueError("crop manifest requires two distinct reference_id values")
+    crop_component_ids = {crop["target_component_id"] for crop in crops}
+    unknown_crop_components = crop_component_ids - component_ids
+    if unknown_crop_components:
+        raise ValueError("crop manifest target_component_id must name a Context 2 component")
+    geometry = _normalise_basic_geometry(basic_geometry, component_ids)
+    geometry_component_ids = {record["component_id"] for record in geometry}
+    covered_component_ids = crop_component_ids | geometry_component_ids
+    if covered_component_ids != component_ids:
+        raise ValueError("crop manifest and basic_geometry must cover every Context 2 component")
+    return {
+        "crops": copy.deepcopy(crops),
+        "basic_geometry": geometry,
+        "covered_component_ids": sorted(covered_component_ids),
+    }
