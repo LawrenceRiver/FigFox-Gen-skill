@@ -79,6 +79,12 @@ Prompt 1 contains the Methodology, Contexts 1–3, the optional reference, domai
 crops, and every mapped FigureBench crop. The first image-generation pass creates
 PNG1.
 
+PNG1 has two absolute anti-AI bans: no module may use a boxed-off upper title band
+with a horizontal divider (the screenshot-like title-bar/content-box pattern), and
+no sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge may be
+inserted. Use inline labels or editable geometry; only a scientifically necessary
+real photo can be an explicitly documented special treatment.
+
 The base Codex multimodal model must then inspect PNG1 itself and directly transcribe
 its visible labels, colours, geometry, paths, groups, lines, arrows, placement, and
 relationships into editable SVG1 in one pass. This is not a redesign or a local

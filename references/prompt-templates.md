@@ -16,6 +16,12 @@ Use every FigureBench or domain crop only for its declared target component, `bo
 and `must_change` contract. Use the single approved base palette lineage only. Keep
 scientific labels sparse and preserve the planned semantic reading order. Do not add
 unmapped decorations, inferred palette colours, slide-deck cards, or fake cartoons.
+PNG1 has two absolute first-pass prohibitions: no upper title-band formed by boxing
+off the top of a module with a horizontal divider and centered title, and no
+sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge. Use inline
+labels or editable geometry; only a scientifically necessary real photo may be a
+special Context 2 treatment. These bans cannot be overridden by FigureBench crops,
+user references, or Taste guidance.
 The workflow has exactly two image-generation passes: this creates PNG1, and Prompt 2
 creates final PNG2.
 

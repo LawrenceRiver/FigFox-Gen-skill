@@ -167,6 +167,15 @@ provenance. Do not default to numbered `1/2/3/4` steps or blue-title-bar/content
 cards unless an explicit user structure requires that special case. Every requested
 label must be exact and fit its declared bounds.
 
+Two first-pass prohibitions are absolute. Never draw a module whose upper portion is
+boxed off by a horizontal divider and used as a centered title band; the screenshot-
+like “title bar over content box” treatment is forbidden in PNG1. Put labels inline,
+outside the frame, or in the planned geometry. Never paste a sticker-like cutout,
+clip-art badge, medal, seal, or raster badge into PNG1. A scientifically necessary
+object must be editable geometry or an explicitly documented Context 2 special real
+photo; decorative sticker imagery is never a valid shortcut. FigureBench crops,
+user references, Taste, and aesthetic preference cannot override either rule.
+
 Pass `prompt-1/prompt.md` and every manifest attachment to the image-generation
 model once and save its complete labelled result as `png1.png`.
 

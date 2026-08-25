@@ -224,6 +224,9 @@ class Prompt1BundleTests(PromptTestCase):
             "shapes with no human construction provenance",
             "numbered 1/2/3/4 planning labels",
             "generic blue-title-strip-inside-every-box pattern",
+            "upper title-band",
+            "sticker-like cutout",
+            "pasted raster badge",
             "repeated card grids that make the figure look like a slide deck",
             "fake cartoon objects",
         ):
@@ -482,6 +485,9 @@ class PromptTemplateAndWritingTests(PromptTestCase):
             "No embedded raster wrapper",
             "No Python, local scripting, or draw.io",
             "No fresh SVG design from the prompt or Methodology",
+            "absolute first-pass prohibitions",
+            "sticker-like cutout",
+            "pasted raster badge",
         ):
             self.assertIn(phrase, templates)
 
