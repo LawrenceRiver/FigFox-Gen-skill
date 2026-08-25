@@ -6,12 +6,23 @@
 
 **领域视觉惯例 · 可人工制作的规划 · FigureBench 定向裁图 · 单一配色谱系 · 最终 PNG1**
 
-[English](./README.md) · [流程](#工作流程) · [内置参考包](#内置参考包) · [安装](#安装)
+[English](./README.md) · [流程](#工作流程) · [示例图](#已生成示例图) · [内置参考包](#内置参考包) · [安装](#安装)
 
 </div>
 
 FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签、符合人工编辑
 逻辑的科研架构图。流程只进行一次图像生成，PNG1 就是最终结果。
+
+## 已生成示例图
+
+这是用当前 Skill 生成的中文版 FigFox-Gen 流程图。它与英文版流程同构，保留
+Context 1–3、创意师、Prompt 1 和最终 PNG1 的单次生成路径。
+
+<p align="center">
+  <img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文流程图" width="100%" />
+</p>
+
+[查看英文版流程图](./assets/generated-figures/01-figfox-gen-workflow.png)
 
 ## 安装
 
@@ -97,15 +108,14 @@ PNG1 有两条绝对禁令：任何模块都不能把上半段用横线框出来
 
 英文 README 的 [Recorded methodology cases](./README.md#recorded-methodology-cases)
 保留了 Latent Diffusion、MusiCoT 和 AlphaFold 3 三组案例的完整 Methodology
-原文；这里不再用简版关键词替代原文。对应示例图暂留 `FILL IN`，等待新的端到端运行确认。
+原文；这里不再用简版关键词替代原文。三组案例对应的示例图见英文 README 的
+[Generated figure examples](./README.md#generated-figure-examples)。
 
 ## 内置参考包
 
 Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 FigureBench 开发集图片，
 用于参考几何、布局、间距、连接方式和人工编辑质感。普通用户无需下载 FigureBench；
 完整数据集只在维护者重新策划这 30 张内置图片时使用，并且绝不使用官方测试集图片。
-
-<!-- FILL IN：下一次端到端运行后再补充经过确认的示例图。 -->
 
 ## 维护者说明
 
