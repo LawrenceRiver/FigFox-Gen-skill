@@ -85,6 +85,12 @@ Context。第二次图像生成得到最终 PNG2，流程到此结束，不再�
 转写。确定性工具只验证文件与来源关系，不声称能够观察模型调用，也不保证科学结论
 自动正确；正式使用前仍需作者核验。
 
+## Methodology 案例原文
+
+英文 README 的 [Recorded methodology cases](./README.md#recorded-methodology-cases)
+保留了 Latent Diffusion、MusiCoT 和 AlphaFold 3 三组案例的完整 Methodology
+原文；这里不再用简版关键词替代原文。对应示例图暂留 `FILL IN`，等待新的端到端运行确认。
+
 ## 内置参考包
 
 Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 FigureBench 开发集图片，
