@@ -39,7 +39,7 @@ python scripts/figure_workflow.py check-installation --root .
 
 Read the Methodology with the language model and extract the scientific domain,
 core topic, mainline, likely figure class, named domain concepts, and exact user
-constraints. This classification is not topology planning.
+constraints. This domain classification supplies Context 1's search scope.
 
 Search the web for 3–4 scholarly papers in that domain. Prefer arXiv and native
 SVG/HTML figures; otherwise use credible papers with clearly extractable panels.
@@ -99,8 +99,8 @@ python scripts/figure_workflow.py rank-references --run RUN
 
 Inspect at least two distinct complete references. Continue adaptively until every
 Context 2 need has credible evidence: shapes, frame/container families, connectors,
-layout relationships, and special visualizations. There is no fixed ten-image,
-top-k, or maximum-image stopping rule. Stop only at complete coverage.
+layout relationships, and special visualizations. There is no fixed target or
+maximum image count. Stop only at complete coverage.
 
 Complete references are inspection sources, never unexplained Prompt 1 attachments.
 For every useful region, write normalized coordinates and a component-specific

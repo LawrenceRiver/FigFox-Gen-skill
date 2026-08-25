@@ -5,9 +5,9 @@
 PNG1 is visual truth for the base Codex multimodal model's bare-model SVG1
 transcription. Request one direct transcription of PNG1; do not locally rebuild,
 beautify, redraw, repair, or substitute SVG from the Methodology, contexts, or
-topology plan. If the transcription cannot be inspected or rendered faithfully,
-report the failure and retain PNG1 rather than silently hand-authoring another
-SVG.
+upstream planning artifacts. If the transcription cannot be inspected or rendered
+faithfully, report the failure and retain PNG1 rather than silently hand-authoring
+another SVG.
 
 Python only inspects SVG1 safely, deterministically renders PNG1.5, and crops
 diagnosis-approved regions from PNG1.5. PNG1.5 is VLM-review-only: it is never
