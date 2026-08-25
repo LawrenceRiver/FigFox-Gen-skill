@@ -1,58 +1,254 @@
 ---
 name: genlike-scientific-svg
-description: Generate publication-ready research figures with the structured, editable finish of a professional scientific SVG from any paper-figure brief, using aesthetic web references and local FigureBench RAG.
+description: Use when turning a scientific Methodology, with an optional reference image, into an evidence-grounded architecture figure that needs human-edited geometry and a final revised PNG.
 metadata:
-  short-description: Make professional paper figures with SVG-grade structure
+  short-description: Build evidence-guided two-pass scientific figures
 ---
 
 # GenLikeScientificSVG
 
-Create a final raster research figure with the structured finish of a professionally edited scientific diagram. Start from a **Figure Brief**, not only a methodology: it may be an idea, paper section, method, result, hypothesis, sketch, PNG/SVG, reference image, or a plain-language request. First determine the domain. The **Scientific Topology Plan** then fixes module semantics, hierarchy, arrow relations, labels, and primary reading order. Make **one direct image-generation call** to create the complete labelled PNG; this first PNG is the only creative figure and the final deliverable by default. SVG is optional: use it only to faithfully convert this actual PNG into editable layers for verification or later editing. Never create a fresh SVG from the plan and call it a conversion.
+## Core workflow
 
-## Required workflow
+Turn a Methodology and optional user reference into this exact artifact chain:
 
-Keep the reference work parallel. Do not expand it into a multi-agent serial chain.
+```text
+Methodology + optional reference
+  -> Context 1 domain visual conventions
+  -> Context 2 content-to-visual plan
+  -> Context 3 mapped FigureBench crops + one palette lineage + taste
+  -> Prompt 1 bundle -> image generation -> PNG1
+  -> direct base-model PNG1 transcription -> editable SVG1
+  -> deterministic render PNG1.5 -> VLM diagnosis -> approved SVG crops
+  -> Prompt 2 bundle (PNG1, approved/replacement crops; never PNG1.5)
+  -> image generation -> final PNG2 -> stop
+```
 
-1. Gather a Figure Brief, constraints, optional reference image, desired output size, and a local FigureBench index if available. Determine its scientific domain and classify it inline as **basic** (a familiar explanatory figure) or **custom** (a method-specific, result-specific, or novelty-bearing figure); do not make this classification a separate model call.
-2. In parallel:
-   - **Web domain figure search:** find candidate paper HTML/SVG figures relevant to the detected domain. Prefer a native SVG/HTML figure over a page screenshot; crop the relevant panel, legend, or structural region as a **temporary crop** for VLM inspection. It is an aesthetic search, not a recency search. Screen candidates against all of: clear composition, explicit hierarchy, sophisticated colour relationships, unified elements, purposeful whitespace, visible focal point, scientific credibility, and no ordinary-slide-deck appearance. Replace weak candidates; retain at least 3 and preferably 4+ strong references. Learn shared component conventions, professional terminology, which visual metaphor normally represents each domain concept, layout cadence, and emphasis treatments. Translate complex source treatments into more structured, flatter, and simpler geometric expressions for this new figure. The web work supplies novelty *evidence* only; it must not decide novelty emphasis or supply final colours. Do not publish temporary crops unless their licence explicitly permits it.
-   - **FigureBench semantic–structural RAG:** query a prepared local cache with the brief + inline Figure Intent + requested topology/figure type as primary signals. Use it to find compatible scientific building blocks for remaining elements and logic: container geometry, arrow rhythm, grouping, physical/process depiction, density, and visual finish. Visual style is secondary. Return only top-k compact structure summaries. Reuse these as abstract, compatible structure grammar—not as permission to reproduce one retrieved figure's distinctive whole layout. If no cache exists, give the user the one-command local setup from [FigureBench RAG](references/figurebench-rag.md); do not silently download a multi-GB dataset.
-   - **Colour-source selection:** choose exactly one colour source for this render: either one approved image-free library group, or an ephemeral HEX/RGB group extracted from an aesthetically strong web SVG unrelated to the brief's domain. For the latter, explicitly reject any candidate whose declared source domain overlaps the Figure Brief or the selected domain references. A temporary crop may be made from that SVG to inspect its swatch/legend region, but retain only colour roles and exact HEX/RGB values; discard the crop and do not store its image, URL, thumbnail, or a persistent record. Do not mix sources, borrow colours from domain references, or ask the final model to invent or interpolate colours. Read [Palette RAG](references/palette-rag.md) before invoking the helper.
-   - **User reference image:** when supplied, let the VLM learn composition and rendering style directly. Its colours do not expand the permitted colour set unless they independently satisfy the selected colour-source rule. Do not run a separate OpenCV palette-extraction stage.
-3. Do one **Scientific Topology Planning** pass. Extract Figure Intent inline, not as an extra model call: purpose, core claim, novelty focus, scope, and domain drawing question. Simultaneously perform scientific compression: remove redundant methodological prose; replace text that position or arrows can express; merge repeated modules. Plan modules, levels, arrows, layout, labels, and the few novelty claims that deserve emphasis; **do not label planned parts with numbers**. Select only the shared visual metaphors that correctly explain the user's method, then structure them into clear frames, lines, spacing, and restrained geometry.
-   - **Color Planning** is an inline output of this same pass and does not add a model call. Declare the selected source, its domain (when it is a cross-domain SVG), every exact allowed HEX value, and role assignments for canvas, ink/outline, surfaces, semantic modules, and at most one novelty accent. Compile it with `python scripts/figurebench_rag.py colour-contract --plan-json colour-plan.json`. The renderer may use only exact HEX values in the compiled contract: no new, shifted, blended, or activated colours. State restrictions before rendering: avoid rainbow treatment, do not encode a category with colour alone, reserve the accent for the intended claim, and keep text/arrow contrast readable.
-4. Emit a compact **Image Generation Contract** from the plan: canvas/aspect; named modules; relative bounds and grouping; directional relations; primary reading order; exact label strings; allowed scientific assets; selected reference crops; FigureBench summaries; and the compiled colour contract. This is structured data/prompt context, not a rendered SVG.
-5. Make **one direct image-generation call** to **directly generate the first scientific raster draft** from the Image Generation Contract and approved reference crops. It must not use a rendered SVG as its input. It must **generate every required label directly** inside its specified module, rather than dropping text or leaving blank boxes. The model may improve complex scientific assets and controlled geometry details, but it must preserve module meanings, arrow relations, principal structure, label content, and the compiled colour contract. This PNG is the final figure by default.
-6. Optionally inspect this final PNG once with a VLM using the FigureBench geometry lexicon and selected RAG summaries. The optional operation is **optional faithful PNG-to-SVG verification**. Check for **missing, incorrect, or overflowing text**, collisions, arrow direction, hierarchy, density, whitespace, accidental gradients/glow/shadows on structural colour blocks, perspective/3D or deformed containers, arbitrary tiny symbols, and non-copying treatment. Only if an available converter can faithfully transcribe the actual PNG, request an editable SVG verification brief with `python scripts/figurebench_rag.py svg-verification-brief --first-draft-png first-draft.png --generation-contract-json image-generation-contract.json --lexicon-json geometry-lexicon.json --inspection-json inspection.json --output svg-verification-brief.json`. It must preserve semantic structure, editable text/layers, spatial relations, and the frozen palette; it must **not create a new SVG**. If any of these checks fail, **skip SVG verification** and return the original PNG. Do not use SVG as a pre-generation input and do not make a second image-generation call.
+This is structurally two image-generation stages and one SVG diagnostic loop. The
+local commands validate artifacts and provenance; they do not observe or prove model
+call counts.
 
-## Image Generation Contract and typography
+Start a run with `input/methodology.md` and, when supplied,
+`input/user-reference.<ext>`. Use the canonical layout and exact JSON fields in
+[artifact schemas](references/artifact-schemas.md). Before work begins, run:
 
-Represent the following explicitly before the image call: canvas/aspect; named module bounds; z-order; input/output ports; arrow endpoints and direction; group bounds; exact label strings and intended label bounds; wrapping rules; emphasis levels; and the Color Planning role-to-HEX assignments.
+```bash
+python scripts/figure_workflow.py check-installation --root .
+```
 
-- Treat every labelled box as a text-fit constraint: specify the label string, font hierarchy, line breaks, and padding in the Image Generation Contract, and require the image model to render it inside the stated bounds.
-- Keep arrow shafts and heads clear of labels and module interiors. Preserve a visible gap between unrelated modules and groups.
-- Use geometric primitives deliberately: containers, nested enclosures, ribbons, brackets, nodes, directional channels, and restrained scientific texture. FigureBench geometry is a source of abstract grammar, not a tracing library.
-- Preserve complex scientific assets from the raster/generated first draft only when they carry scientific meaning; a faithful SVG conversion must not substitute invented vector icons or retain decorative clutter.
-- SVG verification may not add/remove/reorder semantic modules, edit label meaning, invert or reroute relationships into a new topology, or change the primary reading order.
-- Structural colour blocks in the SVG must use flat exact-HEX fills from the one selected group: no gradients, glow, texture, decorative shadow, mixed palette group, or fallback colour. Use one consistent stroke family, corner family, arrowhead family, and declared grid/margin rhythm.
-- Require every label, legend, panel letter, and annotation in the Image Generation Contract. The image model generates them as part of the scientific figure; do not pre-emptively remove text from its prompt.
+## 1. Context 1: domain visual conventions
 
-## FigureBench iteration rule
+Read the Methodology with the language model and extract the scientific domain,
+core topic, mainline, likely figure class, named domain concepts, and exact user
+constraints. This classification is not topology planning.
 
-The FigureBench retrieval may be computed earlier in parallel, but its effect is applied before the single direct image-generation call as compatible abstract structure grammar.
+Search the web for 3–4 scholarly papers in that domain. Prefer arXiv and native
+SVG/HTML figures; otherwise use credible papers with clearly extractable panels.
+Inspect cropped figure regions, not titles or abstracts alone. Record source URLs
+and crop paths in `references/web/manifest.json` and `references/web/crops/`.
 
-Use RAG to derive an aggregate **geometry grammar** (container silhouettes, grouping/enclosure treatment, arrow rhythm, primitive vocabulary, visual density, and layout cadence). Use it to make the figure distinct, not similar to any retrieved example. Never trace a result, reproduce its distinctive arrangement, or pass the entire corpus to a model.
+Compare the retained panels and list Methodology-relevant recurrence: repeated
+objects, intermediate models, structural relations, drawing treatments, grouping,
+and professional terminology. Distinguish conventions from one-off treatments.
+Write `context/context-1-domain-conventions.json`; each convention states what
+recurs, where it recurs, how humans depict it, the term used, its Methodology
+relevance, and any mapped domain crop with `target_component_id`, `borrow`, and
+`must_change`.
 
-## Single-generation prompt boundary
+If fewer than three credible figures remain, continue searching or report
+insufficient evidence. Do not invent recurrence. Validate:
 
-Supply the Image Generation Contract and approved cropped references, then state these invariants plainly:
+```bash
+python scripts/figure_workflow.py validate-context --run RUN --context 1
+```
 
-- Preserve all labelled modules, their semantic roles, their arrow relations, and the primary layout.
-- Generate every required label directly and preserve it exactly unless the user has asked for a wording change.
-- Improve rendering only inside the Image Generation Contract: scientific polish, semantically meaningful asset detail, restrained material, and allowed local geometric treatment.
-- Use only exact HEX values in the compiled Color Planning contract. Do not introduce, shift, blend, or activate any other colour, and do not repurpose the novelty accent.
-- Do not make it look like a generic slide or mimic a retrieved FigureBench figure.
+## 2. Context 2: content-to-visual plan
 
-## Delivery
+Combine the Methodology, Context 1, and optional user reference. The user reference
+has strong authority for structure, layout, emphasis, and visibly human-made basic
+visual treatment. Ignore its generated-looking decoration, and never take palette
+colours from it.
 
-Return the final PNG and the Image Generation Contract. Return an editable SVG only when faithful conversion succeeds; otherwise report `skip_svg_verification`. Report the chosen web-reference rationale, compact FigureBench structure summaries, the one image-generation pass, and any verified SVG conversion. Do not publish raw FigureBench images or the local corpus. Only publish the safe embedding/metadata bundle after checking dataset and source licensing and receiving authority to deploy.
+First express the scientific mainline in text. Then map every block, structure,
+relationship, and required label to a visual treatment in
+`context/context-2-content-visual-plan.json`. In-image text is limited to block
+names, structure names, necessary scientific labels, terms, and relationships;
+explanatory research prose stays in planning.
+
+Normal treatments are human-producible basic geometry, recurring domain-paper
+constructions, deliberate manual/stylus drawings, draw.io-like editable structures,
+or real photographic crops when scientifically necessary. Mark any other treatment
+as special and explain whether a human would construct it geometrically, draw it by
+hand, or obtain it as a real photo. Every visual must have a semantic role and
+construction provenance.
+
+```bash
+python scripts/figure_workflow.py validate-context --run RUN --context 2
+```
+
+## 3. Context 3: visual evidence, palette, and taste
+
+Read [FigureBench visual selection](references/figurebench-visual-selection.md) and
+[taste rules](references/taste-rules.md) at this stage.
+
+The installed FigureBench pack contains exactly 30 complete development images.
+Rank candidates, then inspect their actual pixels:
+
+```bash
+python scripts/figure_workflow.py rank-references --run RUN
+```
+
+Inspect at least two distinct complete references. Continue adaptively until every
+Context 2 need has credible evidence: shapes, frame/container families, connectors,
+layout relationships, and special visualizations. There is no fixed ten-image,
+top-k, or maximum-image stopping rule. Stop only at complete coverage.
+
+Complete references are inspection sources, never unexplained Prompt 1 attachments.
+For every useful region, write normalized coordinates and a component-specific
+contract to `references/figurebench/crops/request.json`. The contract names what to
+`borrow`, what `must_change` so the output remains a variant, and why the treatment
+is human-editable. A basic-geometry exception must instead give its primitive,
+construction steps, and human-editable reason; it cannot excuse a complex visual.
+Materialize and check the preserved request:
+
+```bash
+python scripts/figure_workflow.py crop-references --run RUN
+python scripts/figure_workflow.py validate-reference-coverage --run RUN
+```
+
+The crop command writes images plus the separate
+`references/figurebench/crops/manifest.json`; it never replaces `request.json`.
+FigureBench supplies geometry, layout, spacing, connectors, and human-edited finish.
+It is never a palette authority.
+
+Choose exactly one complete group from `references/palette-library.json`. If it
+lacks a required functional role, make a targeted web search only for a related
+tint, shade, tone, analogous neighbour, compatible neutral, or controlled contrast.
+Each extension requires exact uppercase HEX, matching RGB, relationship, intended
+role, HTTPS evidence URL, and evidence summary. Never use a second library group or
+take colours from the user reference, FigureBench, or domain papers.
+
+Taste is a low-priority soft constraint for spacing, hierarchy, rhythm, balance,
+restraint, and human-edited finish. It cannot override scientific meaning, user
+constraints, domain evidence, construction provenance, or palette lineage.
+
+Write `context/context-3-visual-kit.json` from the materialized mapped crops,
+coverage matrix, one palette lineage, and taste constraints, then validate:
+
+```bash
+python scripts/figure_workflow.py validate-palette --run RUN
+python scripts/figure_workflow.py validate-context --run RUN --context 3
+```
+
+## 4. Prompt 1 and PNG1
+
+Read [prompt templates](references/prompt-templates.md). Compile the bundle only
+after Contexts 1–3 and all mapped crop files exist:
+
+```bash
+python scripts/figure_workflow.py build-prompt1 --run RUN
+```
+
+Inspect `prompt-1/attachments.json`. It must attach every mapped domain-paper crop,
+every mapped FigureBench crop, and the optional user reference. Attach crop images,
+not complete unexplained papers or FigureBench figures. Each crop guides only its
+declared component and `borrow`/`must_change` contract.
+
+Prompt 1 gives, in order: purpose/mainline; exact block and structure names;
+relationships/reading order; content-to-visual mapping; crop mapping; one-palette
+contract; layout/taste; exact text and readable bounds; anti-AI invariants; and a
+direct PNG instruction. Its visual recipe is flat, deliberate, human-producible,
+semantically tied geometry with coherent strokes, corners, arrows, spacing, and
+clear labels.
+
+Enforce these defaults: no arbitrary decorative dots, tiles, floating symbols,
+purposeless boxes, irrelevant ornament, unjustified extreme contrast, gradients,
+glow, decorative shadow, fake cartoons, or shapes without human construction
+provenance. Do not default to numbered `1/2/3/4` steps or blue-title-bar/content-box
+cards unless an explicit user structure requires that special case. Every requested
+label must be exact and fit its declared bounds.
+
+Pass `prompt-1/prompt.md` and every manifest attachment to the image-generation
+model once and save its complete labelled result as `png1.png`.
+
+## 5. Mandatory direct editable SVG1 transcription
+
+Read [SVG diagnostics](references/svg-diagnostic.md). Give `png1.png` directly to
+the current base Codex multimodal model and ask it to visually parse the pixels and
+immediately write one complete `svg-diagnostic/svg1.svg`.
+
+The instruction is: PNG1 is the sole visual source of truth; transcribe its labels,
+colours, geometry, paths, groups, lines, arrows, placement, and relationships into
+editable SVG source in one pass. This is transcription, not redesign, cleanup, or a
+fresh plan. Text and vector elements remain independently editable.
+
+Do not use HTML/canvas, Python, draw.io, tracing/conversion utilities, local
+programmatic reconstruction, hand-redrawing from the Methodology, or a single
+embedded raster wrapper. Deterministic local tools begin only after SVG1 exists. If
+the base model cannot perform the direct transcription, or the result fails
+editability, stop and report failure at the SVG1 stage. Never silently substitute a
+locally handcrafted SVG.
+
+```bash
+python scripts/figure_workflow.py inspect-svg --run RUN
+python scripts/figure_workflow.py render-svg --run RUN
+```
+
+The render command creates `svg-diagnostic/png1.5.png`. PNG1.5 exists only so a VLM
+can see what the editable transcription preserved or destabilized.
+
+## 6. Diagnosis and approved SVG crops
+
+Compare PNG1, SVG1, PNG1.5, Contexts 1–3, and original evidence. Give exactly one
+verdict per Context 2 component in `svg-diagnostic/diagnosis.json`:
+
+- `keep`: faithfully preserved and reusable;
+- `accept_variation`: changed or simplified but scientifically sound;
+- `patch`: correct a bounded defect in size, position, colour, label, or geometry;
+- `reject`: the idea is fake, decorative, unstable, or semantically invalid;
+- `replace`: retrieve a mature human-authored treatment.
+
+Scientific logic outranks polish. Slight position/angle variation in clear simple
+geometry may pass. A complex diffusion view may simplify when its meaning survives.
+A fake bulb, cartoon substitute, wrong photo/object, meaningless abstraction, or
+directional/logical error must be rejected or replaced. For `reject`/`replace`,
+return to domain-paper SVG/figure crops or FigureBench and save a mapped replacement
+under `references/web/crops/replacements/` with its manifest.
+
+Only visually useful `keep`, `accept_variation`, or `patch` regions may enter the
+approved SVG crop request. Save VLM coordinates in
+`svg-diagnostic/approved-crops/request.json`, then run:
+
+```bash
+python scripts/figure_workflow.py validate-diagnosis --run RUN
+python scripts/figure_workflow.py crop-svg --run RUN
+```
+
+The crop command writes the separate
+`svg-diagnostic/approved-crops/manifest.json`. PNG1.5 itself is diagnostic-only: do
+not attach it, quote it as an image input, or otherwise expose it to Prompt 2.
+
+## 7. Prompt 2 and final PNG2
+
+Compile Prompt 2:
+
+```bash
+python scripts/figure_workflow.py build-prompt2 --run RUN
+```
+
+Its image attachments are exactly the original `png1.png`, diagnosis-approved SVG
+crops, and any mapped replacement crops. Contexts 1–3 and the Methodology remain
+textual evidence. `prompt-2/attachments.json` must never contain PNG1.5 or an SVG
+diagnostic-render role.
+
+Prompt 2 tells the image model component by component what to preserve, accept,
+patch, reject, and replace. Modify PNG1 rather than recreating an unrelated figure;
+use approved SVG crops only for their declared human-edited visual treatment and
+use replacement crops only for rejected/replaced targets. Pass this bundle to the
+image-generation model and save the result as `png2-final.png`.
+
+PNG2 is final. Do not transcribe PNG2 to SVG or begin another diagnostic loop. Write
+the canonical `run-manifest.json`, then verify deterministic provenance:
+
+```bash
+python scripts/figure_workflow.py validate-run --run RUN
+```
