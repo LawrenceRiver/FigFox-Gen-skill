@@ -13,6 +13,19 @@ from .palette import validate_palette
 
 
 VERDICTS = {"keep", "accept_variation", "patch", "reject", "replace"}
+_UNRESOLVED_SVG_DEFECT_MARKERS = (
+    "gradient",
+    "missing badge",
+    "badge is missing",
+    "missing seal",
+    "missing medal",
+    "missing icon",
+    "not replicated",
+    "not reproduced",
+    "absent",
+    "occluded",
+    "materially distorted",
+)
 WEB_MANIFEST_FORMAT = "scholarly-domain-figure-manifest-v1"
 _WEB_CROP_ROOT = PurePosixPath("references/web/crops")
 _WEB_REPLACEMENT_ROOT = PurePosixPath("references/web/crops/replacements")
@@ -392,10 +405,16 @@ def validate_diagnosis(
         verdict = _required_string(record, "verdict", location)
         if verdict not in VERDICTS:
             raise ValueError(f"{location} has unsupported verdict")
+        reason = _required_string(record, "reason", location)
+        if verdict in {"keep", "accept_variation"}:
+            lowered_reason = reason.casefold()
+            if any(marker in lowered_reason for marker in _UNRESOLVED_SVG_DEFECT_MARKERS):
+                raise ValueError(
+                    f"{location} cannot mark an unresolved SVG defect as {verdict}; use patch, reject, or replace"
+                )
         recorded_component_ids.append(component_id)
-        normalized["verdicts"].append(
-            _normalized_record(record, ("component_id", "verdict"))
-        )
+        normalized_record = _normalized_record(record, ("component_id", "verdict", "reason"))
+        normalized["verdicts"].append(normalized_record)
     if len(recorded_component_ids) != len(set(recorded_component_ids)) or set(recorded_component_ids) != set(component_ids):
         raise ValueError("diagnosis requires exactly one verdict per Context 2 component")
     return normalized

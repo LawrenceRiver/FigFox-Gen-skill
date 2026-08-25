@@ -323,6 +323,32 @@ class Prompt1BundleTests(PromptTestCase):
 
 
 class Prompt2BundleTests(PromptTestCase):
+    def test_prompt2_turns_svg_differences_into_active_png1_repairs(self):
+        critical_diagnosis = {
+            "verdicts": [
+                {
+                    "component_id": "encoder",
+                    "verdict": "patch",
+                    "reason": "PNG1 has a flat box but SVG1/PNG1.5 covers it with a gradient; the badge is missing.",
+                },
+                {
+                    "component_id": "audio",
+                    "verdict": "keep",
+                    "reason": "The waveform is present and matches PNG1.",
+                },
+            ]
+        }
+        bundle = build_prompt2_bundle(
+            "method", c1(), c2(), c3(), "png1.png", critical_diagnosis, svg_crops(), {}, self.root
+        )
+        prompt = bundle["prompt"].casefold()
+
+        self.assertIn("actively modify png1", prompt)
+        self.assertIn("gradient", prompt)
+        self.assertIn("badge", prompt)
+        self.assertIn("restore", prompt)
+        self.assertIn("do not mark", prompt)
+
     def test_prompt2_uses_png1_and_svg_crops_but_never_png15(self):
         bundle = build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", diagnosis(), svg_crops(), {}, self.root)
         paths = {item["path"] for item in bundle["attachments"]}
@@ -352,7 +378,7 @@ class Prompt2BundleTests(PromptTestCase):
     def test_prompt2_requires_and_preserves_a_replacement_reason(self):
         replacement_diagnosis = {
             "verdicts": [
-                {"component_id": "encoder", "verdict": "keep"},
+                {"component_id": "encoder", "verdict": "keep", "reason": "faithful"},
                 {"component_id": "audio", "verdict": "replace", "reason": "fake icon"},
             ]
         }
@@ -416,7 +442,7 @@ class Prompt2BundleTests(PromptTestCase):
         with self.assertRaisesRegex(ValueError, "svg_diagnostic_render"):
             build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", diagnosis(), role_trick, {}, self.root)
 
-        incomplete = {"verdicts": [{"component_id": "encoder", "verdict": "keep"}]}
+        incomplete = {"verdicts": [{"component_id": "encoder", "verdict": "keep", "reason": "faithful"}]}
         with self.assertRaisesRegex(ValueError, "exactly one verdict"):
             build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", incomplete, svg_crops(), {}, self.root)
 
@@ -439,7 +465,7 @@ class Prompt2BundleTests(PromptTestCase):
             build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", diagnosis(), wrong_svg, {}, self.root)
 
         wrong_replacement = {"crops": [{"path": "references/web/crops/piano-roll.png", "target_component_id": "audio"}]}
-        rejected = {"verdicts": [{"component_id": "encoder", "verdict": "keep"}, {"component_id": "audio", "verdict": "replace"}]}
+        rejected = {"verdicts": [{"component_id": "encoder", "verdict": "keep", "reason": "faithful"}, {"component_id": "audio", "verdict": "replace", "reason": "fake icon"}]}
         with self.assertRaisesRegex(ValueError, "replacement crop root"):
             build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", rejected, svg_crops(), wrong_replacement, self.root)
 

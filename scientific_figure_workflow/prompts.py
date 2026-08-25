@@ -316,6 +316,37 @@ def _prompt2_crops(value: Mapping[str, Any], role: str, location: str, component
     return attachments
 
 
+def _diagnostic_repair_lines(
+    components: list[Mapping[str, Any]], verdicts: Mapping[str, Mapping[str, Any]]
+) -> list[str]:
+    """Turn SVG1/PNG1.5 findings into explicit, component-scoped PNG1 edits."""
+
+    lines = [
+        "## Mandatory SVG1/PNG1.5 correction gate",
+        "Actively modify PNG1 to make PNG2; do not merely copy PNG1 or treat PNG1.5 as a passive proof image.",
+        "Compare every planned component in PNG1 against the direct SVG1 transcription and its PNG1.5 render before deciding that it is faithful.",
+        "If a box that is flat or solid in PNG1 is covered by a gradient, translucent overlay, glow, filter, or other unrequested effect in SVG1/PNG1.5, treat that as a transcription defect: patch PNG2 back to the single approved palette fill and preserve the editable boundary.",
+        "If a badge, seal, medal, icon, marker, or other semantically meaningful object visible in PNG1 is absent, merged into a box, or materially distorted in SVG1/PNG1.5, it has failed transcription: reject or replace it and restore a human-editable version in PNG2.",
+        "Do not mark a component keep or accept_variation when this comparison finds a gradient-over-solid defect, a missing badge/icon, an occluded label, or a broken scientific relationship. Upgrade the verdict and execute the repair.",
+        "The diagnosis is actionable only when the stated verdict changes the PNG1 edit: preserve faithful parts, patch bounded defects, delete unsupported decoration, and use replacement crops for semantically wrong or missing objects.",
+    ]
+    for component in components:
+        component_id = component["id"]
+        record = verdicts[component_id]
+        verdict = record["verdict"]
+        reason = record.get("reason", "re-run the direct comparison and state the evidence")
+        detail = reason.strip() if isinstance(reason, str) and reason.strip() else "re-run the direct comparison and state the evidence"
+        if verdict in {"patch", "reject", "replace"}:
+            lines.append(
+                f"- REQUIRED PNG1 edit for `{component_id}`: verdict `{verdict}` — {detail} Modify this component in PNG2; do not leave the diagnosed defect unchanged."
+            )
+        else:
+            lines.append(
+                f"- Verification for `{component_id}`: verdict `{verdict}` — {detail} If the pixel comparison contradicts this verdict, change it to `patch`, `reject`, or `replace` and repair PNG1 in PNG2."
+            )
+    return lines
+
+
 def build_prompt2_bundle(methodology: str, context1: Mapping[str, Any], context2: Mapping[str, Any], context3: Mapping[str, Any], png1: str, diagnosis: Mapping[str, Any], svg_crops: Mapping[str, Any], replacement_crops: Mapping[str, Any], root: Path) -> dict[str, Any]:
     """Compile the final PNG revision prompt while rejecting diagnostic-render inputs."""
 
@@ -362,7 +393,7 @@ def build_prompt2_bundle(methodology: str, context1: Mapping[str, Any], context2
     for verdict, heading in _VERDICT_BLOCKS:
         verdict_sections.extend([f"## {heading}", *(blocks[verdict] or ["- No components have this verdict."]), ""])
     prompt = "\n".join([
-        "Revise PNG1 into the final PNG2. PNG1 is the image to modify and remains the only raster visual truth; use approved SVG and replacement crops only as targeted evidence.", *_evidence_blocks(methodology, normalized1, normalized2, normalized3), "Context 2 semantic relationships:", *_relationship_lines(normalized2), "Context 3 one-base-palette lineage:", *_palette_lines(normalized3), *verdict_sections,
+        "Revise PNG1 into the final PNG2. PNG1 is the image to modify and remains the only raster visual truth; use approved SVG and replacement crops only as targeted evidence.", *_evidence_blocks(methodology, normalized1, normalized2, normalized3), "Context 2 semantic relationships:", *_relationship_lines(normalized2), "Context 3 one-base-palette lineage:", *_palette_lines(normalized3), *_diagnostic_repair_lines(normalized2["components"], verdicts), *verdict_sections,
         "Use approved SVG crops only for their declared component and diagnosis. Use replacement crops only for explicitly rejected or replacement components.", "Do not attach, inspect as an image-generation reference, or derive a design from PNG1.5 / any SVG diagnostic render. This is the second and final image-generation pass. No PNG2-to-SVG loop.",
     ])
     return {"format": _FORMAT, "phase": "prompt2", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}

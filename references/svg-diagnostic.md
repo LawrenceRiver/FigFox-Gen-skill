@@ -81,6 +81,26 @@ scientifically faithful structure is not rejected merely for lacking decorative
 detail. The VLM, not Python, approves a genuine photographic crop or determines
 whether a simplification keeps the intended scientific logic.
 
+### Adversarial fidelity checklist
+
+The render is not a ceremonial checkpoint. Compare each component in the practical
+VLM sense: locate the object in PNG1, locate its editable counterpart in SVG1 and
+PNG1.5, then write the repair decision. The audit must call out, at minimum:
+
+- a PNG1 flat/solid box that SVG1 covers with `linearGradient`, `radialGradient`, a
+  translucent overlay, glow, filter, or any other unrequested effect;
+- a badge, seal, medal, icon, marker, or small meaningful object that is absent,
+  merged, clipped, or materially distorted in SVG1/PNG1.5;
+- labels, arrows, connector direction, containment, occlusion, or scientific
+  relationships that moved or disappeared.
+
+The first case is a `patch` back to the approved flat palette treatment. The second
+is `reject` or `replace` (restore the object; do not silently delete it). A component
+with one of these defects cannot receive `keep` or `accept_variation`. Its reason
+must describe the PNG1→SVG1/PNG1.5 observation and the repair that Prompt 2 must
+perform. PNG1.5 remains forbidden as a Prompt 2 attachment, but its findings are
+mandatory edit instructions against PNG1.
+
 ## Approved crop request and materialized manifest
 
 `apply_svg_crop_manifest(rendered_png, manifest, output_dir)` accepts only

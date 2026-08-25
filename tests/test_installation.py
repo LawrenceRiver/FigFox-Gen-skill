@@ -42,7 +42,7 @@ class InstallationCliTests(unittest.TestCase):
         self.assertIsNotNone(match, "default_prompt must be one quoted YAML string")
         prompt = json.loads(match.group(1))
         required_phrases = (
-            "$genlike-scientific-svg",
+            "$FigFox-Gen-skill",
             "Methodology",
             "optional reference",
             "Contexts 1–3",

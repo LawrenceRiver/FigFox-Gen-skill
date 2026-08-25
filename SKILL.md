@@ -1,11 +1,11 @@
 ---
-name: genlike-scientific-svg
+name: FigFox-Gen-skill
 description: Use when turning a scientific Methodology, with an optional reference image, into an evidence-grounded architecture figure that needs human-edited geometry and a final revised PNG.
 metadata:
   short-description: Build evidence-guided two-pass scientific figures
 ---
 
-# GenLikeScientificSVG
+# FigFox-Gen-skill
 
 ## Core workflow
 
@@ -181,6 +181,15 @@ colours, geometry, paths, groups, lines, arrows, placement, and relationships in
 editable SVG source in one pass. This is transcription, not redesign, cleanup, or a
 fresh plan. Text and vector elements remain independently editable.
 
+The transcription must be adversarially faithful, not cosmetically approximate. Make
+an inventory of every visible PNG1 object before writing SVG1, including small badges,
+seals, medals, icons, markers, labels, and nested objects inside boxes. A badge or
+icon that is present in PNG1 but absent, merged into a container, or materially
+distorted in SVG1 is a failed transcription, not an acceptable simplification.
+Likewise, if PNG1 uses a flat/solid box and SVG1 paints that box with a gradient,
+translucent overlay, glow, or filter, record the mismatch for repair. Do not let a
+visually smoother SVG1 conceal a lost object or changed visual grammar.
+
 Do not use HTML/canvas, Python, draw.io, tracing/conversion utilities, local
 programmatic reconstruction, hand-redrawing from the Methodology, or a single
 embedded raster wrapper. Deterministic local tools begin only after SVG1 exists. If
@@ -217,6 +226,16 @@ directional/logical error must be rejected or replaced. For `replace` (and for a
 SVG/figure crops or FigureBench and save a mapped replacement under
 `references/web/crops/replacements/` with its manifest. Prompt 2 compilation must
 fail when a `replace` component has no mapped replacement crop.
+
+The comparison is an active correction gate. For every component, state what PNG1
+shows, what SVG1/PNG1.5 preserved or changed, and what PNG2 must do. A gradient that
+covers a formerly flat box, a missing badge/seal/medal/icon, an occluded label, or a
+broken relationship cannot receive `keep` or `accept_variation`; it must become
+`patch`, `reject`, or `replace` with an explicit repair instruction. Do not crop a
+known-defective gradient or missing-object region as approved SVG evidence. Either
+crop only a qualified neighbouring treatment or provide a provenance-safe replacement
+crop. Prompt 2 must actively modify PNG1 according to this audit; PNG1.5 is not a
+passive proof image whose findings can be ignored.
 
 Only visually useful `keep`, `accept_variation`, or `patch` regions may enter the
 approved SVG crop request. Save VLM coordinates in

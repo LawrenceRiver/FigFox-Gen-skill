@@ -1,6 +1,6 @@
 <div align="center">
 
-# GenLikeScientificSVG
+# FigFox-Gen-skill
 
 ### 用可编辑矢量诊断来修正有证据依据的科研图。
 
@@ -10,14 +10,14 @@
 
 </div>
 
-GenLikeScientificSVG 将 Methodology 和可选参考图转成一张带完整标签、经过
+FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签、经过
 修订的科研架构图。流程有两次图像生成，中间必须进行一次可编辑 SVG 诊断。
 最终结果是 PNG2；SVG1 只是中间诊断材料，不是最终交付物。
 
 ## 安装
 
 ```bash
-npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill
 ```
 
 安装后提供 Methodology，并可按需附上一张参考图。参考图可以强力引导结构、
@@ -77,6 +77,10 @@ Prompt 1 同时包含 Methodology、Contexts 1–3、可选参考图、论文裁
 SVG1 只会被确定性渲染成 PNG1.5 供 VLM 核验。Context 2 的每个构件必须得到
 `keep`、`accept_variation`、`patch`、`reject` 或 `replace` 中的一个判断。只有
 合格的 SVG 局部和定向替换局部会进入第二轮；PNG1.5 永远不能成为 Prompt 2 附件。
+
+这一步是主动返修闸门：原图中平面的框被渐变或半透明层覆盖、勋章/徽章/图标缺失、
+标签丢失或连接关系断裂，都不能判为忠实保留；必须写成针对 PNG1 的明确修补或替换，
+并由 Prompt 2 真正执行。
 
 ### 最终 PNG2
 

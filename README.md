@@ -1,6 +1,6 @@
 <div align="center">
 
-# GenLikeScientificSVG
+# FigFox-Gen-skill
 
 ### Evidence-guided scientific figures, refined through an editable-vector diagnosis.
 
@@ -12,7 +12,7 @@
 
 </div>
 
-GenLikeScientificSVG turns a scientific Methodology and an optional reference image
+FigFox-Gen-skill turns a scientific Methodology and an optional reference image
 into a revised, labelled architecture figure. It uses two image-generation passes
 with one mandatory editable-SVG diagnostic between them. The final output is PNG2;
 SVG1 is an intermediate diagnostic artifact, not the final deliverable.
@@ -20,7 +20,7 @@ SVG1 is an intermediate diagnostic artifact, not the final deliverable.
 ## Installation
 
 ```bash
-npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill
 ```
 
 Then provide a Methodology and, if useful, one reference image. The reference may
@@ -90,6 +90,11 @@ SVG1 is deterministically rendered to PNG1.5 solely for visual diagnosis. Each
 planned component receives one verdict: `keep`, `accept_variation`, `patch`,
 `reject`, or `replace`. Only qualified SVG regions and targeted replacement regions
 become crops for the second prompt. PNG1.5 is never a Prompt 2 attachment.
+
+The diagnosis is an active correction gate: gradient or translucent overlays on
+formerly flat boxes, missing badges/seals/medals/icons, lost labels, and broken
+connectors cannot be marked faithful. They become explicit PNG1 repairs or
+replacement lookups, and Prompt 2 must apply those repairs.
 
 ### Final PNG2
 

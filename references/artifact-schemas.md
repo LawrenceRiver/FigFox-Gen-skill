@@ -281,14 +281,19 @@ One record is required for every Context 2 component. Allowed verdicts are `keep
 ```json
 {
   "verdicts": [
-    {"id": "prompt", "component_id": "prompt", "verdict": "keep", "reason": "label and simple geometry are faithful"},
-    {"id": "encoder", "component_id": "encoder", "verdict": "patch", "reason": "reduce width while preserving the corner and stroke treatment"},
+    {"id": "prompt", "component_id": "prompt", "verdict": "keep", "reason": "PNG1 label and simple geometry are faithful after the SVG1/PNG1.5 comparison; preserve them"},
+    {"id": "encoder", "component_id": "encoder", "verdict": "patch", "reason": "PNG1 is flat but SVG1/PNG1.5 covers the box with a gradient; patch PNG2 back to the single palette fill"},
     {"id": "diffusion", "component_id": "diffusion", "verdict": "accept_variation", "reason": "the simplified three-state sequence preserves denoising semantics"},
     {"id": "piano_roll", "component_id": "piano_roll", "verdict": "reject", "reason": "the note grid reverses time and pitch and is logically wrong"},
-    {"id": "audio", "component_id": "audio", "verdict": "replace", "reason": "the fake cartoon speaker must become a mature editable waveform treatment"}
+    {"id": "audio", "component_id": "audio", "verdict": "replace", "reason": "the badge/marker is absent in SVG1/PNG1.5, so replace the failed transcription with a mature editable treatment"}
   ]
 }
 ```
+
+Every reason must state the observed PNG1 versus SVG1/PNG1.5 result and the action
+that Prompt 2 must apply. A gradient-over-solid defect or a missing badge/seal/medal/
+icon cannot be described as faithful and cannot receive `keep` or
+`accept_variation`.
 
 ## Approved SVG crop request — `svg-diagnostic/approved-crops/request.json`
 

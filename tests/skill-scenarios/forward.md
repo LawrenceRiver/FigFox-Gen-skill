@@ -767,7 +767,7 @@ Scenario C completed successfully on the corrected isolated fixture.
 
 ## Inputs inspected
 
-- Complete skill: `work/genlike-scientific-svg-skill/SKILL.md`
+- Complete skill: `work/FigFox-Gen-skill/SKILL.md`
 - Routed stage references:
   - `references/artifact-schemas.md`
   - `references/svg-diagnostic.md`

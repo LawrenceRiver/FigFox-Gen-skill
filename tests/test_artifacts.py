@@ -116,8 +116,8 @@ def valid_context3():
 def valid_diagnosis():
     return {
         "verdicts": [
-            {"component_id": "encoder", "verdict": "keep"},
-            {"component_id": "audio", "verdict": "patch"},
+            {"component_id": "encoder", "verdict": "keep", "reason": "PNG1 and PNG1.5 match"},
+            {"component_id": "audio", "verdict": "patch", "reason": "correct the label position"},
         ]
     }
 
@@ -486,6 +486,21 @@ class ContextArtifactTests(unittest.TestCase):
         diagnosis["verdicts"][1]["component_id"] = "missing"
         with self.assertRaisesRegex(ValueError, "exactly one verdict"):
             validate_diagnosis(diagnosis, {"encoder", "audio"})
+
+    def test_diagnosis_cannot_keep_explicit_gradient_or_missing_badge_defects(self):
+        for reason in (
+            "SVG1 covers the flat box with a gradient",
+            "the badge is missing from PNG1.5",
+        ):
+            with self.subTest(reason=reason):
+                diagnosis = valid_diagnosis()
+                diagnosis["verdicts"][0] = {
+                    "component_id": "encoder",
+                    "verdict": "keep",
+                    "reason": reason,
+                }
+                with self.assertRaisesRegex(ValueError, "unresolved SVG defect"):
+                    validate_diagnosis(diagnosis, {"encoder", "audio"})
 
 
 class RunManifestTests(unittest.TestCase):

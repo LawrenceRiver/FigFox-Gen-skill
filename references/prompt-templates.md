@@ -35,5 +35,9 @@ approved SVG crops and replacement crops as component-specific evidence, never a
 reason to redesign the whole figure. `reject` deletes an element with no valid
 scientific role; if the role must remain, use `replace`. Every `replace` verdict
 requires at least one mapped replacement crop. PNG1.5 and SVG diagnostic renders are
-forbidden attachments. This is the second and final image-generation pass; do not
-start a PNG2-to-SVG loop.
+forbidden attachments. Before generating, actively compare every PNG1 component to
+SVG1/PNG1.5. A gradient or translucent effect covering a flat PNG1 box is a `patch`
+back to the single palette fill. A missing badge, seal, medal, icon, marker, label,
+or connector is a failed transcription and must be `reject`/`replace` and restored
+in PNG2. Never leave such a defect unchanged or classify it as `keep`. This is the
+second and final image-generation pass; do not start a PNG2-to-SVG loop.
