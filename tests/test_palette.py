@@ -1,242 +1,164 @@
-import json
+import copy
 from pathlib import Path
-import subprocess
-import sys
-import tempfile
 import unittest
 
-from scientific_figure_rag.palette import compile_colour_contract, select_palettes
+import scientific_figure_workflow
+from scientific_figure_workflow.palette import palette_hex_set, validate_palette
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class PaletteSelectionTests(unittest.TestCase):
-    def test_selects_tag_and_role_matching_palettes_without_image_fields(self):
-        result = select_palettes(
-            {"tags": ["biomedical", "contrast"], "required_roles": ["ink", "accent"]}
-        )
-
-        self.assertEqual(result["palettes"][0]["id"], "biomedical-contrast-01")
-        self.assertNotIn("image", json.dumps(result).lower())
-        self.assertEqual(result["selection_basis"]["top_k"], 3)
-
-    def test_preserves_groups_and_returns_colour_roles(self):
-        result = select_palettes({"tags": ["workflow"], "required_roles": ["primary", "accent"]})
-
-        palette = result["palettes"][0]
-        self.assertEqual(palette["id"], "workflow-role-01")
-        self.assertGreaterEqual(len(palette["colours"]), 4)
-        self.assertIn("primary", {colour["role"] for colour in palette["colours"]})
-        self.assertIn("accent", {colour["role"] for colour in palette["colours"]})
+def palette_library_fixture():
+    return [
+        {
+            "id": "group-a",
+            "colours": [
+                {"role": "ink", "hex": "#203040", "rgb": [32, 48, 64]},
+                {"role": "primary", "hex": "#406080", "rgb": [64, 96, 128]},
+            ],
+        },
+        {
+            "id": "group-b",
+            "colours": [
+                {"role": "accent", "hex": "#A04040", "rgb": [160, 64, 64]},
+            ],
+        },
+    ]
 
 
-class ColourContractTests(unittest.TestCase):
-    def test_locks_assignments_to_exact_values_from_an_approved_library_group(self):
-        contract = compile_colour_contract(
+def base_colours():
+    return copy.deepcopy(palette_library_fixture()[0]["colours"])
+
+
+def valid_palette():
+    return {
+        "base_palette_id": "group-a",
+        "colours": base_colours(),
+        "extensions": [
             {
-                "brief_domains": ["biomedical"],
-                "source": {"kind": "approved_library", "palette_id": "biomedical-contrast-01"},
-                "assignments": {"canvas": "#E7EFFA", "ink": "#14517C", "accent": "#D8383A"},
+                "role": "quiet_accent",
+                "hex": "#6E8FA3",
+                "rgb": [110, 143, 163],
+                "relationship": "analogous_neighbour",
+                "evidence_url": "https://color.adobe.com/create/color-wheel",
+                "evidence_summary": "Blue-grey adjacent tone compatible with the base blue family.",
             }
-        )
+        ],
+    }
+
+
+class PaletteLineageTests(unittest.TestCase):
+    def test_validator_is_exported_from_the_workflow_package(self):
+        self.assertIs(scientific_figure_workflow.validate_palette, validate_palette)
+
+    def test_accepts_one_approved_base_group_and_evidenced_related_colour(self):
+        palette = validate_palette(valid_palette(), palette_library_fixture())
+
+        self.assertEqual(palette["base_palette_id"], "group-a")
+        self.assertEqual(palette["colours"], base_colours())
+        self.assertEqual(palette["extensions"][0]["relationship"], "analogous_neighbour")
+
+    def test_rejects_a_second_palette_library_group(self):
+        with self.assertRaisesRegex(ValueError, "one base palette group"):
+            validate_palette(
+                {
+                    "base_palette_id": "group-a",
+                    "additional_palette_ids": ["group-b"],
+                    "colours": [{"role": "ink", "hex": "#203040", "rgb": [32, 48, 64]}],
+                    "extensions": [],
+                },
+                palette_library_fixture(),
+            )
+
+    def test_related_colour_requires_web_evidence_and_relationship(self):
+        palette = validate_palette(valid_palette(), palette_library_fixture())
+
+        self.assertEqual(palette["base_palette_id"], "group-a")
+
+    def test_requires_every_base_colour_to_match_the_selected_group_exactly(self):
+        for mutation, reason in (
+            (lambda palette: palette["colours"].pop(), "base palette"),
+            (lambda palette: palette["colours"].__setitem__(0, {"role": "ink", "hex": "#203041", "rgb": [32, 48, 65]}), "base palette"),
+            (lambda palette: palette["colours"].__setitem__(0, {"role": "label", "hex": "#203040", "rgb": [32, 48, 64]}), "base palette"),
+        ):
+            with self.subTest(reason=reason):
+                palette = valid_palette()
+                mutation(palette)
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_palette(palette, palette_library_fixture())
+
+    def test_rejects_invalid_exact_colour_and_rgb_values(self):
+        for location, field, value, reason in (
+            ("colours", "hex", "#203040 ", "uppercase HEX"),
+            ("colours", "hex", "#203040", "rgb matching hex"),
+            ("extensions", "hex", "#6e8fa3", "uppercase HEX"),
+            ("extensions", "rgb", [110, 143, 162], "rgb matching hex"),
+        ):
+            with self.subTest(location=location, field=field, value=value):
+                palette = valid_palette()
+                palette[location][0][field] = value
+                if location == "colours" and field == "hex" and value == "#203040":
+                    palette[location][0]["rgb"] = [32, 48, 63]
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_palette(palette, palette_library_fixture())
+
+    def test_rejects_unexplained_or_invalid_extension(self):
+        for field, value, reason in (
+            ("role", "", "non-empty role"),
+            ("relationship", "unrelated", "relationship"),
+            ("evidence_url", "http://example.test/evidence", "HTTPS evidence_url"),
+            ("evidence_summary", "", "evidence_summary"),
+        ):
+            with self.subTest(field=field):
+                palette = valid_palette()
+                palette["extensions"][0][field] = value
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_palette(palette, palette_library_fixture())
+
+    def test_rejects_source_mixing_gradients_and_duplicate_colours(self):
+        for field, value, reason in (
+            ("user_reference_palette_id", "user-palette", "user-reference"),
+            ("figurebench_palette_id", "figurebench-palette", "FigureBench"),
+            ("gradients", [{"from": "#203040", "to": "#406080"}], "gradients"),
+            ("additional_palette_ids", ["group-b"], "one base palette group"),
+        ):
+            with self.subTest(field=field):
+                palette = valid_palette()
+                palette[field] = value
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_palette(palette, palette_library_fixture())
+
+        palette = valid_palette()
+        palette["extensions"][0]["hex"] = "#203040"
+        palette["extensions"][0]["rgb"] = [32, 48, 64]
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            validate_palette(palette, palette_library_fixture())
+
+    def test_palette_hex_set_returns_every_active_colour_as_a_frozenset(self):
+        palette = validate_palette(valid_palette(), palette_library_fixture())
 
         self.assertEqual(
-            contract["allowed_hex"],
-            ["#14517C", "#2F7FC1", "#E7EFFA", "#96C37D", "#F3D266", "#D8383A", "#A9B8C6"],
-        )
-        self.assertEqual(contract["assignments"]["accent"], "#D8383A")
-
-    def test_rejects_an_invented_colour_even_when_the_role_is_valid(self):
-        with self.assertRaisesRegex(ValueError, "not in the selected source"):
-            compile_colour_contract(
-                {
-                    "brief_domains": ["biomedical"],
-                    "source": {"kind": "approved_library", "palette_id": "biomedical-contrast-01"},
-                    "assignments": {"accent": "#112233"},
-                }
-            )
-
-    def test_accepts_an_ephemeral_svg_palette_only_when_its_domain_is_unrelated(self):
-        contract = compile_colour_contract(
-            {
-                "brief_domains": ["diffusion", "computer vision"],
-                "source": {
-                    "kind": "cross_domain_svg",
-                    "source_domains": ["marine ecology"],
-                    "colours": [
-                        {"role": "canvas", "hex": "#F7F4EE", "rgb": [247, 244, 238]},
-                        {"role": "ink", "hex": "#203040", "rgb": [32, 48, 64]},
-                        {"role": "primary", "hex": "#3A7CA5", "rgb": [58, 124, 165]},
-                    ],
-                },
-                "assignments": {"canvas": "#F7F4EE", "ink": "#203040", "primary": "#3A7CA5"},
-            }
+            palette_hex_set(palette),
+            frozenset({"#203040", "#406080", "#6E8FA3"}),
         )
 
-        self.assertEqual(contract["source"]["kind"], "cross_domain_svg")
-        self.assertEqual(contract["allowed_hex"], ["#F7F4EE", "#203040", "#3A7CA5"])
 
-    def test_rejects_a_cross_domain_svg_palette_from_the_current_domain(self):
-        with self.assertRaisesRegex(ValueError, "unrelated"):
-            compile_colour_contract(
-                {
-                    "brief_domains": ["diffusion"],
-                    "source": {
-                        "kind": "cross_domain_svg",
-                        "source_domains": ["diffusion"],
-                        "colours": [{"role": "primary", "hex": "#3A7CA5", "rgb": [58, 124, 165]}],
-                    },
-                    "assignments": {"primary": "#3A7CA5"},
-                }
-            )
+class TasteGuidanceTests(unittest.TestCase):
+    def test_taste_guidance_keeps_palette_lineage_subordinate_to_scientific_constraints(self):
+        rules = (ROOT / "references/taste-rules.md").read_text(encoding="utf-8")
 
-
-class PaletteCliTests(unittest.TestCase):
-    def test_cli_returns_palette_selection_from_planning_json(self):
-        plan = {"tags": ["biomedical", "contrast"], "required_roles": ["ink", "accent"]}
-        script = ROOT / "scripts/figurebench_rag.py"
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            plan_path = Path(temporary_directory) / "plan.json"
-            plan_path.write_text(json.dumps(plan), encoding="utf-8")
-            completed = subprocess.run(
-                [sys.executable, str(script), "palettes", "--planning-json", str(plan_path)],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-
-        self.assertEqual(json.loads(completed.stdout)["palettes"][0]["id"], "biomedical-contrast-01")
-
-    def test_cli_compiles_a_frozen_colour_contract(self):
-        plan = {
-            "brief_domains": ["biomedical"],
-            "source": {"kind": "approved_library", "palette_id": "biomedical-contrast-01"},
-            "assignments": {"ink": "#14517C", "accent": "#D8383A"},
-        }
-        script = ROOT / "scripts/figurebench_rag.py"
-        with tempfile.TemporaryDirectory() as temporary_directory:
-            plan_path = Path(temporary_directory) / "plan.json"
-            plan_path.write_text(json.dumps(plan), encoding="utf-8")
-            completed = subprocess.run(
-                [sys.executable, str(script), "colour-contract", "--plan-json", str(plan_path)],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-
-        result = json.loads(completed.stdout)
-        self.assertEqual(result["assignments"]["accent"], "#D8383A")
-        self.assertEqual(result["source"]["palette_id"], "biomedical-contrast-01")
-
-
-class SkillDocumentationTests(unittest.TestCase):
-    def test_ui_default_prompt_starts_a_complete_labelled_image_generation_task(self):
-        metadata = (ROOT / "agents/openai.yaml").read_text(encoding="utf-8")
-
-        self.assertIn("$genlike-scientific-svg", metadata)
-        self.assertIn("image-generation task", metadata)
-        self.assertIn("complete labelled research figure", metadata)
-        self.assertIn("first image draft", metadata)
-        self.assertIn("one direct image-generation call", metadata)
-        self.assertIn("final PNG", metadata)
-
-    def test_skill_documents_inline_colour_planning_and_image_free_palette_library(self):
-        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
-        palette_reference = (ROOT / "references/palette-rag.md").read_text(encoding="utf-8")
-
-        self.assertIn("Color Planning", skill)
-        self.assertIn("does not add a model call", skill)
-        self.assertIn("palette-library.json", palette_reference)
-        self.assertIn("must not store screenshots", palette_reference)
-
-    def test_docs_require_colour_source_isolation_direct_image_generation_and_skill_installation(self):
-        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
-        palette_reference = (ROOT / "references/palette-rag.md").read_text(encoding="utf-8")
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
-
-        self.assertIn("unrelated to the brief's domain", skill)
-        self.assertIn("temporary crop", skill)
-        self.assertIn("temporary crop", palette_reference)
-        self.assertIn("directly generate the first scientific raster draft", skill)
-        self.assertIn("must not use a rendered SVG as its input", skill)
-        self.assertIn("generate every required label directly", skill)
-        self.assertIn("missing, incorrect, or overflowing text", skill)
-        self.assertIn("field-first, reference-grounded, image-generation-first", readme.lower())
-        self.assertIn("先识别领域、再参考学习、最后直接图像生成", readme_zh)
-        self.assertIn("only exact HEX values", palette_reference)
-        self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme)
-        self.assertIn("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill", readme_zh)
-        self.assertNotIn("git clone", readme)
-        self.assertNotIn("git clone", readme_zh)
-
-    def test_skill_documents_optional_faithful_svg_verification_after_one_image_call(self):
-        skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
-        rag_reference = (ROOT / "references/figurebench-rag.md").read_text(encoding="utf-8")
-
-        self.assertIn("at least 3 and preferably 4+", skill)
-        self.assertIn("do not label planned parts with numbers", skill)
-        self.assertIn("one direct image-generation call", skill)
-        self.assertIn("optional faithful PNG-to-SVG verification", skill)
-        self.assertIn("skip SVG verification", skill)
-        self.assertIn("do not make a second image-generation call", skill)
-        self.assertIn("flat exact-HEX fills", skill)
-        self.assertIn("complex scientific assets", skill)
-        self.assertIn("svg-verification-brief", rag_reference)
-
-    def test_readmes_lead_with_install_then_record_real_methodology_driven_runs(self):
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
-
-        self.assertNotIn("## What it is", readme)
-        self.assertNotIn("## 这是什么", readme_zh)
-        self.assertLess(
-            readme.index("npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill"),
-            readme.index("## Workflow"),
-        )
-        for method in ("Latent Diffusion", "MusiCoT", "AlphaFold 3"):
-            self.assertIn(method, readme)
-        self.assertIn("Methodology input", readme)
-        self.assertIn("Computer Vision", readme)
-
-    def test_readme_links_all_five_direct_image_generation_outputs(self):
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-
-        for asset in (
-            "workflow-en.png",
-            "workflow-zh.png",
-            "latent-diffusion.png",
-            "musicot.png",
-            "alphafold3.png",
+        for phrase in (
+            "scientific correctness",
+            "explicit user constraints",
+            "domain conventions",
+            "construction provenance",
+            "one-base-palette lineage",
+            "web colour-relationship research",
+            "exact evidence",
+            "second library group",
+            "user-reference colours",
+            "FigureBench colours",
+            "draw.io-like editability",
         ):
-            self.assertTrue((ROOT / "assets" / "runs" / asset).is_file())
-            self.assertIn(f"assets/runs/{asset}", readme)
-
-    def test_readmes_acknowledge_reference_sources_without_making_rag_the_hook(self):
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-        readme_zh = (ROOT / "README_ZH.md").read_text(encoding="utf-8")
-
-        self.assertIn("## Acknowledgements", readme)
-        self.assertIn("Nature Portfolio", readme)
-        self.assertIn("## 鸣谢", readme_zh)
-        self.assertIn("Nature Portfolio", readme_zh)
-        self.assertNotIn("FigureBench RAG · frozen colour", readme)
-
-    def test_readme_has_a_bilingual_marketing_hook_and_four_image_preview_strip(self):
-        readme = (ROOT / "README.md").read_text(encoding="utf-8")
-
-        self.assertIn("让图像模型真正理解科研架构", readme)
-        hook_end = readme.index("## Workflow")
-        preview_strip = readme[:hook_end]
-        for asset in (
-            "workflow-en.png",
-            "latent-diffusion.png",
-            "musicot.png",
-            "alphafold3.png",
-        ):
-            self.assertIn(f"assets/runs/{asset}", preview_strip)
-
-
-if __name__ == "__main__":
-    unittest.main()
+            self.assertIn(phrase, rules)

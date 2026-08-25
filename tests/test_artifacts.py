@@ -58,10 +58,12 @@ def valid_context2():
 
 def valid_palette():
     return {
-        "base_palette_id": "slate-blue",
+        "base_palette_id": "workflow-role-01",
         "colours": [
-            {"hex": "#1F2937", "rgb": [31, 41, 55], "role": "ink"},
-            {"hex": "#E5E7EB", "rgb": [229, 231, 235], "role": "background"},
+            {"hex": "#2E5BFF", "rgb": [46, 91, 255], "role": "primary"},
+            {"hex": "#F59E0B", "rgb": [245, 158, 11], "role": "accent"},
+            {"hex": "#14B8A6", "rgb": [20, 184, 166], "role": "secondary"},
+            {"hex": "#475569", "rgb": [71, 85, 105], "role": "ink"},
         ],
         "extensions": [
             {
@@ -373,8 +375,8 @@ class ContextArtifactTests(unittest.TestCase):
                     validate_context3(context, {"encoder", "audio"})
         for field, value, reason in (
             ("role", None, "role"),
-            ("hex", "#1f2937", "uppercase HEX"),
-            ("rgb", [31, 41, 54], "rgb"),
+            ("hex", "#2e5bff", "uppercase HEX"),
+            ("rgb", [46, 91, 254], "rgb"),
         ):
             with self.subTest(colour_field=field):
                 context = valid_context3()
@@ -417,9 +419,16 @@ class ContextArtifactTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "extensions"):
             validate_context3(context, {"encoder", "audio"})
         context = valid_context3()
-        context["palette"]["extensions"][0]["hex"] = "#1F2937"
-        context["palette"]["extensions"][0]["rgb"] = [31, 41, 55]
+        context["palette"]["extensions"][0]["hex"] = "#2E5BFF"
+        context["palette"]["extensions"][0]["rgb"] = [46, 91, 255]
         with self.assertRaisesRegex(ValueError, "duplicate"):
+            validate_context3(context, {"encoder", "audio"})
+
+    def test_context3_rejects_an_unapproved_base_palette_group(self):
+        context = valid_context3()
+        context["palette"]["base_palette_id"] = "unapproved-group"
+
+        with self.assertRaisesRegex(ValueError, "approved base palette group"):
             validate_context3(context, {"encoder", "audio"})
 
     def test_context3_rejects_missing_taste_constraints(self):

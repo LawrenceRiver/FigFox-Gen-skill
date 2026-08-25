@@ -4,32 +4,14 @@ from __future__ import annotations
 
 import copy
 import json
-import re
 from collections.abc import Collection, Mapping
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlparse
+
+from .palette import validate_palette
 
 
 VERDICTS = {"keep", "accept_variation", "patch", "reject", "replace"}
-PALETTE_RELATIONSHIPS = {
-    "tint",
-    "shade",
-    "tone",
-    "analogous_neighbour",
-    "compatible_neutral",
-    "controlled_contrast",
-}
-_UPPERCASE_HEX = re.compile(r"#[0-9A-F]{6}\Z")
-_FORBIDDEN_PALETTE_FIELDS = {
-    "additional_palette_ids",
-    "base_palette",
-    "palette_source",
-    "palette_sources",
-    "source_palette_ids",
-    "user_reference_palette_id",
-    "figurebench_palette_id",
-}
 
 _RUN_ARTIFACTS = {
     "methodology": "input/methodology.md",
@@ -172,74 +154,15 @@ def validate_context2(value: Mapping[str, Any]) -> dict[str, Any]:
     return normalized
 
 
-def _validate_colour(record: Mapping[str, Any], location: str) -> dict[str, Any]:
-    role = _required_string(record, "role", location)
-    hex_value = _required_string(record, "hex", location)
-    if record.get("hex") != hex_value or not _UPPERCASE_HEX.fullmatch(hex_value):
-        raise ValueError(f"{location} requires exact uppercase HEX")
-    rgb = record.get("rgb")
-    if (
-        not isinstance(rgb, list)
-        or len(rgb) != 3
-        or any(not isinstance(channel, int) or isinstance(channel, bool) or not 0 <= channel <= 255 for channel in rgb)
-    ):
-        raise ValueError(f"{location} requires rgb with three integer channels")
-    expected_rgb = [int(hex_value[index : index + 2], 16) for index in (1, 3, 5)]
-    if rgb != expected_rgb:
-        raise ValueError(f"{location} requires rgb matching hex")
-    normalized = copy.deepcopy(dict(record))
-    normalized["role"] = role
-    normalized["hex"] = hex_value
-    return normalized
-
-
 def _validate_palette(value: Any) -> dict[str, Any]:
-    """Validate Context 3's palette structure without consulting a library."""
+    """Validate Context 3's palette with the bundled approved library."""
 
-    palette = _mapping(value, "context3 palette")
-    for field in _FORBIDDEN_PALETTE_FIELDS:
-        if field in palette:
-            raise ValueError(f"context3 palette must not include {field}")
-    normalized = copy.deepcopy(dict(palette))
-    normalized["base_palette_id"] = _required_string(
-        palette, "base_palette_id", "context3 palette"
-    )
-    colours = _records(palette.get("colours"), "context3 palette colours")
-    normalized["colours"] = []
-    active_hexes: set[str] = set()
-    for index, colour in enumerate(colours):
-        normalized_colour = _validate_colour(
-            colour, f"context3 palette colours[{index}]"
-        )
-        if normalized_colour["hex"] in active_hexes:
-            raise ValueError("context3 palette has duplicate hex values")
-        active_hexes.add(normalized_colour["hex"])
-        normalized["colours"].append(normalized_colour)
-
-    extensions = palette.get("extensions", [])
-    if not isinstance(extensions, list):
-        raise ValueError("context3 palette extensions must be a list")
-    normalized["extensions"] = []
-    for index, extension in enumerate(extensions):
-        location = f"context3 palette extensions[{index}]"
-        record = _mapping(extension, location)
-        normalized_extension = _validate_colour(record, location)
-        relationship = _required_string(record, "relationship", location)
-        if relationship not in PALETTE_RELATIONSHIPS:
-            raise ValueError(f"{location} has unsupported relationship")
-        evidence_url = _required_string(record, "evidence_url", location)
-        parsed_url = urlparse(evidence_url)
-        if parsed_url.scheme != "https" or not parsed_url.netloc:
-            raise ValueError(f"{location} requires an HTTPS evidence_url")
-        evidence_summary = _required_string(record, "evidence_summary", location)
-        if normalized_extension["hex"] in active_hexes:
-            raise ValueError("context3 palette has duplicate hex values")
-        active_hexes.add(normalized_extension["hex"])
-        normalized_extension["relationship"] = relationship
-        normalized_extension["evidence_url"] = evidence_url
-        normalized_extension["evidence_summary"] = evidence_summary
-        normalized["extensions"].append(normalized_extension)
-    return normalized
+    library_path = Path(__file__).resolve().parents[1] / "references" / "palette-library.json"
+    library = json.loads(library_path.read_text(encoding="utf-8"))
+    palettes = library.get("palettes") if isinstance(library, Mapping) else None
+    if not isinstance(palettes, list):
+        raise ValueError("bundled palette library requires palettes list")
+    return validate_palette(value, palettes)
 
 
 def validate_context3(

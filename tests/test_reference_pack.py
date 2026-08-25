@@ -334,10 +334,12 @@ class ReferenceCropTests(unittest.TestCase):
                 "selected_references": selected_references,
                 "coverage_matrix": coverage_matrix,
                 "palette": {
-                    "base_palette_id": "slate-blue",
+                    "base_palette_id": "workflow-role-01",
                     "colours": [
-                        {"hex": "#1F2937", "rgb": [31, 41, 55], "role": "ink"},
-                        {"hex": "#E5E7EB", "rgb": [229, 231, 235], "role": "background"},
+                        {"hex": "#2E5BFF", "rgb": [46, 91, 255], "role": "primary"},
+                        {"hex": "#F59E0B", "rgb": [245, 158, 11], "role": "accent"},
+                        {"hex": "#14B8A6", "rgb": [20, 184, 166], "role": "secondary"},
+                        {"hex": "#475569", "rgb": [71, 85, 105], "role": "ink"},
                     ],
                 },
                 "taste_constraints": ["quiet hierarchy"],
