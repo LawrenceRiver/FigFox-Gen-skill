@@ -58,19 +58,19 @@ def valid_context2():
 
 def valid_palette():
     return {
-        "base_palette": {
-            "id": "slate-blue",
-            "colors": [
-                {"hex": "#1F2937", "role": "ink"},
-                {"hex": "#E5E7EB", "role": "background"},
-            ],
-        },
+        "base_palette_id": "slate-blue",
+        "colours": [
+            {"hex": "#1F2937", "rgb": [31, 41, 55], "role": "ink"},
+            {"hex": "#E5E7EB", "rgb": [229, 231, 235], "role": "background"},
+        ],
         "extensions": [
             {
                 "hex": "#3B82F6",
+                "rgb": [59, 130, 246],
                 "role": "accent",
                 "relationship": "controlled_contrast",
-                "web_evidence": "https://example.test/palette-evidence",
+                "evidence_url": "https://example.test/palette-evidence",
+                "evidence_summary": "A controlled accent relationship to the base group.",
             }
         ],
     }
@@ -141,6 +141,13 @@ MANIFEST_PATHS = {
 }
 
 
+def write_manifest_files(root, artifacts=MANIFEST_PATHS):
+    for relative_path in artifacts.values():
+        path = root / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("fixture", encoding="utf-8")
+
+
 class ContextArtifactTests(unittest.TestCase):
     def test_context1_requires_recurrence_evidence(self):
         with self.assertRaisesRegex(ValueError, "recurrence_evidence"):
@@ -156,6 +163,28 @@ class ContextArtifactTests(unittest.TestCase):
 
         self.assertEqual(normalized["domain"], "music generation")
         self.assertEqual(context["domain"], "  music generation  ")
+
+    def test_context1_rejects_every_required_field(self):
+        for field in ("domain", "mainline"):
+            with self.subTest(field=field):
+                context = valid_context1()
+                context.pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context1(context)
+        for field in (
+            "concept",
+            "recurrence_evidence",
+            "visual_treatment",
+            "terminology",
+            "methodology_relevance",
+        ):
+            with self.subTest(convention_field=field):
+                context = valid_context1()
+                context["conventions"][0].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context1(context)
+        with self.assertRaisesRegex(ValueError, "conventions"):
+            validate_context1({"domain": "music", "mainline": "score to audio", "conventions": []})
 
     def test_context2_requires_visual_provenance_for_each_component(self):
         with self.assertRaisesRegex(ValueError, "construction_provenance"):
@@ -179,6 +208,43 @@ class ContextArtifactTests(unittest.TestCase):
         dangling["relationships"] = [{"source_id": "encoder", "target_id": "missing"}]
         with self.assertRaisesRegex(ValueError, "known component ids"):
             validate_context2(dangling)
+
+    def test_context2_rejects_every_component_and_relationship_invariant(self):
+        context = valid_context2()
+        context.pop("mainline")
+        with self.assertRaisesRegex(ValueError, "mainline"):
+            validate_context2(context)
+
+        context = valid_context2()
+        context["components"] = []
+        with self.assertRaisesRegex(ValueError, "components"):
+            validate_context2(context)
+
+        for field in (
+            "id",
+            "label",
+            "semantic_role",
+            "visual_treatment",
+            "construction_provenance",
+            "special",
+            "source_context",
+        ):
+            with self.subTest(component_field=field):
+                context = valid_context2()
+                context["components"][0].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context2(context)
+
+        context = valid_context2()
+        context["relationships"] = "encoder to audio"
+        with self.assertRaisesRegex(ValueError, "relationships"):
+            validate_context2(context)
+        for field in ("source_id", "target_id"):
+            with self.subTest(endpoint=field):
+                context = valid_context2()
+                context["relationships"][0].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context2(context)
 
     def test_context3_requires_crop_image_and_crop_contract(self):
         with self.assertRaisesRegex(ValueError, "crop_contract"):
@@ -231,6 +297,126 @@ class ContextArtifactTests(unittest.TestCase):
             context["selected_references"][0]["crop_contract"]["borrow"], "  corner radius  "
         )
 
+    def test_context3_rejects_every_selection_and_coverage_invariant(self):
+        for field in ("crop_id", "reference_id", "crop_path", "target_component_id"):
+            with self.subTest(selection_field=field):
+                context = valid_context3()
+                context["selected_references"][0].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context3(context, {"encoder", "audio"})
+        for field in ("borrow", "must_change", "human_editable_reason"):
+            with self.subTest(contract_field=field):
+                context = valid_context3()
+                context["selected_references"][0]["crop_contract"].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context3(context, {"encoder", "audio"})
+
+        context = valid_context3()
+        context["selected_references"] = []
+        with self.assertRaisesRegex(ValueError, "selected_references"):
+            validate_context3(context, {"encoder", "audio"})
+        context = valid_context3()
+        context["selected_references"][1]["crop_id"] = "crop-encoder"
+        with self.assertRaisesRegex(ValueError, "crop_ids"):
+            validate_context3(context, {"encoder", "audio"})
+        context = valid_context3()
+        context["selected_references"][0]["target_component_id"] = "missing"
+        with self.assertRaisesRegex(ValueError, "target_component_id"):
+            validate_context3(context, {"encoder", "audio"})
+
+        context = valid_context3()
+        context["coverage_matrix"] = []
+        with self.assertRaisesRegex(ValueError, "coverage_matrix"):
+            validate_context3(context, {"encoder", "audio"})
+        for field, value, reason in (
+            ("component_id", None, "component_id"),
+            ("component_id", "missing", "component_id"),
+            ("crop_ids", [], "crop_ids"),
+            ("crop_ids", ["missing"], "crop_ids"),
+            ("basic_geometry_justification", "", "basic_geometry_justification"),
+        ):
+            with self.subTest(coverage_field=field, value=value):
+                context = valid_context3()
+                if field == "basic_geometry_justification":
+                    context["coverage_matrix"][0].pop("crop_ids")
+                    context["coverage_matrix"][0][field] = value
+                elif value is None:
+                    context["coverage_matrix"][0].pop(field)
+                else:
+                    context["coverage_matrix"][0][field] = value
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_context3(context, {"encoder", "audio"})
+        context = valid_context3()
+        context["coverage_matrix"][1]["component_id"] = "encoder"
+        with self.assertRaisesRegex(ValueError, "unique"):
+            validate_context3(context, {"encoder", "audio"})
+
+    def test_context3_rejects_every_palette_invariant(self):
+        for field in ("base_palette_id", "colours"):
+            with self.subTest(palette_field=field):
+                context = valid_context3()
+                context["palette"].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context3(context, {"encoder", "audio"})
+        for field, value, reason in (
+            ("role", None, "role"),
+            ("hex", "#1f2937", "uppercase HEX"),
+            ("rgb", [31, 41, 54], "rgb"),
+        ):
+            with self.subTest(colour_field=field):
+                context = valid_context3()
+                if value is None:
+                    context["palette"]["colours"][0].pop(field)
+                else:
+                    context["palette"]["colours"][0][field] = value
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_context3(context, {"encoder", "audio"})
+        for field, value, reason in (
+            ("role", None, "role"),
+            ("hex", "#3b82f6", "uppercase HEX"),
+            ("rgb", [59, 130, 245], "rgb"),
+            ("relationship", "unrelated", "relationship"),
+            ("evidence_url", "http://example.test/evidence", "HTTPS"),
+            ("evidence_summary", "", "evidence_summary"),
+        ):
+            with self.subTest(extension_field=field):
+                context = valid_context3()
+                if value is None:
+                    context["palette"]["extensions"][0].pop(field)
+                else:
+                    context["palette"]["extensions"][0][field] = value
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_context3(context, {"encoder", "audio"})
+        for field in (
+            "additional_palette_ids",
+            "palette_source",
+            "user_reference_palette_id",
+            "figurebench_palette_id",
+            "base_palette",
+        ):
+            with self.subTest(forbidden_palette_field=field):
+                context = valid_context3()
+                context["palette"][field] = ["other"]
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context3(context, {"encoder", "audio"})
+        context = valid_context3()
+        context["palette"]["extensions"] = "not a list"
+        with self.assertRaisesRegex(ValueError, "extensions"):
+            validate_context3(context, {"encoder", "audio"})
+        context = valid_context3()
+        context["palette"]["extensions"][0]["hex"] = "#1F2937"
+        context["palette"]["extensions"][0]["rgb"] = [31, 41, 55]
+        with self.assertRaisesRegex(ValueError, "duplicate"):
+            validate_context3(context, {"encoder", "audio"})
+
+    def test_context3_rejects_missing_taste_constraints(self):
+        for constraints, reason in (([], "taste_constraints"), ([""], "taste_constraints")):
+            with self.subTest(constraints=constraints):
+                context = valid_context3()
+                context["taste_constraints"] = constraints
+                with self.assertRaisesRegex(ValueError, reason):
+                    validate_context3(context, {"encoder", "audio"})
+
     def test_diagnosis_requires_one_declared_verdict_per_component(self):
         self.assertEqual(
             validate_diagnosis(valid_diagnosis(), {"encoder", "audio"})["verdicts"][0]["verdict"],
@@ -247,15 +433,32 @@ class ContextArtifactTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "verdict"):
             validate_diagnosis(invalid, {"encoder", "audio"})
 
+    def test_diagnosis_rejects_each_record_invariant(self):
+        diagnosis = valid_diagnosis()
+        diagnosis["verdicts"] = []
+        with self.assertRaisesRegex(ValueError, "verdicts"):
+            validate_diagnosis(diagnosis, {"encoder", "audio"})
+        for field in ("component_id", "verdict"):
+            with self.subTest(verdict_field=field):
+                diagnosis = valid_diagnosis()
+                diagnosis["verdicts"][0].pop(field)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_diagnosis(diagnosis, {"encoder", "audio"})
+        diagnosis = valid_diagnosis()
+        diagnosis["verdicts"][1]["component_id"] = "encoder"
+        with self.assertRaisesRegex(ValueError, "exactly one verdict"):
+            validate_diagnosis(diagnosis, {"encoder", "audio"})
+        diagnosis = valid_diagnosis()
+        diagnosis["verdicts"][1]["component_id"] = "missing"
+        with self.assertRaisesRegex(ValueError, "exactly one verdict"):
+            validate_diagnosis(diagnosis, {"encoder", "audio"})
+
 
 class RunManifestTests(unittest.TestCase):
     def test_manifest_requires_all_canonical_relative_artifacts_to_exist(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
-            for relative_path in MANIFEST_PATHS.values():
-                path = root / relative_path
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text("fixture", encoding="utf-8")
+            write_manifest_files(root)
 
             normalized = validate_run_manifest({"artifacts": MANIFEST_PATHS}, root)
 
@@ -273,6 +476,32 @@ class RunManifestTests(unittest.TestCase):
             absolute["png2"] = str(root / "png2-final.png")
             with self.assertRaisesRegex(ValueError, "relative"):
                 validate_run_manifest({"artifacts": absolute}, root)
+
+    def test_manifest_rejects_every_path_invariant(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            write_manifest_files(root)
+            for key in MANIFEST_PATHS:
+                with self.subTest(missing_key=key):
+                    artifacts = dict(MANIFEST_PATHS)
+                    artifacts.pop(key)
+                    with self.assertRaisesRegex(ValueError, key):
+                        validate_run_manifest({"artifacts": artifacts}, root)
+
+            artifacts = dict(MANIFEST_PATHS)
+            artifacts["png2"] = "png2.png"
+            with self.assertRaisesRegex(ValueError, "png2.*png2-final"):
+                validate_run_manifest({"artifacts": artifacts}, root)
+
+            artifacts = dict(MANIFEST_PATHS)
+            artifacts["png2"] = "../png2-final.png"
+            with self.assertRaisesRegex(ValueError, "stay under root"):
+                validate_run_manifest({"artifacts": artifacts}, root)
+
+            artifacts = dict(MANIFEST_PATHS)
+            artifacts["extra"] = "missing.txt"
+            with self.assertRaisesRegex(ValueError, "does not exist"):
+                validate_run_manifest({"artifacts": artifacts}, root)
 
     def test_load_json_object_requires_a_json_object(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
