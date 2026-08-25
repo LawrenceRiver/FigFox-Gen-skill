@@ -1,9 +1,11 @@
 import copy
 import json
 import os
+import shutil
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from scientific_figure_workflow.prompts import (
     build_prompt1_bundle,
@@ -255,6 +257,18 @@ class Prompt1BundleTests(PromptTestCase):
         self.assertIn("numbered 1/2/3/4 planning labels or the generic blue-title-strip-inside-every-box pattern", prompt)
         self.assertIn("does not permit any other anti-AI constraint to be overridden", prompt)
 
+    def test_prompt1_accepts_all_context2_relationship_endpoint_aliases(self):
+        aliases = c2()
+        aliases["relationships"] = [{
+            "from_component_id": "encoder",
+            "to_component_id": "audio",
+            "label": "alias relationship",
+        }]
+
+        prompt = build_prompt1_bundle("method", c1(), aliases, c3(), None, self.root)["prompt"]
+
+        self.assertIn("encoder -> audio: alias relationship.", prompt)
+
     def test_prompt1_rejects_complete_or_noncanonical_figurebench_and_domain_paths(self):
         complete = self.root / "assets/figurebench-references/renamed.png"
         complete.parent.mkdir(parents=True)
@@ -304,6 +318,32 @@ class Prompt2BundleTests(PromptTestCase):
         self.assertIn("PNG1 is the image to modify", prompt)
         self.assertIn("references/web/crops/replacements/real-waveform.png", {item["path"] for item in bundle["attachments"]})
         self.assertIn("No PNG2-to-SVG loop", prompt)
+
+    def test_prompt2_requires_and_preserves_a_replacement_reason(self):
+        replacement_diagnosis = {
+            "verdicts": [
+                {"component_id": "encoder", "verdict": "keep"},
+                {"component_id": "audio", "verdict": "replace", "reason": "fake icon"},
+            ]
+        }
+        missing_reason = {"crops": [{
+            "path": "references/web/crops/replacements/real-waveform.png",
+            "target_component_id": "audio",
+        }]}
+        with self.assertRaisesRegex(ValueError, "reason"):
+            build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", replacement_diagnosis, svg_crops(), missing_reason, self.root)
+
+        bundle = build_prompt2_bundle("method", c1(), c2(), c3(), "png1.png", replacement_diagnosis, svg_crops(), {"crops": [{
+            "path": "references/web/crops/replacements/real-waveform.png",
+            "target_component_id": "audio",
+            "reason": "mature waveform construction corrects the fake icon",
+        }]}, self.root)
+        replacement = next(item for item in bundle["attachments"] if item["role"] == "replacement_crop")
+        self.assertEqual(replacement["reason"], "mature waveform construction corrects the fake icon")
+        output_dir = self.root / "prompt-2"
+        write_bundle(bundle, output_dir)
+        written = json.loads((output_dir / "attachments.json").read_text(encoding="utf-8"))
+        self.assertIn(replacement, written)
 
     def test_prompt2_carries_context1_conventions_context2_structure_and_context3_palette(self):
         methodology = "methodology source-of-truth: do not omit this requirement"
@@ -370,6 +410,7 @@ class PromptTemplateAndWritingTests(PromptTestCase):
 
     def test_write_bundle_writes_the_stable_prompt_and_attachment_manifest(self):
         bundle = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root)
+        self.assertEqual(bundle["component_ids"], ["audio", "encoder"])
         output_dir = self.root / "prompt-1"
         write_bundle(bundle, output_dir)
         self.assertEqual((output_dir / "prompt.md").read_text(encoding="utf-8"), bundle["prompt"])
@@ -398,6 +439,57 @@ class PromptTemplateAndWritingTests(PromptTestCase):
             write_bundle(invalid_metadata, output_dir)
         self.assertFalse((output_dir / "prompt.md").exists())
         self.assertFalse((output_dir / "attachments.json").exists())
+
+    def test_write_bundle_rejects_unknown_attachment_target(self):
+        bundle = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root)
+        bundle["attachments"][0]["target_component_id"] = "unknown"
+
+        with self.assertRaisesRegex(ValueError, "component_ids"):
+            write_bundle(bundle, self.root / "prompt-1")
+
+    def test_write_bundle_is_byte_deterministic_for_reordered_mappings(self):
+        bundle = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root)
+        reordered = {key: bundle[key] for key in reversed(list(bundle))}
+        reordered["attachments"] = [
+            {key: attachment[key] for key in reversed(list(attachment))}
+            for attachment in reversed(bundle["attachments"])
+        ]
+        with tempfile.TemporaryDirectory() as second_directory:
+            second_root = Path(second_directory) / "run"
+            shutil.copytree(self.root, second_root)
+
+            write_bundle(bundle, self.root / "prompt-1")
+            write_bundle(reordered, second_root / "prompt-1")
+
+            self.assertEqual(
+                (self.root / "prompt-1/attachments.json").read_bytes(),
+                (second_root / "prompt-1/attachments.json").read_bytes(),
+            )
+
+    def test_write_bundle_restores_the_prior_pair_after_second_replace_failure(self):
+        initial = build_prompt1_bundle("old method", c1(), c2(), c3(), None, self.root)
+        output_dir = self.root / "prompt-1"
+        write_bundle(initial, output_dir)
+        old_prompt = (output_dir / "prompt.md").read_bytes()
+        old_attachments = (output_dir / "attachments.json").read_bytes()
+        updated = build_prompt1_bundle("new method", c1(), c2(), c3(), None, self.root)
+        real_replace = os.replace
+        calls = 0
+
+        def fail_only_second_replace(source, destination):
+            nonlocal calls
+            calls += 1
+            if calls == 2:
+                raise OSError("simulated second replacement failure")
+            return real_replace(source, destination)
+
+        with patch("scientific_figure_workflow.prompts.os.replace", side_effect=fail_only_second_replace):
+            with self.assertRaisesRegex(OSError, "simulated second"):
+                write_bundle(updated, output_dir)
+
+        self.assertEqual((output_dir / "prompt.md").read_bytes(), old_prompt)
+        self.assertEqual((output_dir / "attachments.json").read_bytes(), old_attachments)
+
 
 
 if __name__ == "__main__":

@@ -156,11 +156,18 @@ def _relationship_lines(context2: Mapping[str, Any]) -> list[str]:
     for index, relationship in enumerate(context2["relationships"]):
         if not isinstance(relationship, Mapping):
             raise ValueError(f"context2 relationships[{index}] must be an object")
-        source = _string(relationship.get("source_id", relationship.get("source")), f"context2 relationships[{index}] source")
-        target = _string(relationship.get("target_id", relationship.get("target")), f"context2 relationships[{index}] target")
+        source = _relationship_endpoint(relationship, ("source_id", "from_component_id", "source"), f"context2 relationships[{index}] source")
+        target = _relationship_endpoint(relationship, ("target_id", "to_component_id", "target"), f"context2 relationships[{index}] target")
         label = _string(relationship.get("label", relationship.get("relationship", "flows to")), f"context2 relationships[{index}] label")
         lines.append(f"- {source} -> {target}: {label}.")
     return lines or ["- Read the listed components as the scientific mainline."]
+
+
+def _relationship_endpoint(record: Mapping[str, Any], aliases: tuple[str, ...], location: str) -> str:
+    for alias in aliases:
+        if alias in record:
+            return _string(record[alias], location)
+    raise ValueError(f"{location} requires an endpoint")
 
 
 def _component_lines(context2: Mapping[str, Any]) -> list[str]:
@@ -251,9 +258,9 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
         "", "## 7. Layout and taste constraints", *(f"- {constraint}" for constraint in normalized3["taste_constraints"]), "Keep hierarchy, spacing, rhythm, restraint, and a human-edited finish subordinate to scientific meaning.",
         "", "## 8. Exact labels and text-density limits", "Use only concise block/structure names, necessary labels, terms, and relationship labels in-image. Never copy explanatory prose, research findings, or planning captions.",
         "", "## 9. Anti-AI visual constraints", "Do not add decoration without a named scientific role. Do not use decorative visuals unrelated to text, unexplained dots, floating symbols, or purposeless boxes.", "Do not use arbitrary high-contrast colours between adjacent modules, shapes with no human construction provenance, numbered 1/2/3/4 planning labels, the generic blue-title-strip-inside-every-box pattern, repeated card grids that make the figure look like a slide deck, or fake cartoon objects when a real crop or editable scientific geometry is expected.", "Only an explicit user requirement in the supplied Methodology or normalized Context may override the default prohibition on numbered 1/2/3/4 planning labels or the generic blue-title-strip-inside-every-box pattern. This narrow override does not permit any other anti-AI constraint to be overridden.",
-        "", "## 10. Direct PNG generation instruction", "Generate PNG1 directly from this complete bundle. Use every attachment only for its declared target and contract. This workflow has exactly two image-generation passes; this is the first. Produce one coherent scientific figure, not a slide deck or an illustration collage.",
+        "", "## 10. Direct PNG generation instruction", "Generate PNG1 directly from this complete bundle. Every mapped crop uses its declared target and contract; the user reference is governed by its global structural contract and has no target component. This workflow has exactly two image-generation passes; this is the first. Produce one coherent scientific figure, not a slide deck or an illustration collage.",
     ])
-    return {"format": _FORMAT, "phase": "prompt1", "prompt": prompt, "attachments": attachments}
+    return {"format": _FORMAT, "phase": "prompt1", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}
 
 
 def _crop_records(value: Mapping[str, Any], location: str) -> list[Mapping[str, Any]]:
@@ -285,8 +292,8 @@ def _prompt2_crops(value: Mapping[str, Any], role: str, location: str, component
         details: dict[str, Any] = {"target_component_id": target}
         if role == "approved_svg_crop":
             details["diagnosis"] = _string(record.get("diagnosis"), f"{crop_location} diagnosis")
-        elif "reason" in record:
-            details["reason"] = _string(record["reason"], f"{crop_location} reason")
+        else:
+            details["reason"] = _string(record.get("reason"), f"{crop_location} reason")
         attachments.append(_attachment(path, role, **details))
     return attachments
 
@@ -318,16 +325,22 @@ def build_prompt2_bundle(methodology: str, context1: Mapping[str, Any], context2
         "Revise PNG1 into the final PNG2. PNG1 is the image to modify and remains the only raster visual truth; use approved SVG and replacement crops only as targeted evidence.", *_evidence_blocks(methodology, normalized1, normalized2, normalized3), "Context 2 semantic relationships:", *_relationship_lines(normalized2), "Context 3 one-base-palette lineage:", *_palette_lines(normalized3), *verdict_sections,
         "Use approved SVG crops only for their declared component and diagnosis. Use replacement crops only for explicitly rejected or replacement components.", "Do not attach, inspect as an image-generation reference, or derive a design from PNG1.5 / any SVG diagnostic render. This is the second and final image-generation pass. No PNG2-to-SVG loop.",
     ])
-    return {"format": _FORMAT, "phase": "prompt2", "prompt": prompt, "attachments": attachments}
+    return {"format": _FORMAT, "phase": "prompt2", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}
 
 
 def _validated_bundle(bundle: Mapping[str, Any], root: Path) -> tuple[str, str, list[dict[str, Any]]]:
     if not isinstance(bundle, Mapping) or bundle.get("format") != _FORMAT:
         raise ValueError("bundle has unsupported format")
+    if set(bundle) != {"format", "phase", "prompt", "component_ids", "attachments"}:
+        raise ValueError("bundle must contain the exact stable contract")
     phase = bundle.get("phase")
     if phase not in {"prompt1", "prompt2"}:
         raise ValueError("bundle has unsupported phase")
     prompt = _string(bundle.get("prompt"), "bundle prompt")
+    component_ids = _string_list(bundle.get("component_ids"), "bundle component_ids")
+    if component_ids != sorted(set(component_ids)):
+        raise ValueError("bundle component_ids must be sorted and unique")
+    component_id_set = set(component_ids)
     raw_attachments = bundle.get("attachments")
     if not isinstance(raw_attachments, list) or not all(isinstance(item, Mapping) for item in raw_attachments):
         raise ValueError("bundle attachments must be a list of objects")
@@ -354,7 +367,9 @@ def _validated_bundle(bundle: Mapping[str, Any], root: Path) -> tuple[str, str, 
         if role == "user_reference" and _string(item["contract"], f"{location} contract") != _USER_REFERENCE_CONTRACT:
             raise ValueError(f"{location} has an invalid user-reference contract")
         if role in {"domain_paper_component", "figurebench_component"}:
-            _string(item["target_component_id"], f"{location} target_component_id")
+            target_component_id = _string(item["target_component_id"], f"{location} target_component_id")
+            if target_component_id not in component_id_set:
+                raise ValueError(f"{location} target_component_id must be in bundle component_ids")
             _string_list(item["borrow"], f"{location} borrow")
             _string_list(item["must_change"], f"{location} must_change")
         if role == "domain_paper_component":
@@ -366,25 +381,49 @@ def _validated_bundle(bundle: Mapping[str, Any], root: Path) -> tuple[str, str, 
             _string(item["reference_id"], f"{location} reference_id")
             _string(item["human_editable_reason"], f"{location} human_editable_reason")
         if role == "approved_svg_crop":
-            _string(item["target_component_id"], f"{location} target_component_id")
+            target_component_id = _string(item["target_component_id"], f"{location} target_component_id")
+            if target_component_id not in component_id_set:
+                raise ValueError(f"{location} target_component_id must be in bundle component_ids")
             _string(item["diagnosis"], f"{location} diagnosis")
         if role == "replacement_crop":
-            _string(item["target_component_id"], f"{location} target_component_id")
+            target_component_id = _string(item["target_component_id"], f"{location} target_component_id")
+            if target_component_id not in component_id_set:
+                raise ValueError(f"{location} target_component_id must be in bundle component_ids")
             _string(item["reason"], f"{location} reason")
         if (path, role) in seen:
             raise ValueError("bundle attachments must not contain contradictory duplicates")
         seen.add((path, role))
-        normalized.append(dict(item, path=path, role=role))
+        normalized.append(_canonical_attachment(item, path, role))
     if phase == "prompt2" and sum(item["role"] == "png1_visual_truth" for item in normalized) != 1:
         raise ValueError("prompt2 bundle requires exactly one PNG1 attachment")
     return phase, prompt, sorted(normalized, key=lambda item: (item["path"], item["role"]))
+
+
+def _canonical_attachment(item: Mapping[str, Any], path: str, role: str) -> dict[str, Any]:
+    """Return the exact role schema with normalized scalar and list metadata."""
+
+    canonical: dict[str, Any] = {"path": path, "role": role}
+    if role == "user_reference":
+        canonical["contract"] = _USER_REFERENCE_CONTRACT
+    elif role == "domain_paper_component":
+        canonical.update(target_component_id=_string(item["target_component_id"], "attachment target_component_id"), borrow=_string_list(item["borrow"], "attachment borrow"), must_change=_string_list(item["must_change"], "attachment must_change"), concept=_string(item["concept"], "attachment concept"))
+    elif role == "figurebench_component":
+        canonical.update(crop_id=_string(item["crop_id"], "attachment crop_id"), reference_id=_string(item["reference_id"], "attachment reference_id"), target_component_id=_string(item["target_component_id"], "attachment target_component_id"), borrow=_string_list(item["borrow"], "attachment borrow"), must_change=_string_list(item["must_change"], "attachment must_change"), human_editable_reason=_string(item["human_editable_reason"], "attachment human_editable_reason"))
+    elif role == "approved_svg_crop":
+        canonical.update(target_component_id=_string(item["target_component_id"], "attachment target_component_id"), diagnosis=_string(item["diagnosis"], "attachment diagnosis"))
+    elif role == "replacement_crop":
+        canonical.update(target_component_id=_string(item["target_component_id"], "attachment target_component_id"), reason=_string(item["reason"], "attachment reason"))
+    return canonical
 
 
 def write_bundle(bundle: Mapping[str, Any], output_dir: Path) -> None:
     """Atomically write a bundle; ``output_dir.parent`` is the canonical run root.
 
     The output directory must be ``run_root/prompt-1`` or ``run_root/prompt-2`` for
-    its phase. Attachments are resolved and revalidated against that run root.
+    its phase. Attachments are resolved and revalidated against that run root. Both
+    files are staged before publication. A handled replacement failure restores the
+    prior pair (or removes a newly published half); POSIX cannot make two replacements
+    process-crash atomic.
     """
 
     destination = Path(output_dir)
@@ -395,22 +434,43 @@ def write_bundle(bundle: Mapping[str, Any], output_dir: Path) -> None:
         raise ValueError(f"output_dir must be run_root/{expected_name}")
     try:
         prompt_bytes = prompt.encode("utf-8")
-        attachment_bytes = (json.dumps(attachments, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+        attachment_bytes = (json.dumps(attachments, indent=2, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8")
     except (TypeError, ValueError) as error:
         raise ValueError("bundle cannot be serialized") from error
     destination.mkdir(parents=False, exist_ok=True)
     if destination.is_symlink() or not destination.is_dir():
         raise ValueError("output_dir must be a real directory")
     temporary_paths: list[Path] = []
+    published: list[str] = []
+    originals: dict[str, bytes | None] = {}
+    for name in ("prompt.md", "attachments.json"):
+        existing = destination / name
+        originals[name] = existing.read_bytes() if existing.exists() else None
+
+    def stage(name: str, payload: bytes) -> Path:
+        with tempfile.NamedTemporaryFile(dir=destination, prefix=f".{name}.", delete=False) as temporary:
+            temporary.write(payload)
+            temporary.flush()
+            os.fsync(temporary.fileno())
+            return Path(temporary.name)
+
     try:
         for name, payload in (("prompt.md", prompt_bytes), ("attachments.json", attachment_bytes)):
-            with tempfile.NamedTemporaryFile(dir=destination, prefix=f".{name}.", delete=False) as temporary:
-                temporary.write(payload)
-                temporary.flush()
-                os.fsync(temporary.fileno())
-                temporary_paths.append(Path(temporary.name))
-        os.replace(temporary_paths[0], destination / "prompt.md")
-        os.replace(temporary_paths[1], destination / "attachments.json")
+            temporary_paths.append(stage(name, payload))
+        for name, temporary_path in zip(("prompt.md", "attachments.json"), temporary_paths, strict=True):
+            os.replace(temporary_path, destination / name)
+            published.append(name)
+    except Exception:
+        for name in reversed(published):
+            original = originals[name]
+            try:
+                if original is None:
+                    (destination / name).unlink(missing_ok=True)
+                else:
+                    os.replace(stage(f"restore-{name}", original), destination / name)
+            except OSError:
+                pass
+        raise
     finally:
         for temporary_path in temporary_paths:
             if temporary_path.exists():
