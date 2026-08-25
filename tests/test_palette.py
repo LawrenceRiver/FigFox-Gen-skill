@@ -55,9 +55,7 @@ class PaletteLineageTests(unittest.TestCase):
     def test_accepts_one_approved_base_group_and_evidenced_related_colour(self):
         palette = validate_palette(valid_palette(), palette_library_fixture())
 
-        self.assertEqual(palette["base_palette_id"], "group-a")
-        self.assertEqual(palette["colours"], base_colours())
-        self.assertEqual(palette["extensions"][0]["relationship"], "analogous_neighbour")
+        self.assertEqual(palette, valid_palette())
 
     def test_rejects_a_second_palette_library_group(self):
         with self.assertRaisesRegex(ValueError, "one base palette group"):
@@ -134,6 +132,29 @@ class PaletteLineageTests(unittest.TestCase):
         palette["extensions"][0]["rgb"] = [32, 48, 64]
         with self.assertRaisesRegex(ValueError, "duplicate"):
             validate_palette(palette, palette_library_fixture())
+
+    def test_rejects_undeclared_base_colour_fields(self):
+        palette = valid_palette()
+        palette["colours"][0]["source"] = "user-reference"
+
+        with self.assertRaisesRegex(ValueError, r"palette colours\[0\].*source"):
+            validate_palette(palette, palette_library_fixture())
+
+    def test_rejects_undeclared_nested_extension_fields(self):
+        for field, value in (
+            ("source", {"kind": "figurebench"}),
+            ("source_kind", "user-reference"),
+            ("figurebench_palette_id", "figurebench-palette"),
+            ("user_reference", "uploaded-colours"),
+            ("additional_palette_ids", ["group-b"]),
+            ("gradient", {"from": "#203040", "to": "#6E8FA3"}),
+            ("unrelated_note", "discard me"),
+        ):
+            with self.subTest(field=field):
+                palette = valid_palette()
+                palette["extensions"][0][field] = value
+                with self.assertRaisesRegex(ValueError, rf"palette extensions\[0\].*{field}"):
+                    validate_palette(palette, palette_library_fixture())
 
     def test_palette_hex_set_returns_every_active_colour_as_a_frozenset(self):
         palette = validate_palette(valid_palette(), palette_library_fixture())

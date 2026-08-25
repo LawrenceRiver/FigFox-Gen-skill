@@ -26,6 +26,10 @@ _FIGUREBENCH_FIELDS = frozenset({"figurebench_palette_id", "figurebench_colours"
 _FORBIDDEN_SOURCE_FIELDS = frozenset({"base_palette", "palette_source", "palette_sources", "source"})
 _GRADIENT_FIELDS = frozenset({"gradient", "gradients", "gradient_stops"})
 _PALETTE_FIELDS = frozenset({"base_palette_id", "colours", "extensions"})
+_BASE_COLOUR_FIELDS = frozenset({"role", "hex", "rgb"})
+_EXTENSION_FIELDS = _BASE_COLOUR_FIELDS | frozenset(
+    {"relationship", "evidence_url", "evidence_summary"}
+)
 
 
 def _mapping(value: Any, location: str) -> Mapping[str, Any]:
@@ -41,8 +45,13 @@ def _required_string(record: Mapping[str, Any], key: str, location: str) -> str:
     return value.strip()
 
 
-def _validate_colour(record: Any, location: str) -> dict[str, Any]:
+def _validate_colour(
+    record: Any, location: str, allowed_fields: frozenset[str]
+) -> dict[str, Any]:
     source = _mapping(record, location)
+    undeclared = set(source) - allowed_fields
+    if undeclared:
+        raise ValueError(f"{location} must not include {sorted(undeclared)[0]}")
     role = _required_string(source, "role", location)
     hex_value = _required_string(source, "hex", location)
     if source.get("hex") != hex_value or not _UPPERCASE_HEX.fullmatch(hex_value):
@@ -68,7 +77,10 @@ def _validate_colour(record: Any, location: str) -> dict[str, Any]:
 def _validate_colours(value: Any, location: str) -> list[dict[str, Any]]:
     if not isinstance(value, list) or not value:
         raise ValueError(f"{location} requires at least one record")
-    colours = [_validate_colour(record, f"{location}[{index}]") for index, record in enumerate(value)]
+    colours = [
+        _validate_colour(record, f"{location}[{index}]", _BASE_COLOUR_FIELDS)
+        for index, record in enumerate(value)
+    ]
     hexes = [colour["hex"] for colour in colours]
     if len(hexes) != len(set(hexes)):
         raise ValueError("palette has duplicate hex values")
@@ -103,7 +115,7 @@ def _validate_extensions(value: Any, active_hexes: set[str]) -> list[dict[str, A
     for index, extension in enumerate(value):
         location = f"palette extensions[{index}]"
         source = _mapping(extension, location)
-        normalized = _validate_colour(source, location)
+        normalized = _validate_colour(source, location, _EXTENSION_FIELDS)
         relationship = _required_string(source, "relationship", location)
         if relationship not in PALETTE_RELATIONSHIPS:
             raise ValueError(f"{location} requires a supported relationship")
