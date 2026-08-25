@@ -314,6 +314,16 @@ class ContextArtifactTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, field):
                     validate_context3(context, {"encoder", "audio"})
 
+    def test_context3_rejects_duplicate_crop_contract_items(self):
+        for field in ("borrow", "must_change"):
+            with self.subTest(contract_field=field):
+                context = valid_context3()
+                item = context["selected_references"][0]["crop_contract"][field][0]
+                context["selected_references"][0]["crop_contract"][field] = [item, item]
+
+                with self.assertRaisesRegex(ValueError, f"{field} values must be unique"):
+                    validate_context3(context, {"encoder", "audio"})
+
     def test_context3_rejects_every_selection_and_coverage_invariant(self):
         for field in ("crop_id", "reference_id", "crop_path", "target_component_id"):
             with self.subTest(selection_field=field):

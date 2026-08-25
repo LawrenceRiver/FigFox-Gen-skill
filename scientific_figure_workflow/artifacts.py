@@ -65,7 +65,10 @@ def _required_string_list(record: Mapping[str, Any], key: str, location: str) ->
     value = record.get(key)
     if not isinstance(value, list) or not value:
         raise ValueError(f"{location} requires non-empty {key} list")
-    return [_required_string({key: item}, key, location) for item in value]
+    strings = [_required_string({key: item}, key, location) for item in value]
+    if len(strings) != len(set(strings)):
+        raise ValueError(f"{location} {key} values must be unique")
+    return strings
 
 
 def _required_value(record: Mapping[str, Any], key: str, location: str) -> Any:
