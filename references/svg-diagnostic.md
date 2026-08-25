@@ -81,13 +81,14 @@ scientifically faithful structure is not rejected merely for lacking decorative
 detail. The VLM, not Python, approves a genuine photographic crop or determines
 whether a simplification keeps the intended scientific logic.
 
-## Approved crop manifest
+## Approved crop request and materialized manifest
 
 `apply_svg_crop_manifest(rendered_png, manifest, output_dir)` accepts only
 `svg-diagnostic/png1.5.png` and only writes below the same run's
-`svg-diagnostic/approved-crops/` root. Its manifest contains a Task 1-valid
-`diagnosis`, a mandatory non-empty complete `component_ids` list copied by the
-caller from Context 2, and crop records with
+`svg-diagnostic/approved-crops/` root. The VLM coordinates are preserved in
+`request.json`; deterministic cropping never overwrites them. At execution, the
+caller supplies a Task 1-valid `diagnosis` and a mandatory non-empty complete
+`component_ids` list copied from Context 2 alongside request crop records with
 `crop_id`, `target_component_id`, `diagnosis_id`, and normalized `bounds`:
 
 ```json
@@ -102,6 +103,10 @@ caller from Context 2, and crop records with
   }]
 }
 ```
+
+The separate materialized `manifest.json` explicitly identifies `request.json`
+as its source and contains only the Task 5-compatible approved-crop attachment
+records returned by deterministic cropping.
 
 Every crop must cite a real diagnosis record for the same Context 2 component.
 The diagnosis is validated against the supplied Context 2 identity anchor; the

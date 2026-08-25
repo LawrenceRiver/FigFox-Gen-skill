@@ -18,14 +18,19 @@ does not supply a palette: choose all colours from the approved palette workflow
    The exception must name its primitive, explicit construction steps, and a
    human-editable rationale. Do not use this exception for an unexplained or
    complex visual treatment.
-5. Emit a crop manifest with normalized `[left, top, right, bottom]` coordinates.
+5. Emit the preserved crop request at
+   `references/figurebench/crops/request.json` with normalized
+   `[left, top, right, bottom]` coordinates. The deterministic crop command never
+   overwrites this request; it writes crop files and the separate materialized
+   `references/figurebench/crops/manifest.json`.
    Every crop must map to a `target_component_id` and carry a contract with:
    `borrow` (the construction/style geometry to reuse), `must_change` (the
    figure-specific content or proportions to alter), and
    `human_editable_reason` (why the result remains editable).
-6. Run `apply_crop_manifest(reference_root, manifest, output_dir)`, validate with
-   `validate_reference_coverage(context2, manifest, basic_geometry)`, and attach
-   only the resulting mapped crop images and their contracts to Prompt 1.
+6. Apply `request.json` through the deterministic crop helper, validate coverage
+   against that preserved request, and write `manifest.json` as the explicit
+   materialized output. Attach only the resulting mapped crop images and their
+   contracts to Prompt 1.
 
 Prompt-facing output must contain only mapped crops with explicit `borrow`,
 `must_change`, and `human_editable_reason` contracts. Never attach unexplained

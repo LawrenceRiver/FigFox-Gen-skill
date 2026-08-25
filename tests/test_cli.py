@@ -42,79 +42,106 @@ def write_png(path, colour=(30, 60, 90)):
     Image.new("RGB", (24, 16), colour).save(path, format="PNG")
 
 
+def initialize_run(root):
+    (root / "input").mkdir(parents=True)
+    (root / "input/methodology.md").write_text(
+        "Encode a prompt and synthesize audio.", encoding="utf-8"
+    )
+    write_json(root / MANIFEST_PATHS["context1"], c1())
+    write_json(root / MANIFEST_PATHS["context2"], c2())
+    context3 = c3()
+    context3["selected_references"][0]["crop_id"] = "container"
+    context3["selected_references"][1]["crop_id"] = "arrow"
+    context3["coverage_matrix"][0]["crop_ids"] = ["container"]
+    context3["coverage_matrix"][1]["crop_ids"] = ["arrow"]
+    write_json(root / MANIFEST_PATHS["context3"], context3)
+    write_json(root / MANIFEST_PATHS["web_manifest"], {"sources": []})
+    write_json(
+        root / MANIFEST_PATHS["figurebench_crop_request"],
+        {
+            "crops": [
+                {
+                    "id": "container",
+                    "reference_id": "reference-001",
+                    "bounds": [0.0, 0.0, 0.5, 0.5],
+                    "target_component_id": "encoder",
+                    "crop_contract": {
+                        "borrow": ["corner radius", "stroke weight"],
+                        "must_change": ["source labels", "arrangement"],
+                        "human_editable_reason": "the treatment is editable vector geometry",
+                    },
+                },
+                {
+                    "id": "arrow",
+                    "reference_id": "reference-002",
+                    "bounds": [0.25, 0.25, 0.75, 0.75],
+                    "target_component_id": "audio",
+                    "crop_contract": {
+                        "borrow": ["waveform enclosure"],
+                        "must_change": ["run palette", "output label"],
+                        "human_editable_reason": "the waveform is a simple path construction",
+                    },
+                },
+            ],
+            "basic_geometry": [],
+        },
+    )
+    write_png(root / "references/web/crops/piano-roll.png")
+    write_png(root / MANIFEST_PATHS["png1"], (10, 80, 120))
+    write_png(root / MANIFEST_PATHS["png2"], (20, 100, 140))
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" '
+        'viewBox="0 0 120 80"><rect x="5" y="5" width="110" height="70" '
+        'fill="#FFFFFF" stroke="#475569"/><path d="M20 40 L100 40" '
+        'stroke="#2E5BFF"/><text x="30" y="30">Prompt Encoder</text></svg>'
+    )
+    svg_path = root / MANIFEST_PATHS["svg1"]
+    svg_path.parent.mkdir(parents=True, exist_ok=True)
+    svg_path.write_text(svg, encoding="utf-8")
+    write_json(root / MANIFEST_PATHS["diagnosis"], diagnosis())
+    write_json(
+        root / MANIFEST_PATHS["approved_crop_request"],
+        {
+            "crops": [
+                {
+                    "crop_id": "encoder",
+                    "target_component_id": "encoder",
+                    "diagnosis_id": "encoder",
+                    "bounds": {"x": 0.0, "y": 0.0, "width": 0.5, "height": 1.0},
+                }
+            ]
+        },
+    )
+
+
+def invoke_cli(command, run_root=None, *arguments):
+    command_line = [sys.executable, str(SCRIPT), command]
+    if run_root is not None:
+        command_line.extend(("--run", str(run_root)))
+    command_line.extend(map(str, arguments))
+    return subprocess.run(command_line, cwd=ROOT, text=True, capture_output=True)
+
+
+def materialize_complete_run(root):
+    for command in (
+        "rank-references",
+        "crop-references",
+        "build-prompt1",
+        "render-svg",
+        "crop-svg",
+        "build-prompt2",
+    ):
+        completed = invoke_cli(command, root)
+        if completed.returncode != 0:
+            raise AssertionError(f"{command} failed: {completed.stderr}")
+    write_json(root / "run-manifest.json", {"artifacts": dict(MANIFEST_PATHS)})
+
+
 class WorkflowCliTests(unittest.TestCase):
     def setUp(self):
         self.temporary_directory = tempfile.TemporaryDirectory()
         self.run_root = Path(self.temporary_directory.name) / "run"
-        (self.run_root / "input").mkdir(parents=True)
-        (self.run_root / "input/methodology.md").write_text(
-            "Encode a prompt and synthesize audio.", encoding="utf-8"
-        )
-        write_json(self.run_root / MANIFEST_PATHS["context1"], c1())
-        write_json(self.run_root / MANIFEST_PATHS["context2"], c2())
-        context3 = c3()
-        context3["selected_references"][0]["crop_id"] = "container"
-        context3["selected_references"][1]["crop_id"] = "arrow"
-        context3["coverage_matrix"][0]["crop_ids"] = ["container"]
-        context3["coverage_matrix"][1]["crop_ids"] = ["arrow"]
-        write_json(self.run_root / MANIFEST_PATHS["context3"], context3)
-        write_json(self.run_root / MANIFEST_PATHS["web_manifest"], {"sources": []})
-        write_json(
-            self.run_root / MANIFEST_PATHS["figurebench_crops"],
-            {
-                "crops": [
-                    {
-                        "id": "container",
-                        "reference_id": "reference-001",
-                        "bounds": [0.0, 0.0, 0.5, 0.5],
-                        "target_component_id": "encoder",
-                        "crop_contract": {
-                            "borrow": ["corner radius", "stroke weight"],
-                            "must_change": ["source labels", "arrangement"],
-                            "human_editable_reason": "editable vector geometry",
-                        },
-                    },
-                    {
-                        "id": "arrow",
-                        "reference_id": "reference-002",
-                        "bounds": [0.25, 0.25, 0.75, 0.75],
-                        "target_component_id": "audio",
-                        "crop_contract": {
-                            "borrow": ["waveform enclosure"],
-                            "must_change": ["run palette", "output label"],
-                            "human_editable_reason": "simple path construction",
-                        },
-                    },
-                ],
-                "basic_geometry": [],
-            },
-        )
-        write_png(self.run_root / "references/web/crops/piano-roll.png")
-        write_png(self.run_root / MANIFEST_PATHS["png1"], (10, 80, 120))
-        write_png(self.run_root / MANIFEST_PATHS["png2"], (20, 100, 140))
-        svg = (
-            '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" '
-            'viewBox="0 0 120 80"><rect x="5" y="5" width="110" height="70" '
-            'fill="#FFFFFF" stroke="#475569"/><path d="M20 40 L100 40" '
-            'stroke="#2E5BFF"/><text x="30" y="30">Prompt Encoder</text></svg>'
-        )
-        svg_path = self.run_root / MANIFEST_PATHS["svg1"]
-        svg_path.parent.mkdir(parents=True, exist_ok=True)
-        svg_path.write_text(svg, encoding="utf-8")
-        write_json(self.run_root / MANIFEST_PATHS["diagnosis"], diagnosis())
-        write_json(
-            self.run_root / MANIFEST_PATHS["approved_crops"],
-            {
-                "crops": [
-                    {
-                        "crop_id": "encoder",
-                        "target_component_id": "encoder",
-                        "diagnosis_id": "encoder",
-                        "bounds": {"x": 0.0, "y": 0.0, "width": 0.5, "height": 1.0},
-                    }
-                ]
-            },
-        )
+        initialize_run(self.run_root)
 
     def tearDown(self):
         self.temporary_directory.cleanup()
@@ -161,8 +188,25 @@ class WorkflowCliTests(unittest.TestCase):
         self.assertEqual(ranked["candidates"], 30)
         self.assertTrue((self.run_root / MANIFEST_PATHS["figurebench_candidates"]).is_file())
 
+        figurebench_request = self.run_root / MANIFEST_PATHS["figurebench_crop_request"]
+        figurebench_request_bytes = figurebench_request.read_bytes()
         cropped = self.run_cli("crop-references", "--run", self.run_root)
         self.assertEqual(cropped["crops"], 2)
+        self.assertEqual(figurebench_request.read_bytes(), figurebench_request_bytes)
+        figurebench_manifest = json.loads(
+            (self.run_root / MANIFEST_PATHS["figurebench_crops"]).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            figurebench_manifest["request"],
+            "references/figurebench/crops/request.json",
+        )
+        self.assertEqual(
+            {item["crop_path"] for item in figurebench_manifest["crops"]},
+            {
+                "references/figurebench/crops/container.png",
+                "references/figurebench/crops/arrow.png",
+            },
+        )
         self.assertTrue((self.run_root / "references/figurebench/crops/container.png").is_file())
         self.assertTrue((self.run_root / "references/figurebench/crops/arrow.png").is_file())
 
@@ -183,10 +227,17 @@ class WorkflowCliTests(unittest.TestCase):
         diagnosis_result = self.run_cli("validate-diagnosis", "--run", self.run_root)
         self.assertEqual(diagnosis_result["verdicts"], 2)
 
+        svg_request = self.run_root / MANIFEST_PATHS["approved_crop_request"]
+        svg_request_bytes = svg_request.read_bytes()
         svg_crops = self.run_cli("crop-svg", "--run", self.run_root)
         self.assertEqual(svg_crops["crops"], 1)
+        self.assertEqual(svg_request.read_bytes(), svg_request_bytes)
         saved_svg_manifest = json.loads(
             (self.run_root / MANIFEST_PATHS["approved_crops"]).read_text(encoding="utf-8")
+        )
+        self.assertEqual(
+            saved_svg_manifest["request"],
+            "svg-diagnostic/approved-crops/request.json",
         )
         self.assertNotIn("component_ids", saved_svg_manifest)
         self.assertTrue(
@@ -201,11 +252,9 @@ class WorkflowCliTests(unittest.TestCase):
         self.assertEqual(sum(item["role"] == "png1_visual_truth" for item in attachments), 1)
         self.assertFalse(any("png1.5" in item["path"].casefold() for item in attachments))
 
-        write_json(
-            self.run_root / "run-manifest.json", {"artifacts": dict(MANIFEST_PATHS)}
-        )
+        write_json(self.run_root / "run-manifest.json", {"artifacts": dict(MANIFEST_PATHS)})
         validated = self.run_cli("validate-run", "--run", self.run_root)
-        self.assertEqual(validated["model_images"], ["png1.png", "png2-final.png"])
+        self.assertEqual(validated["images"], ["png1.png", "png2-final.png"])
         self.assertEqual(validated["diagnostic_roots"], ["svg-diagnostic"])
 
     def test_expected_failure_is_one_stderr_line_exit_two_without_traceback(self):
@@ -254,6 +303,39 @@ class WorkflowCliTests(unittest.TestCase):
                     elif isinstance(node, ast.ImportFrom) and node.module:
                         imported.add(node.module.split(".")[0])
                 self.assertFalse(imported & forbidden_roots)
+
+    def test_cli_contains_no_reusable_writer_png_or_run_validators(self):
+        tree = ast.parse(SCRIPT.read_text(encoding="utf-8"))
+        function_names = {
+            node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)
+        }
+        self.assertFalse(
+            function_names
+            & {"_atomic_json", "_verify_png", "_expected_attachments", "_validate_bundle_files"}
+        )
+        validate_run = next(
+            node
+            for node in ast.walk(tree)
+            if isinstance(node, ast.FunctionDef) and node.name == "_cmd_validate_run"
+        )
+        called_names = {
+            node.func.id
+            for node in ast.walk(validate_run)
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+        }
+        self.assertEqual(called_names, {"_run_root", "validate_complete_run"})
+        for handler_name in ("_cmd_crop_references", "_cmd_crop_svg"):
+            handler = next(
+                node
+                for node in ast.walk(tree)
+                if isinstance(node, ast.FunctionDef) and node.name == handler_name
+            )
+            handler_calls = {
+                node.func.id
+                for node in ast.walk(handler)
+                if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)
+            }
+            self.assertIn("write_json_atomic", handler_calls)
 
 
 if __name__ == "__main__":

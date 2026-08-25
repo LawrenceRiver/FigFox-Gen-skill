@@ -4,22 +4,15 @@
 from __future__ import annotations
 
 import argparse
-import importlib
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 from typing import Any
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPOSITORY_ROOT))
-
-_BOOTSTRAP_ERROR: ImportError | None = None
-try:
-    from scientific_figure_workflow import validate_reference_pack  # noqa: E402
-except ImportError as error:  # handled by both standalone and unified CLI boundaries
-    _BOOTSTRAP_ERROR = error
 
 
 _REQUIRED_FILES = (
@@ -35,6 +28,7 @@ _REQUIRED_FILES = (
     "scientific_figure_workflow/reference_pack.py",
     "scientific_figure_workflow/palette.py",
     "scientific_figure_workflow/prompts.py",
+    "scientific_figure_workflow/run_validation.py",
     "scientific_figure_workflow/svg_diagnostics.py",
     "scripts/check_installation.py",
     "scripts/figure_workflow.py",
@@ -47,12 +41,46 @@ _REQUIRED_REQUIREMENTS = {
     "tinycss2": "tinycss2",
 }
 _PACKAGE_MODULES = (
+    "scientific_figure_workflow",
     "scientific_figure_workflow.artifacts",
     "scientific_figure_workflow.reference_pack",
     "scientific_figure_workflow.palette",
     "scientific_figure_workflow.prompts",
+    "scientific_figure_workflow.run_validation",
     "scientific_figure_workflow.svg_diagnostics",
 )
+_PROBE_CODE = r'''
+import importlib
+import json
+from pathlib import Path
+import py_compile
+import sys
+
+root = Path(sys.argv[1]).resolve(strict=True)
+python_files = json.loads(sys.argv[2])
+modules = json.loads(sys.argv[3])
+dependencies = json.loads(sys.argv[4])
+sys.path.insert(0, str(root))
+try:
+    for relative in python_files:
+        py_compile.compile(str(root / relative), doraise=True)
+    package = importlib.import_module("scientific_figure_workflow")
+    package_path = Path(package.__file__).resolve(strict=True)
+    if not package_path.is_relative_to(root):
+        raise RuntimeError("isolated probe imported workflow package outside target root")
+    for module in modules:
+        importlib.import_module(module)
+    for dependency in dependencies:
+        importlib.import_module(dependency)
+    summary = package.validate_reference_pack(
+        root / "assets/figurebench-references", expected_count=30
+    )
+    print(json.dumps({"package_file": str(package_path), "reference_pack": summary}, sort_keys=True))
+except Exception as error:
+    message = str(error).replace("\r", " ").replace("\n", " | ")
+    print(f"{type(error).__name__}: {message}", file=sys.stderr)
+    raise SystemExit(2)
+'''
 
 
 def _required_file(root: Path, relative: str) -> Path:
@@ -75,11 +103,37 @@ def _requirement_names(path: Path) -> set[str]:
     return names
 
 
+def _probe_target(root: Path) -> dict[str, Any]:
+    python_files = [relative for relative in _REQUIRED_FILES if relative.endswith(".py")]
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            "-c",
+            _PROBE_CODE,
+            str(root),
+            json.dumps(python_files),
+            json.dumps(list(_PACKAGE_MODULES)),
+            json.dumps(list(_REQUIRED_REQUIREMENTS.values())),
+        ],
+        text=True,
+        capture_output=True,
+    )
+    if completed.returncode != 0:
+        message = completed.stderr.strip().replace("\r", " ").replace("\n", " | ")
+        raise ValueError(message or "isolated target installation probe failed")
+    try:
+        result = json.loads(completed.stdout)
+    except json.JSONDecodeError as error:
+        raise ValueError("isolated target installation probe returned invalid JSON") from error
+    if not isinstance(result, dict) or not isinstance(result.get("reference_pack"), dict):
+        raise ValueError("isolated target installation probe returned an invalid result")
+    return result
+
+
 def validate_installation(root: str | Path) -> dict[str, Any]:
     """Validate one installed repository without interpreting SKILL prose."""
 
-    if _BOOTSTRAP_ERROR is not None:
-        raise ImportError(str(_BOOTSTRAP_ERROR)) from _BOOTSTRAP_ERROR
     installation_root = Path(root).resolve()
     for relative in _REQUIRED_FILES:
         _required_file(installation_root, relative)
@@ -98,16 +152,11 @@ def validate_installation(root: str | Path) -> dict[str, Any]:
         raise ValueError(
             "reference pack requires exactly reference-001.png through reference-030.png"
         )
-    pack_summary = validate_reference_pack(pack_root, expected_count=30)
+    probe = _probe_target(installation_root)
+    pack_summary = probe["reference_pack"]
     total_bytes = sum((pack_root / name).stat().st_size for name in expected_files)
     if total_bytes <= 0:
         raise ValueError("reference pack total bytes must be positive")
-
-    if installation_root == REPOSITORY_ROOT:
-        for module in _PACKAGE_MODULES:
-            importlib.import_module(module)
-        for module in _REQUIRED_REQUIREMENTS.values():
-            importlib.import_module(module)
 
     return {
         "root": str(installation_root),

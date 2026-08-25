@@ -20,6 +20,7 @@ _RUN_ARTIFACTS = {
     "context3": "context/context-3-visual-kit.json",
     "web_manifest": "references/web/manifest.json",
     "figurebench_candidates": "references/figurebench/candidates.json",
+    "figurebench_crop_request": "references/figurebench/crops/request.json",
     "figurebench_crops": "references/figurebench/crops/manifest.json",
     "prompt1": "prompt-1/prompt.md",
     "prompt1_attachments": "prompt-1/attachments.json",
@@ -27,11 +28,18 @@ _RUN_ARTIFACTS = {
     "svg1": "svg-diagnostic/svg1.svg",
     "png1_5": "svg-diagnostic/png1.5.png",
     "diagnosis": "svg-diagnostic/diagnosis.json",
+    "approved_crop_request": "svg-diagnostic/approved-crops/request.json",
     "approved_crops": "svg-diagnostic/approved-crops/manifest.json",
     "prompt2": "prompt-2/prompt.md",
     "prompt2_attachments": "prompt-2/attachments.json",
     "png2": "png2-final.png",
 }
+
+
+def run_artifact_paths() -> dict[str, str]:
+    """Return a copy of the exact canonical complete-run artifact mapping."""
+
+    return dict(_RUN_ARTIFACTS)
 
 
 def _mapping(value: Any, location: str) -> Mapping[str, Any]:

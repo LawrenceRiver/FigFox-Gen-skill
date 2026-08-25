@@ -416,6 +416,21 @@ def _canonical_attachment(item: Mapping[str, Any], path: str, role: str) -> dict
     return canonical
 
 
+def validate_prompt_bundle(bundle: Mapping[str, Any], root: Path) -> dict[str, Any]:
+    """Validate and normalize one complete Prompt 1 or Prompt 2 bundle."""
+
+    run_root = _run_root(root)
+    phase, prompt, attachments = _validated_bundle(bundle, run_root)
+    component_ids = sorted(_string_list(bundle.get("component_ids"), "bundle component_ids"))
+    return {
+        "format": _FORMAT,
+        "phase": phase,
+        "prompt": prompt,
+        "component_ids": component_ids,
+        "attachments": attachments,
+    }
+
+
 def write_bundle(bundle: Mapping[str, Any], output_dir: Path) -> None:
     """Atomically write a bundle; ``output_dir.parent`` is the canonical run root.
 

@@ -298,6 +298,7 @@ run/
     web/manifest.json
     web/crops/
     figurebench/candidates.json
+    figurebench/crops/request.json        # preserved VLM coordinates/contracts
     figurebench/crops/manifest.json
     figurebench/crops/
   prompt-1/
@@ -308,6 +309,7 @@ run/
     svg1.svg
     png1.5.png
     diagnosis.json
+    approved-crops/request.json           # preserved VLM crop request
     approved-crops/manifest.json
     approved-crops/
   prompt-2/
