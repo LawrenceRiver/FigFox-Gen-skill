@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="100" viewBox="0 0 160 100">
+  <rect x="4" y="4" width="70" height="40" fill="#2E5BFF"/>
+  <circle cx="110" cy="24" r="18" fill="#14B8A6"/>
+  <path d="M 10,78 L 130,78" stroke="#475569" stroke-width="4"/>
+  <text x="12" y="30" fill="#ffffff">Encoder</text>
+</svg>
