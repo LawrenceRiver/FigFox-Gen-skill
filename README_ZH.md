@@ -93,10 +93,9 @@ Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 Fig
 
 ## 示例
 
-仓库中的示例用于展示目标图类别，不承诺每次运行复现同一构图：
+仓库中保留的示例只用于展示目标图类别，不是流程说明，也不能证明某次生成实际执行了
+这套流程：
 
-- [英文流程图](assets/runs/workflow-en.png)
-- [中文流程图](assets/runs/workflow-zh.png)
 - [Latent Diffusion](assets/runs/latent-diffusion.png)
 - [MusiCoT](assets/runs/musicot.png)
 - [AlphaFold 3](assets/runs/alphafold3.png)

@@ -7,7 +7,6 @@
 **Domain conventions · human-producible planning · mapped FigureBench crops · one palette lineage · final PNG2**
 
 <p align="center">
-  <img src="assets/runs/workflow-en.png" width="23%" alt="Workflow example" />
   <img src="assets/runs/latent-diffusion.png" width="23%" alt="Visual-generation example" />
   <img src="assets/runs/musicot.png" width="23%" alt="Music-generation example" />
   <img src="assets/runs/alphafold3.png" width="23%" alt="Biomolecular-structure example" />
@@ -114,10 +113,9 @@ revision of the bundled pack. The Skill never uses official FigureBench test ima
 
 ## Examples
 
-The checked-in gallery illustrates target figure classes rather than promises that
-every run will reproduce the same composition:
+The remaining checked-in gallery images illustrate target figure classes; they are
+not workflow documentation or proof that a particular run followed this process:
 
-- [Workflow](assets/runs/workflow-en.png)
 - [Latent diffusion](assets/runs/latent-diffusion.png)
 - [MusiCoT](assets/runs/musicot.png)
 - [AlphaFold 3](assets/runs/alphafold3.png)

@@ -88,6 +88,16 @@ class InstallationCliTests(unittest.TestCase):
         for phrase in forbidden:
             self.assertNotIn(phrase, public_text)
 
+    def test_public_docs_do_not_embed_or_link_retired_workflow_bitmaps(self):
+        retired_assets = (
+            "assets/runs/workflow-en.png",
+            "assets/runs/workflow-zh.png",
+        )
+        for path in (ROOT / "README.md", ROOT / "README_ZH.md"):
+            text = path.read_text(encoding="utf-8")
+            for asset in retired_assets:
+                self.assertNotIn(asset, text, f"{path.name} links retired workflow pixels")
+
     def test_legacy_rag_surface_is_absent_and_unreferenced(self):
         removed_paths = (
             "scientific_figure_rag",
