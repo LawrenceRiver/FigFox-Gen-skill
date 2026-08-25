@@ -1,0 +1,3 @@
+# Maintainer-only FigureBench download, inspection, and pack-materialization tools.
+huggingface_hub>=0.30
+Pillow>=10.0

@@ -1,0 +1,635 @@
+{
+  "format": "figurebench-reference-pack-v1",
+  "references": [
+    {
+      "source_kind": "paper",
+      "layout_family": "horizontal_flow",
+      "components": [
+        "stage_container",
+        "directional_arrow",
+        "dashed_group"
+      ],
+      "source_id": "2003.12294",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "orthogonal connectors"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2003.12294.",
+      "description": "Three-stage left-to-right method flow with bounded semantic sections.",
+      "id": "reference-001",
+      "file": "reference-001.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "staged_pipeline",
+      "components": [
+        "phase_panel",
+        "repeated_node",
+        "caption_strip"
+      ],
+      "source_id": "2106.06312",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "aligned panels"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2106.06312.",
+      "description": "Three framed phases with repeated nodes and explicit phase rhythm.",
+      "id": "reference-002",
+      "file": "reference-002.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "vertical_flow",
+      "components": [
+        "stacked_block",
+        "long_connector",
+        "input_output_port"
+      ],
+      "source_id": "2107.01378",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "labeled ports"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2107.01378.",
+      "description": "Sparse vertical pipeline with small blocks and a long directional route.",
+      "id": "reference-003",
+      "file": "reference-003.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "nested_stack",
+      "components": [
+        "nested_container",
+        "repeated_module",
+        "side_annotation"
+      ],
+      "source_id": "2110.14053",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "dashed enclosure"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2110.14053.",
+      "description": "Sequential repeated blocks grouped into named nested transformer sections.",
+      "id": "reference-004",
+      "file": "reference-004.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "hub_spoke",
+      "components": [
+        "hub_container",
+        "client_card",
+        "radial_arrow"
+      ],
+      "source_id": "2111.02862",
+      "human_editable_signals": [
+        "rounded container",
+        "consistent stroke",
+        "repeated cards"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2111.02862.",
+      "description": "Central server hub distributing to symmetric client cards.",
+      "id": "reference-005",
+      "file": "reference-005.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "branching_decision",
+      "components": [
+        "branching_arrow",
+        "decision_diamond",
+        "feature_block"
+      ],
+      "source_id": "2112.02082",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "explicit arrowheads"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2112.02082.",
+      "description": "Feature-fusion split with diamond operators and convergent output.",
+      "id": "reference-006",
+      "file": "reference-006.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "encoder_decoder",
+      "components": [
+        "encoder_stack",
+        "decoder_stack",
+        "skip_connector"
+      ],
+      "source_id": "2201.10737",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "layer labels"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2201.10737.",
+      "description": "Layered encoder-decoder route with a central transformation spine.",
+      "id": "reference-007",
+      "file": "reference-007.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "grouped_columns",
+      "components": [
+        "grouped_column",
+        "bidirectional_arrow",
+        "parameter_card"
+      ],
+      "source_id": "2202.00796",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "dashed groups"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2202.00796.",
+      "description": "Three-column alignment schematic with contained subproblems.",
+      "id": "reference-008",
+      "file": "reference-008.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "iterative_cycle",
+      "components": [
+        "cyclic_arrow",
+        "module_stack",
+        "feedback_loop"
+      ],
+      "source_id": "2202.01771",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "closed arrow loop"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2202.01771.",
+      "description": "Three-part loop that makes iterative refinement visually explicit.",
+      "id": "reference-009",
+      "file": "reference-009.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "modular_network",
+      "components": [
+        "nested_container",
+        "parallel_branch",
+        "shared_output"
+      ],
+      "source_id": "2202.03233",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "nested enclosures"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2202.03233.",
+      "description": "Large enclosing network with several bounded processing branches.",
+      "id": "reference-010",
+      "file": "reference-010.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "paired_comparison",
+      "components": [
+        "paired_panel",
+        "contrast_arrow",
+        "shared_decoder"
+      ],
+      "source_id": "2202.03382",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "mirrored groups"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2202.03382.",
+      "description": "Paired image-to-model comparison with balanced left and right routes.",
+      "id": "reference-011",
+      "file": "reference-011.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "training_flow",
+      "components": [
+        "generator_block",
+        "discriminator_block",
+        "training_arrow"
+      ],
+      "source_id": "2202.04538",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "role labels"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2202.04538.",
+      "description": "Generator-discriminator workflow arranged as discrete training stages.",
+      "id": "reference-012",
+      "file": "reference-012.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "graph_flow",
+      "components": [
+        "graph_node",
+        "graph_edge",
+        "process_panel"
+      ],
+      "source_id": "2202.08335",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "node-link grammar"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2202.08335.",
+      "description": "Image-to-graph processing flow with a clear graph-processing middle stage.",
+      "id": "reference-013",
+      "file": "reference-013.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "matching_bridge",
+      "components": [
+        "matching_table",
+        "parallel_encoder",
+        "cross_arrow"
+      ],
+      "source_id": "2203.03605",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "aligned lanes"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2203.03605.",
+      "description": "Two aligned matching lanes joined through labelled bridges.",
+      "id": "reference-014",
+      "file": "reference-014.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "hierarchy",
+      "components": [
+        "rounded_container",
+        "adapter_block",
+        "vertical_stack"
+      ],
+      "source_id": "2203.04640",
+      "human_editable_signals": [
+        "rounded container",
+        "consistent stroke",
+        "stacked modules"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2203.04640.",
+      "description": "Single transformer-layer container with a disciplined vertical module hierarchy.",
+      "id": "reference-015",
+      "file": "reference-015.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "taxonomy",
+      "components": [
+        "taxonomy_tree",
+        "variant_node",
+        "bracket_group"
+      ],
+      "source_id": "2203.06125",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "branching tree"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2203.06125.",
+      "description": "Paired taxonomy of function variants and simple branching labels.",
+      "id": "reference-016",
+      "file": "reference-016.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "parallel_channels",
+      "components": [
+        "parallel_encoder",
+        "merge_node",
+        "output_marker"
+      ],
+      "source_id": "2204.04510",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "aligned columns"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2204.04510.",
+      "description": "Three parallel encoders merging into a compact graph encoder and output.",
+      "id": "reference-017",
+      "file": "reference-017.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "multistream",
+      "components": [
+        "encoder_column",
+        "decoder_column",
+        "cross_connector"
+      ],
+      "source_id": "2204.07937",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "labeled rows"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2204.07937.",
+      "description": "Separated encoder and decoder columns with a restrained interconnection route.",
+      "id": "reference-018",
+      "file": "reference-018.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "bidirectional_flow",
+      "components": [
+        "recurrent_block",
+        "bidirectional_arrow",
+        "dashed_group"
+      ],
+      "source_id": "2205.02561",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "dashed enclosure"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.02561.",
+      "description": "Forward and backward recurrent paths connected through aligned grouped modules.",
+      "id": "reference-019",
+      "file": "reference-019.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "nested_transformer",
+      "components": [
+        "transformer_panel",
+        "attention_node",
+        "waveform_annotation"
+      ],
+      "source_id": "2205.07211",
+      "human_editable_signals": [
+        "rounded container",
+        "consistent stroke",
+        "parallel panels"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.07211.",
+      "description": "Two matching transformer panels with a readable pretraining-to-finetuning contrast.",
+      "id": "reference-020",
+      "file": "reference-020.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "contrastive_parallel",
+      "components": [
+        "parallel_stream",
+        "comparison_block",
+        "crossed_arrow"
+      ],
+      "source_id": "2205.10093",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "parallel tracks"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.10093.",
+      "description": "Paired model streams that compare source, target, and relation pathways.",
+      "id": "reference-021",
+      "file": "reference-021.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "sequential_module",
+      "components": [
+        "entity_card",
+        "sequential_module",
+        "output_vector"
+      ],
+      "source_id": "2205.10674",
+      "human_editable_signals": [
+        "rounded container",
+        "consistent stroke",
+        "arrow rhythm"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.10674.",
+      "description": "Compact entity card entering a readable serial stack of named operations.",
+      "id": "reference-022",
+      "file": "reference-022.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "attention_triptych",
+      "components": [
+        "attention_row",
+        "query_key_value",
+        "parallel_lane"
+      ],
+      "source_id": "2205.12986",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "repeated rows"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.12986.",
+      "description": "Three horizontally aligned attention lanes with repeated Q/K/V structure.",
+      "id": "reference-023",
+      "file": "reference-023.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "component_menu",
+      "components": [
+        "menu_container",
+        "search_arrow",
+        "algorithm_card"
+      ],
+      "source_id": "2205.13603",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "labeled container"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.13603.",
+      "description": "A source-program menu feeding separate search-space and algorithm cards.",
+      "id": "reference-024",
+      "file": "reference-024.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "loss_architecture",
+      "components": [
+        "operator_chain",
+        "loss_block",
+        "feature_extractor"
+      ],
+      "source_id": "2205.14589",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "named operators"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.14589.",
+      "description": "Long operator chain with clear feature-extraction and loss-function endpoints.",
+      "id": "reference-025",
+      "file": "reference-025.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "temporal_sequence",
+      "components": [
+        "frame_sequence",
+        "tokenizer_block",
+        "temporal_arrow"
+      ],
+      "source_id": "2205.15868",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "timeline labels"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2205.15868.",
+      "description": "Text-and-frame sequence passed through a clearly segmented temporal transformer.",
+      "id": "reference-026",
+      "file": "reference-026.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "timeline",
+      "components": [
+        "timeline",
+        "stage_marker",
+        "training_phase"
+      ],
+      "source_id": "2206.01859",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "horizontal milestones"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2206.01859.",
+      "description": "Training timeline whose stage positions and transitions are directly editable.",
+      "id": "reference-027",
+      "file": "reference-027.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "matrix_path",
+      "components": [
+        "matrix_panel",
+        "stage_arrow",
+        "method_box"
+      ],
+      "source_id": "2206.02928",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "bounded sections"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2206.02928.",
+      "description": "Labelled overview with a central matrix-like operational panel.",
+      "id": "reference-028",
+      "file": "reference-028.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "linear_pipeline",
+      "components": [
+        "database_cylinder",
+        "linear_arrow",
+        "service_block"
+      ],
+      "source_id": "2206.06583",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "simple ports"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2206.06583.",
+      "description": "Minimal data-training-serving pipeline with a database and service endpoint.",
+      "id": "reference-029",
+      "file": "reference-029.png",
+      "partition": "dev"
+    },
+    {
+      "source_kind": "paper",
+      "layout_family": "repeated_stages",
+      "components": [
+        "stage_column",
+        "repeated_block",
+        "cross_stage_arrow"
+      ],
+      "source_id": "2207.01076",
+      "human_editable_signals": [
+        "flat fill",
+        "consistent stroke",
+        "aligned stage columns"
+      ],
+      "license": "CC-BY-4.0",
+      "attribution": "FigureBench development set (CC-BY-4.0); original source: arXiv:2207.01076.",
+      "description": "Four-stage representation-learning workflow with repeated stage grammar.",
+      "id": "reference-030",
+      "file": "reference-030.png",
+      "partition": "dev"
+    }
+  ]
+}
