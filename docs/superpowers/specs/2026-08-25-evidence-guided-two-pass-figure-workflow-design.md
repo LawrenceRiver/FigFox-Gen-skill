@@ -129,7 +129,11 @@ The output is `context-2-content-visual-plan.json`. Each item maps exact scienti
 
 Context 2 determines which concrete components are needed, such as rectangles, containers, arrows, nodes, grouped regions, scientific objects, and structural illustrations.
 
-The helper prepares approximately ten diverse FigureBench candidate images. The VLM inspects the actual images rather than only metadata. It selects and crops useful component regions, observing:
+The Skill bundles exactly 30 complete FigureBench development images in `assets/figurebench-references/`. They form the normal-user reference library and are installed with the Skill; users are not asked to download FigureBench. Each image must have verified redistribution terms and attribution, a stable id, source id, component tags, layout tags, palette tags, and a short human-authored index description. The complete multi-gigabyte FigureBench dataset is used only by maintainers when curating a future revision of these 30 references.
+
+The 30-image library must cover a deliberately diverse set of human-editable scientific-figure treatments: basic and angled containers, arrows and branching flows, nested groups, staged architectures, nodes and matrices, simplified scientific processes, hand-drawn treatments, eligible photographic crops, layout families, and restrained palette families. Selection favors reusable construction grammar and scientific clarity rather than popularity or visual complexity. Official test images are never used.
+
+For each run, the helper ranks the bundled library against Context 2 and prepares approximately ten candidate images. The VLM inspects the actual complete images rather than only metadata. It selects and crops useful component regions, observing:
 
 - shape and silhouette;
 - angle and perspective;
@@ -143,6 +147,8 @@ Each selected FigureBench reference must retain both:
 
 1. a crop image; and
 2. a textual crop contract describing which target component it guides, what may be borrowed, what must change, and why the result remains a variant.
+
+The complete bundled image is a selection source; the per-run crop is the Prompt 1 attachment. Prompt 1 does not receive all 30 images or ten unexplained complete figures.
 
 ### Single-palette rule
 
@@ -322,6 +328,7 @@ The existing repository is rewritten around this artifact chain.
 - Replace `SKILL.md` with the canonical two-pass workflow and hard invariants.
 - Rewrite `agents/openai.yaml` so the default prompt starts the complete workflow.
 - Replace old FigureBench and palette references with focused references for artifact schemas, FigureBench visual selection, prompt templates, taste rules, and SVG diagnostics.
+- Add exactly 30 curated complete images under `assets/figurebench-references/` plus an attribution and visual-index manifest.
 - Rewrite both public READMEs only after behavior, helpers, and tests agree.
 
 ### Python package
@@ -355,8 +362,8 @@ No CLI command performs model reasoning that belongs to the Skill.
 
 - Fewer than three strong domain figures: continue searching or report insufficient evidence; do not invent a convention list.
 - No native SVG paper figure: use credible HTML/PDF figure crops while recording the source format.
-- FigureBench unavailable: provide the local setup command and stop before Context 3; do not silently skip its visual-kit role.
-- Fewer than ten usable candidates: record the shortfall and expand retrieval before Prompt 1.
+- Bundled FigureBench reference pack is missing any of its 30 indexed images: fail installation validation before starting a run.
+- Fewer than ten usable candidates from the bundled pack: record the shortfall and widen the bundled-library ranking; do not ask an ordinary user to download the full dataset.
 - Crop without a target contract: reject it from the prompt bundle.
 - Multiple palette sources: fail validation.
 - Direct SVG transcription failure: report failure and do not hand-author a substitute.
@@ -372,6 +379,7 @@ Required coverage:
 
 - schema tests for all three contexts and manifests;
 - candidate diversity and exact candidate-count behavior;
+- installation validation for exactly 30 indexed, attributed bundled images;
 - crop-coordinate execution and crop-to-component mapping;
 - one-palette enforcement for user-reference, FigureBench, and palette-table sources;
 - Prompt 1 attachment inclusion, including FigureBench crops;
@@ -391,12 +399,12 @@ The rewrite is complete when:
 1. The Skill executes the canonical artifact flow without reverting to topology-first planning.
 2. Contexts 1–3 are concrete validated artifacts.
 3. Prompt 1 includes mapped FigureBench crop images and their contracts.
-4. Only one palette identity is accepted per run.
-5. PNG1 is generated from the full Prompt 1 bundle.
-6. SVG1 is directly transcribed from PNG1 by the base model and cannot be substituted with a local redraw.
-7. PNG1.5 is used only for diagnosis and is structurally excluded from Prompt 2.
-8. The diagnosis produces keep, accept-variation, patch, reject, and replace decisions where applicable.
-9. Prompt 2 modifies PNG1 using approved SVG crops and the diagnosis.
-10. PNG2 is the final output and no second SVG loop occurs.
-11. Tests, quick skill validation, and repository checks pass.
-
+4. The installed Skill contains exactly 30 complete, indexed, attributed FigureBench development references and selects about ten per run before cropping.
+5. Only one palette identity is accepted per run.
+6. PNG1 is generated from the full Prompt 1 bundle.
+7. SVG1 is directly transcribed from PNG1 by the base model and cannot be substituted with a local redraw.
+8. PNG1.5 is used only for diagnosis and is structurally excluded from Prompt 2.
+9. The diagnosis produces keep, accept-variation, patch, reject, and replace decisions where applicable.
+10. Prompt 2 modifies PNG1 using approved SVG crops and the diagnosis.
+11. PNG2 is the final output and no second SVG loop occurs.
+12. Tests, quick skill validation, and repository checks pass.
