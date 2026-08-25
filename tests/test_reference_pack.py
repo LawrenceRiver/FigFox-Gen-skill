@@ -5,6 +5,7 @@ from pathlib import Path
 
 from PIL import Image
 
+from scientific_figure_workflow import validate_context3
 from scientific_figure_workflow.reference_pack import (
     apply_crop_manifest,
     load_reference_index,
@@ -195,10 +196,16 @@ class ReferenceCropTests(unittest.TestCase):
         pack_root = root / "pack"
         pack_root.mkdir()
         records = []
-        for position, colour in enumerate(((12, 34, 56), (78, 90, 123)), start=1):
+        for position, base in enumerate((12, 78), start=1):
             reference_id = f"reference-{position:03d}"
             file_name = f"{reference_id}.png"
-            Image.new("RGB", (100, 50), colour).save(pack_root / file_name)
+            image = Image.new("RGB", (100, 50))
+            image.putdata([
+                ((x + base) % 256, (3 * y + base) % 256, (7 * x + 11 * y + base) % 256)
+                for y in range(image.height)
+                for x in range(image.width)
+            ])
+            image.save(pack_root / file_name)
             records.append({
                 "id": reference_id,
                 "file": file_name,
@@ -242,7 +249,8 @@ class ReferenceCropTests(unittest.TestCase):
             with Image.open(output / crop["crop_path"]) as image:
                 self.assertEqual(image.mode, "RGB")
                 self.assertEqual(image.size, (50, 30))
-                self.assertEqual(image.getpixel((0, 0)), (12, 34, 56))
+                self.assertEqual(image.getpixel((0, 0)), (22, 42, 192))
+                self.assertEqual(image.getpixel((49, 29)), (71, 129, 86))
 
     def test_crop_manifest_rejects_unknown_reference_id(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -264,6 +272,14 @@ class ReferenceCropTests(unittest.TestCase):
             crop = self.crop()
             crop["crop_contract"] = {}
             with self.assertRaisesRegex(ValueError, "crop_contract"):
+                apply_crop_manifest(self.make_pack(root), {"crops": [crop]}, root / "crops")
+
+    def test_crop_manifest_contract_requires_lists(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            crop = self.crop()
+            crop["crop_contract"]["borrow"] = ("corner family",)
+            with self.assertRaisesRegex(ValueError, "borrow"):
                 apply_crop_manifest(self.make_pack(root), {"crops": [crop]}, root / "crops")
 
     def test_crop_manifest_rejects_duplicate_crop_ids(self):
@@ -299,6 +315,36 @@ class ReferenceCropTests(unittest.TestCase):
         }]
         result = validate_reference_coverage(context, manifest, basic_geometry)
         self.assertEqual(result["covered_component_ids"], ["decoder", "encoder", "legend"])
+
+    def test_crop_outputs_and_coverage_matrix_feed_context3_without_conversion(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            pack_root = self.make_pack(root)
+            manifest = {
+                "crops": [
+                    self.crop(target="encoder"),
+                    self.crop("crop-decoder", reference_id="reference-002", target="decoder"),
+                ]
+            }
+            context2 = {"components": [{"id": "encoder"}, {"id": "decoder"}]}
+            selected_references = apply_crop_manifest(pack_root, manifest, root / "crops")["crops"]
+            coverage_matrix = validate_reference_coverage(context2, manifest, [])["coverage_matrix"]
+
+            context3 = {
+                "selected_references": selected_references,
+                "coverage_matrix": coverage_matrix,
+                "palette": {
+                    "base_palette_id": "slate-blue",
+                    "colours": [
+                        {"hex": "#1F2937", "rgb": [31, 41, 55], "role": "ink"},
+                        {"hex": "#E5E7EB", "rgb": [229, 231, 235], "role": "background"},
+                    ],
+                },
+                "taste_constraints": ["quiet hierarchy"],
+            }
+
+            normalized = validate_context3(context3, {"encoder", "decoder"})
+            self.assertEqual(normalized["coverage_matrix"], coverage_matrix)
 
     def test_coverage_rejects_incomplete_basic_geometry_exception(self):
         context = {"components": [{"id": "encoder"}, {"id": "decoder"}, {"id": "legend"}]}

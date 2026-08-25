@@ -71,6 +71,13 @@ def _required_string(record: Mapping[str, Any], key: str, location: str) -> str:
     return value.strip()
 
 
+def _required_string_list(record: Mapping[str, Any], key: str, location: str) -> list[str]:
+    value = record.get(key)
+    if not isinstance(value, list) or not value:
+        raise ValueError(f"{location} requires non-empty {key} list")
+    return [_required_string({key: item}, key, location) for item in value]
+
+
 def _required_value(record: Mapping[str, Any], key: str, location: str) -> Any:
     if key not in record or record[key] is None:
         raise ValueError(f"{location} requires {key}")
@@ -251,12 +258,9 @@ def validate_context3(
     reference_ids: list[str] = []
     normalized["selected_references"] = []
     crop_fields = ("crop_id", "reference_id", "crop_path", "target_component_id")
-    contract_fields = ("borrow", "must_change", "human_editable_reason")
     for index, selection in enumerate(selections):
         location = f"context3 selected_references[{index}]"
         contract = _mapping(selection.get("crop_contract"), f"{location} crop_contract")
-        for key in contract_fields:
-            _required_string(contract, key, f"{location} crop_contract")
         for key in crop_fields:
             _required_string(selection, key, location)
         target_component_id = _required_string(selection, "target_component_id", location)
@@ -265,7 +269,13 @@ def validate_context3(
         crop_ids.append(_required_string(selection, "crop_id", location))
         reference_ids.append(_required_string(selection, "reference_id", location))
         normalized_selection = _normalized_record(selection, crop_fields)
-        normalized_selection["crop_contract"] = _normalized_record(contract, contract_fields)
+        normalized_selection["crop_contract"] = {
+            "borrow": _required_string_list(contract, "borrow", f"{location} crop_contract"),
+            "must_change": _required_string_list(contract, "must_change", f"{location} crop_contract"),
+            "human_editable_reason": _required_string(
+                contract, "human_editable_reason", f"{location} crop_contract"
+            ),
+        }
         normalized["selected_references"].append(normalized_selection)
     if len(crop_ids) != len(set(crop_ids)):
         raise ValueError("context3 selected_references crop_ids must be unique")

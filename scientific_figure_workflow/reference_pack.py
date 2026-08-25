@@ -281,7 +281,7 @@ def _crop_bounds(value: Any, location: str) -> list[float]:
 
 
 def _contract_strings(value: Any, location: str) -> list[str]:
-    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)) or not value:
+    if not isinstance(value, list) or not value:
         raise ValueError(f"{location} requires a non-empty list")
     strings = [_non_empty_string(item, location) for item in value]
     if len(strings) != len(set(strings)):
@@ -449,8 +449,31 @@ def validate_reference_coverage(
     covered_component_ids = crop_component_ids | geometry_component_ids
     if covered_component_ids != component_ids:
         raise ValueError("crop manifest and basic_geometry must cover every Context 2 component")
+    crop_ids_by_component: dict[str, list[str]] = {}
+    for crop in crops:
+        crop_ids_by_component.setdefault(crop["target_component_id"], []).append(crop["id"])
+    geometry_by_component = {record["component_id"]: record for record in geometry}
+    coverage_matrix = []
+    for component in context2["components"]:
+        component_id = component["id"]
+        if component_id in crop_ids_by_component:
+            coverage_matrix.append({
+                "component_id": component_id,
+                "crop_ids": crop_ids_by_component[component_id],
+            })
+        else:
+            record = geometry_by_component[component_id]
+            coverage_matrix.append({
+                "component_id": component_id,
+                "basic_geometry_justification": (
+                    f"Primitive: {record['primitive']}. "
+                    f"Construction steps: {'; '.join(record['construction_steps'])}. "
+                    f"Human-editable rationale: {record['human_editable_reason']}"
+                ),
+            })
     return {
         "crops": copy.deepcopy(crops),
         "basic_geometry": geometry,
         "covered_component_ids": sorted(covered_component_ids),
+        "coverage_matrix": coverage_matrix,
     }

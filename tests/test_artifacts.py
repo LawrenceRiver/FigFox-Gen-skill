@@ -85,8 +85,8 @@ def valid_context3():
                 "crop_path": "references/figurebench/crops/encoder.png",
                 "target_component_id": "encoder",
                 "crop_contract": {
-                    "borrow": "corner radius and stroke weight",
-                    "must_change": "replace the source labels and arrangement",
+                    "borrow": ["corner radius", "stroke weight"],
+                    "must_change": ["source labels", "arrangement"],
                     "human_editable_reason": "the treatment is editable vector geometry",
                 },
             },
@@ -96,8 +96,8 @@ def valid_context3():
                 "crop_path": "references/figurebench/crops/audio.png",
                 "target_component_id": "audio",
                 "crop_contract": {
-                    "borrow": "waveform enclosure",
-                    "must_change": "use the run palette and output label",
+                    "borrow": ["waveform enclosure"],
+                    "must_change": ["run palette", "output label"],
                     "human_editable_reason": "the waveform is a simple path construction",
                 },
             },
@@ -286,16 +286,29 @@ class ContextArtifactTests(unittest.TestCase):
 
     def test_context3_normalizes_nested_crop_contract_without_mutating_input(self):
         context = valid_context3()
-        context["selected_references"][0]["crop_contract"]["borrow"] = "  corner radius  "
+        context["selected_references"][0]["crop_contract"]["borrow"] = ["  corner radius  "]
 
         normalized = validate_context3(context, {"encoder", "audio"})
 
         self.assertEqual(
-            normalized["selected_references"][0]["crop_contract"]["borrow"], "corner radius"
+            normalized["selected_references"][0]["crop_contract"]["borrow"], ["corner radius"]
         )
         self.assertEqual(
-            context["selected_references"][0]["crop_contract"]["borrow"], "  corner radius  "
+            context["selected_references"][0]["crop_contract"]["borrow"], ["  corner radius  "]
         )
+
+    def test_context3_requires_list_based_borrow_and_must_change_contracts(self):
+        for field in ("borrow", "must_change"):
+            with self.subTest(contract_field=field):
+                context = valid_context3()
+                context["selected_references"][0]["crop_contract"][field] = "ambiguous string"
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context3(context, {"encoder", "audio"})
+
+                context = valid_context3()
+                context["selected_references"][0]["crop_contract"][field] = ("ambiguous tuple",)
+                with self.assertRaisesRegex(ValueError, field):
+                    validate_context3(context, {"encoder", "audio"})
 
     def test_context3_rejects_every_selection_and_coverage_invariant(self):
         for field in ("crop_id", "reference_id", "crop_path", "target_component_id"):
