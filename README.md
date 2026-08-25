@@ -34,6 +34,7 @@ Methodology + optional reference
   -> Context 1: domain visual conventions
   -> Context 2: content-to-visual plan
   -> Context 3: mapped FigureBench crops + one palette lineage + taste
+  -> Creative Director prompt -> brief + targeted paper-SVG crops
   -> Prompt 1 with all mapped crops -> PNG1
   -> direct base-Codex visual transcription -> editable SVG1
   -> temporary PNG1.5 -> diagnosis + approved/replacement crops
@@ -73,11 +74,31 @@ domain figures, and the user reference never supply active palette colours. Tast
 guidance is subordinate to scientific meaning, user constraints, domain evidence,
 human editability, and palette lineage.
 
+### Creative Director: pre-PNG1 visual ideation
+
+After Contexts 1–3, a Creative Director prompt gives the model one bounded chance to
+propose a new visual treatment before PNG1 exists. It does not generate an image or
+redesign the figure. If an idea needs a construction not already evidenced, the
+model must find a real scholarly paper figure available as SVG or extractable
+SVG/HTML, inspect it, and request a targeted crop under
+`references/web/crops/creative-director/`. Each crop records its target component,
+HTTPS source and evidence URLs, `source_format: "svg"`, `borrow`, `must_change`, and
+why the construction remains human-editable. Complete paper figures are never
+attached, and sources cannot be invented. If no new treatment is needed, the brief
+must say `no_external_svg_needed`.
+
+```bash
+python scripts/figure_workflow.py build-creative-director-prompt --run RUN
+python scripts/figure_workflow.py validate-creative-director --run RUN
+```
+
 ### PNG1, editable SVG1, and diagnosis
 
-Prompt 1 contains the Methodology, Contexts 1–3, the optional reference, domain
-crops, and every mapped FigureBench crop. The first image-generation pass creates
-PNG1.
+Prompt 1 contains the Methodology, Contexts 1–3, the Creative Director brief, the
+optional reference, domain crops, every mapped FigureBench crop, and any validated
+paper-SVG crops proposed by the Creative Director. The first image-generation pass
+creates PNG1. Paper-SVG crops guide only their declared component and are variants;
+they do not donate source labels, colours, proportions, or complete compositions.
 
 PNG1 has two absolute anti-AI bans: no module may use a boxed-off upper title band
 with a horizontal divider (the screenshot-like title-bar/content-box pattern), and

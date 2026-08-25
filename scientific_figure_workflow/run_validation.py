@@ -18,12 +18,14 @@ from .artifacts import (
     validate_context1,
     validate_context2,
     validate_context3,
+    validate_creative_director,
     validate_diagnosis,
     validate_run_manifest,
     validate_web_manifest,
 )
 from .palette import validate_palette
 from .prompts import (
+    build_creative_director_prompt,
     build_prompt1_bundle,
     build_prompt2_bundle,
     validate_prompt_bundle,
@@ -378,6 +380,20 @@ def validate_complete_run(
     verify_png(root / artifacts["png2"], "PNG2")
 
     methodology = (root / artifacts["methodology"]).read_text(encoding="utf-8")
+    creative_director = None
+    creative_brief_path = root / "creative-director/brief.json"
+    if creative_brief_path.is_file():
+        creative_director = validate_creative_director(
+            load_json_object(creative_brief_path), root, component_ids
+        )
+        creative_prompt_path = root / "creative-director/prompt.md"
+        if not creative_prompt_path.is_file():
+            raise ValueError("Creative Director brief requires creative-director/prompt.md")
+        expected_creative_prompt = build_creative_director_prompt(
+            methodology, context1, context2, context3
+        )["prompt"]
+        if creative_prompt_path.read_text(encoding="utf-8") != expected_creative_prompt:
+            raise ValueError("Creative Director prompt does not match deterministic compilation")
     prompt1 = build_prompt1_bundle(
         methodology,
         context1,
@@ -385,6 +401,7 @@ def validate_complete_run(
         context3,
         find_user_reference(root),
         root,
+        creative_director,
     )
     _validate_stored_bundle(root, prompt1, 1)
     prompt2 = build_prompt2_bundle(
@@ -418,4 +435,9 @@ def validate_complete_run(
         "diagnostic_roots": diagnostic_roots,
         "figurebench_crops": figurebench["crops"],
         "approved_svg_crops": svg["approved_crops"],
+        "creative_director": (
+            creative_director["svg_evidence_status"]
+            if creative_director is not None
+            else "not-materialized"
+        ),
     }

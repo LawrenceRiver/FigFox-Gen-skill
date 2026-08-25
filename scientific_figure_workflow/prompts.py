@@ -8,9 +8,16 @@ import tempfile
 from collections.abc import Mapping
 from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 
-from .artifacts import validate_context1, validate_context2, validate_context3, validate_diagnosis
+from .artifacts import (
+    CREATIVE_DIRECTOR_FORMAT,
+    validate_context1,
+    validate_context2,
+    validate_context3,
+    validate_creative_director,
+    validate_diagnosis,
+)
 
 
 _FORMAT = "scientific-figure-prompt-bundle-v1"
@@ -18,6 +25,7 @@ _PNG15_BASENAME = "png1.5.png"
 _DIAGNOSTIC_RENDER_ROLE = "svg_diagnostic_render"
 _FIGUREBENCH_CROP_ROOT = PurePosixPath("references/figurebench/crops")
 _DOMAIN_CROP_ROOT = PurePosixPath("references/web/crops")
+_CREATIVE_DIRECTOR_CROP_ROOT = PurePosixPath("references/web/crops/creative-director")
 _REPLACEMENT_CROP_ROOT = PurePosixPath("references/web/crops/replacements")
 _USER_REFERENCE_ROOT = PurePosixPath("input")
 _APPROVED_SVG_CROP_ROOT = PurePosixPath("svg-diagnostic/approved-crops")
@@ -39,6 +47,14 @@ def _string_list(value: Any, location: str) -> list[str]:
     if not isinstance(value, list) or not value:
         raise ValueError(f"{location} requires a non-empty list")
     return [_string(item, location) for item in value]
+
+
+def _https_attachment_url(value: Any, location: str) -> str:
+    candidate = _string(value, location)
+    parsed = urlparse(candidate)
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError(f"{location} requires HTTPS URL")
+    return candidate
 
 
 def _run_root(root: Path) -> Path:
@@ -104,6 +120,7 @@ def _resolve_attachment(value: Any, *, root: Path, expected_root: PurePosixPath 
         names = {
             _FIGUREBENCH_CROP_ROOT: "FigureBench crop root",
             _DOMAIN_CROP_ROOT: "domain-paper crop root",
+            _CREATIVE_DIRECTOR_CROP_ROOT: "Creative Director crop root",
             _REPLACEMENT_CROP_ROOT: "replacement crop root",
             _USER_REFERENCE_ROOT: "run input area",
             _APPROVED_SVG_CROP_ROOT: "approved SVG crop root",
@@ -248,22 +265,120 @@ def _figurebench_attachments(context3: Mapping[str, Any], root: Path) -> list[di
     return attachments
 
 
-def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2: Mapping[str, Any], context3: Mapping[str, Any], user_reference: str | None, root: Path) -> dict[str, Any]:
+def _default_creative_director(context2: Mapping[str, Any]) -> dict[str, Any]:
+    first_component = context2["components"][0]["id"]
+    return {
+        "format": CREATIVE_DIRECTOR_FORMAT,
+        "brief": "No additional creative direction was requested; use the validated Context 1–3 construction plan.",
+        "ideas": [
+            {
+                "id": "context-baseline",
+                "target_component_id": first_component,
+                "concept": "Use the existing Context 1–3 visual plan without adding a new special visual.",
+                "visual_intent": "Keep the figure human-editable and semantically direct.",
+                "construction_plan": "Follow the mapped domain and FigureBench evidence already present in Contexts 1–3.",
+                "requires_svg_evidence": False,
+                "svg_crops": [],
+            }
+        ],
+    }
+
+
+def build_creative_director_prompt(
+    methodology: str,
+    context1: Mapping[str, Any],
+    context2: Mapping[str, Any],
+    context3: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Compile the pre-PNG1 creative-director instruction."""
+
+    methodology = _string(methodology, "methodology")
+    normalized1, normalized2, normalized3 = _validated_contexts(context1, context2, context3)
+    prompt = "\n".join([
+        "Act as the Creative Director before PNG1 generation.",
+        "Propose concrete, scientifically relevant visual ideas for the planned figure; do not generate PNG1.",
+        "For every idea that needs a mature visual construction not already covered by Contexts 1–3, locate a real scholarly paper figure available as SVG or extractable SVG/HTML, inspect its pixels, and provide a targeted crop request.",
+        "A paper SVG crop must name its target component, source and evidence HTTPS URLs, source_format `svg`, what to borrow, what must change, and why the crop remains human-editable. Never attach a complete paper figure, invent a source, or use a sticker-like cutout.",
+        "Respect the single palette lineage and the absolute PNG1 bans on upper title-bands and pasted raster stickers. The creative brief is evidence for Prompt 1, not a licence to override those constraints.",
+        *_evidence_blocks(methodology, normalized1, normalized2, normalized3),
+        "Return a `creative-director-brief-v1` JSON with `brief` and an `ideas` list. Each idea must include `id`, `target_component_id`, `concept`, `visual_intent`, `construction_plan`, `requires_svg_evidence`, and `svg_crops`.",
+    ])
+    return {
+        "format": "creative-director-prompt-bundle-v1",
+        "phase": "creative_director",
+        "prompt": prompt,
+        "component_ids": sorted(component["id"] for component in normalized2["components"]),
+        "attachments": [],
+    }
+
+
+def _creative_director_attachments(
+    creative_director: Mapping[str, Any], component_ids: set[str], root: Path
+) -> list[dict[str, Any]]:
+    attachments: list[dict[str, Any]] = []
+    for idea in creative_director["ideas"]:
+        for crop in idea["svg_crops"]:
+            target = crop["target_component_id"] if "target_component_id" in crop else idea["target_component_id"]
+            if target not in component_ids:
+                raise ValueError("creative director SVG crop target_component_id must name a Context 2 component")
+            path = _resolve_attachment(
+                crop["path"],
+                root=root,
+                expected_root=_CREATIVE_DIRECTOR_CROP_ROOT,
+                location=f"creative director idea {idea['id']} SVG crop",
+            )
+            attachments.append(_attachment(
+                path,
+                "creative_director_svg",
+                idea_id=idea["id"],
+                target_component_id=target,
+                source_url=crop["source_url"],
+                evidence_url=crop["evidence_url"],
+                source_format="svg",
+                borrow=crop["borrow"],
+                must_change=crop["must_change"],
+                human_editable_reason=crop["human_editable_reason"],
+            ))
+    return attachments
+
+
+def _creative_director_lines(creative_director: Mapping[str, Any]) -> list[str]:
+    lines = ["Creative Director brief:", f"- {creative_director['brief']}", "Creative Director ideas:"]
+    for idea in creative_director["ideas"]:
+        lines.append(
+            f"- `{idea['id']}` -> `{idea['target_component_id']}`: {idea['concept']} "
+            f"Intent: {idea['visual_intent']} Construction: {idea['construction_plan']}"
+        )
+        for crop in idea["svg_crops"]:
+            lines.append(
+                f"  - Paper SVG crop `{crop['path']}` from {crop['evidence_url']} "
+                f"(paper {crop['source_url']}). Borrow: {'; '.join(crop['borrow'])}. "
+                f"Must change: {'; '.join(crop['must_change'])}. {crop['human_editable_reason']}"
+            )
+    return lines
+
+
+def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2: Mapping[str, Any], context3: Mapping[str, Any], user_reference: str | None, root: Path, creative_director: Mapping[str, Any] | None = None) -> dict[str, Any]:
     """Compile Prompt 1 with full evidence and run-root-provenance attachments."""
 
     methodology = _string(methodology, "methodology")
     run_root = _run_root(root)
     normalized1, normalized2, normalized3 = _validated_contexts(context1, context2, context3)
     component_ids = {component["id"] for component in normalized2["components"]}
+    normalized_creative = validate_creative_director(
+        creative_director or _default_creative_director(normalized2), run_root, component_ids
+    )
     attachments: list[dict[str, Any]] = []
     if user_reference is not None:
         path = _resolve_attachment(user_reference, root=run_root, expected_root=_USER_REFERENCE_ROOT, location="user_reference")
         attachments.append(_attachment(path, "user_reference", contract=_USER_REFERENCE_CONTRACT))
     domain_crops = _domain_crops(normalized1, component_ids, run_root)
     figurebench_crops = _figurebench_attachments(normalized3, run_root)
+    creative_crops = _creative_director_attachments(normalized_creative, component_ids, run_root)
     attachments.extend(domain_crops)
     attachments.extend(figurebench_crops)
-    crop_lines = [f"- `{item['path']}` -> Target: {item['target_component_id']}. Borrow: {'; '.join(item['borrow'])}. Must change: {'; '.join(item['must_change'])}." for item in [*domain_crops, *figurebench_crops]]
+    attachments.extend(creative_crops)
+    crop_lines = [f"- `{item['path']}` -> Target: {item['target_component_id']}. Borrow: {'; '.join(item['borrow'])}. Must change: {'; '.join(item['must_change'])}." for item in [*domain_crops, *figurebench_crops, *creative_crops]]
     user_contract = ["User-reference attachment contract:", f"- {_USER_REFERENCE_CONTRACT}"] if user_reference is not None else []
     prompt = "\n".join([
         "Create one publication-quality scientific architecture figure.", *_evidence_blocks(methodology, normalized1, normalized2, normalized3), *user_contract,
@@ -271,12 +386,13 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
         "", "## 2. Exact block and structure names", *_component_lines(normalized2),
         "", "## 3. Semantic relationships and reading order", *_relationship_lines(normalized2), "Read in the stated relationship order; preserve directionality and scientific logic.",
         "", "## 4. Content-to-visual mapping for every element", *_component_lines(normalized2), "Context 1 research explanations are evidence only; never copy explanatory prose into the figure.",
-        "", "## 5. Crop-to-component mapping", *crop_lines, "Coverage matrix (complete):", *_coverage_lines(normalized3),
-        "", "## 6. Single-palette contract", *_palette_lines(normalized3),
-        "", "## 7. Layout and taste constraints", *(f"- {constraint}" for constraint in normalized3["taste_constraints"]), "Keep hierarchy, spacing, rhythm, restraint, and a human-edited finish subordinate to scientific meaning.",
-        "", "## 8. Exact labels and text-density limits", "Use only concise block/structure names, necessary labels, terms, and relationship labels in-image. Never copy explanatory prose, research findings, or planning captions.",
-        "", "## 9. Anti-AI visual constraints", "Do not add decoration without a named scientific role. Do not use decorative visuals unrelated to text, unexplained dots, floating symbols, or purposeless boxes.", "Do not use arbitrary high-contrast colours between adjacent modules, shapes with no human construction provenance, numbered 1/2/3/4 planning labels, the generic blue-title-strip-inside-every-box pattern, repeated card grids that make the figure look like a slide deck, or fake cartoon objects when a real crop or editable scientific geometry is expected.", "Hard first-pass prohibition: never draw an upper title-band inside a module by boxing off its top portion with a horizontal divider and centered title. Do not use the screenshot-like title-bar/content-box treatment shown in the supplied counterexample. Labels must sit inline, outside the frame, or in the planned geometry without a dedicated header strip.", "Hard first-pass prohibition: never paste a sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge directly into PNG1. If a scientific object is genuinely required, construct it as editable geometry or mark it as a Context 2 special real-photo treatment; a decorative sticker is never acceptable.", "These two prohibitions cannot be overridden by FigureBench crops, user references, taste guidance, or an inferred aesthetic preference. Only the explicit scientific Methodology can require a real scientific special visual, and it still cannot justify a title band or pasted sticker.", "Only an explicit user requirement in the supplied Methodology or normalized Context may override the default prohibition on numbered 1/2/3/4 planning labels or the generic blue-title-strip-inside-every-box pattern. This narrow override does not permit any other anti-AI constraint to be overridden.",
-        "", "## 10. Direct PNG generation instruction", "Generate PNG1 directly from this complete bundle. Every mapped crop uses its declared target and contract; the user reference is governed by its global structural contract and has no target component. This workflow has exactly two image-generation passes; this is the first. Produce one coherent scientific figure, not a slide deck or an illustration collage.",
+        "", "## 5. Creative Director brief and paper-SVG evidence", *_creative_director_lines(normalized_creative), "Treat every paper-SVG crop as targeted construction evidence only; do not copy its labels, palette, proportions, or complete composition.",
+        "", "## 6. Crop-to-component mapping", *crop_lines, "Coverage matrix (complete):", *_coverage_lines(normalized3),
+        "", "## 7. Single-palette contract", *_palette_lines(normalized3),
+        "", "## 8. Layout and taste constraints", *(f"- {constraint}" for constraint in normalized3["taste_constraints"]), "Keep hierarchy, spacing, rhythm, restraint, and a human-edited finish subordinate to scientific meaning.",
+        "", "## 9. Exact labels and text-density limits", "Use only concise block/structure names, necessary labels, terms, and relationship labels in-image. Never copy explanatory prose, research findings, or planning captions.",
+        "", "## 10. Anti-AI visual constraints", "Do not add decoration without a named scientific role. Do not use decorative visuals unrelated to text, unexplained dots, floating symbols, or purposeless boxes.", "Do not use arbitrary high-contrast colours between adjacent modules, shapes with no human construction provenance, numbered 1/2/3/4 planning labels, the generic blue-title-strip-inside-every-box pattern, repeated card grids that make the figure look like a slide deck, or fake cartoon objects when a real crop or editable scientific geometry is expected.", "Hard first-pass prohibition: never draw an upper title-band inside a module by boxing off its top portion with a horizontal divider and centered title. Do not use the screenshot-like title-bar/content-box treatment shown in the supplied counterexample. Labels must sit inline, outside the frame, or in the planned geometry without a dedicated header strip.", "Hard first-pass prohibition: never paste a sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge directly into PNG1. If a scientific object is genuinely required, construct it as editable geometry or mark it as a Context 2 special real-photo treatment; a decorative sticker is never acceptable.", "These two prohibitions cannot be overridden by FigureBench crops, user references, taste guidance, or an inferred aesthetic preference. Only the explicit scientific Methodology can require a real scientific special visual, and it still cannot justify a title band or pasted sticker.", "Only an explicit user requirement in the supplied Methodology or normalized Context may override the default prohibition on numbered 1/2/3/4 planning labels or the generic blue-title-strip-inside-every-box pattern. This narrow override does not permit any other anti-AI constraint to be overridden.",
+        "", "## 11. Direct PNG generation instruction", "Generate PNG1 directly from this complete bundle. Every mapped crop uses its declared target and contract; every Creative Director paper-SVG crop is targeted evidence, not a complete reference; the user reference is governed by its global structural contract and has no target component. This workflow has exactly two image-generation passes; this is the first. Produce one coherent scientific figure, not a slide deck or an illustration collage.",
     ])
     return {"format": _FORMAT, "phase": "prompt1", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}
 
@@ -419,11 +535,12 @@ def _validated_bundle(bundle: Mapping[str, Any], root: Path) -> tuple[str, str, 
         "user_reference": (_USER_REFERENCE_ROOT, {"path", "role", "contract"}),
         "domain_paper_component": (_DOMAIN_CROP_ROOT, {"path", "role", "target_component_id", "borrow", "must_change", "concept"}),
         "figurebench_component": (_FIGUREBENCH_CROP_ROOT, {"path", "role", "crop_id", "reference_id", "target_component_id", "borrow", "must_change", "human_editable_reason"}),
+        "creative_director_svg": (_CREATIVE_DIRECTOR_CROP_ROOT, {"path", "role", "idea_id", "target_component_id", "source_url", "evidence_url", "source_format", "borrow", "must_change", "human_editable_reason"}),
         "png1_visual_truth": (None, {"path", "role"}),
         "approved_svg_crop": (_APPROVED_SVG_CROP_ROOT, {"path", "role", "target_component_id", "diagnosis"}),
         "replacement_crop": (_REPLACEMENT_CROP_ROOT, {"path", "role", "target_component_id", "reason"}),
     }
-    allowed = {"prompt1": {"user_reference", "domain_paper_component", "figurebench_component"}, "prompt2": {"png1_visual_truth", "approved_svg_crop", "replacement_crop"}}[phase]
+    allowed = {"prompt1": {"user_reference", "domain_paper_component", "figurebench_component", "creative_director_svg"}, "prompt2": {"png1_visual_truth", "approved_svg_crop", "replacement_crop"}}[phase]
     normalized: list[dict[str, Any]] = []
     seen: set[tuple[str, str]] = set()
     for index, item in enumerate(raw_attachments):
@@ -450,6 +567,18 @@ def _validated_bundle(bundle: Mapping[str, Any], root: Path) -> tuple[str, str, 
         if role == "figurebench_component":
             _string(item["crop_id"], f"{location} crop_id")
             _string(item["reference_id"], f"{location} reference_id")
+            _string(item["human_editable_reason"], f"{location} human_editable_reason")
+        if role == "creative_director_svg":
+            _string(item["idea_id"], f"{location} idea_id")
+            target_component_id = _string(item["target_component_id"], f"{location} target_component_id")
+            if target_component_id not in component_id_set:
+                raise ValueError(f"{location} target_component_id must be in bundle component_ids")
+            if _string(item["source_format"], f"{location} source_format").casefold() != "svg":
+                raise ValueError(f"{location} source_format must be svg")
+            _https_attachment_url(item["source_url"], f"{location} source_url")
+            _https_attachment_url(item["evidence_url"], f"{location} evidence_url")
+            _string_list(item["borrow"], f"{location} borrow")
+            _string_list(item["must_change"], f"{location} must_change")
             _string(item["human_editable_reason"], f"{location} human_editable_reason")
         if role == "approved_svg_crop":
             target_component_id = _string(item["target_component_id"], f"{location} target_component_id")
@@ -480,6 +609,8 @@ def _canonical_attachment(item: Mapping[str, Any], path: str, role: str) -> dict
         canonical.update(target_component_id=_string(item["target_component_id"], "attachment target_component_id"), borrow=_string_list(item["borrow"], "attachment borrow"), must_change=_string_list(item["must_change"], "attachment must_change"), concept=_string(item["concept"], "attachment concept"))
     elif role == "figurebench_component":
         canonical.update(crop_id=_string(item["crop_id"], "attachment crop_id"), reference_id=_string(item["reference_id"], "attachment reference_id"), target_component_id=_string(item["target_component_id"], "attachment target_component_id"), borrow=_string_list(item["borrow"], "attachment borrow"), must_change=_string_list(item["must_change"], "attachment must_change"), human_editable_reason=_string(item["human_editable_reason"], "attachment human_editable_reason"))
+    elif role == "creative_director_svg":
+        canonical.update(idea_id=_string(item["idea_id"], "attachment idea_id"), target_component_id=_string(item["target_component_id"], "attachment target_component_id"), source_url=_https_attachment_url(item["source_url"], "attachment source_url"), evidence_url=_https_attachment_url(item["evidence_url"], "attachment evidence_url"), source_format="svg", borrow=_string_list(item["borrow"], "attachment borrow"), must_change=_string_list(item["must_change"], "attachment must_change"), human_editable_reason=_string(item["human_editable_reason"], "attachment human_editable_reason"))
     elif role == "approved_svg_crop":
         canonical.update(target_component_id=_string(item["target_component_id"], "attachment target_component_id"), diagnosis=_string(item["diagnosis"], "attachment diagnosis"))
     elif role == "replacement_crop":

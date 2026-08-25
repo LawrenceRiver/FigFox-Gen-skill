@@ -4,6 +4,7 @@ from .artifacts import (
     validate_context1,
     validate_context2,
     validate_context3,
+    validate_creative_director,
     validate_diagnosis,
     validate_run_manifest,
     validate_web_manifest,
@@ -11,6 +12,7 @@ from .artifacts import (
 from .palette import palette_hex_set, validate_palette
 from .prompts import (
     build_prompt1_bundle,
+    build_creative_director_prompt,
     build_prompt2_bundle,
     validate_prompt_bundle,
     write_bundle,
@@ -40,6 +42,7 @@ __all__ = [
     "validate_context1",
     "validate_context2",
     "validate_context3",
+    "validate_creative_director",
     "validate_diagnosis",
     "validate_run_manifest",
     "validate_web_manifest",
@@ -51,6 +54,7 @@ __all__ = [
     "apply_crop_manifest",
     "validate_reference_coverage",
     "build_prompt1_bundle",
+    "build_creative_director_prompt",
     "build_prompt2_bundle",
     "validate_prompt_bundle",
     "write_bundle",

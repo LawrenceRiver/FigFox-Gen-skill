@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from scientific_figure_workflow.prompts import (
+    build_creative_director_prompt,
     build_prompt1_bundle,
     build_prompt2_bundle,
     write_bundle,
@@ -115,6 +116,35 @@ def c3():
     }
 
 
+def creative_director():
+    return {
+        "format": "creative-director-brief-v1",
+        "brief": "Use one mature paper-SVG construction for the intermediate representation, then redraw it as a variant.",
+        "ideas": [
+            {
+                "id": "intermediate-shape-language",
+                "target_component_id": "audio",
+                "concept": "Use a paper-derived structured intermediate panel rather than an invented icon.",
+                "visual_intent": "Make the intermediate representation read as a compact editable scientific construction.",
+                "construction_plan": "Borrow the enclosure and connector grammar, then change labels, proportions, and palette.",
+                "requires_svg_evidence": True,
+                "svg_crops": [
+                    {
+                        "path": "references/web/crops/creative-director/intermediate-shape-language.png",
+                        "target_component_id": "audio",
+                        "source_url": "https://arxiv.org/html/2402.14285",
+                        "evidence_url": "https://arxiv.org/html/2402.14285v4/figure.svg",
+                        "source_format": "svg",
+                        "borrow": ["editable enclosure", "connector rhythm"],
+                        "must_change": ["source labels", "source proportions", "source colours"],
+                        "human_editable_reason": "The crop is taken from a paper SVG and uses editable rectangles and paths.",
+                    }
+                ],
+            }
+        ],
+    }
+
+
 def diagnosis():
     return {
         "verdicts": [
@@ -148,6 +178,7 @@ class PromptTestCase(unittest.TestCase):
             "references/figurebench/crops/arrow.png",
             "png1.png",
             "svg-diagnostic/approved-crops/encoder.png",
+            "references/web/crops/creative-director/intermediate-shape-language.png",
         ):
             path = self.root / relative_path
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -158,6 +189,20 @@ class PromptTestCase(unittest.TestCase):
 
 
 class Prompt1BundleTests(PromptTestCase):
+    def test_creative_director_prompt_and_svg_crop_enter_prompt1(self):
+        director_prompt = build_creative_director_prompt("method", c1(), c2(), c3())
+        self.assertIn("Creative Director", director_prompt["prompt"])
+        self.assertIn("paper SVG", director_prompt["prompt"])
+        self.assertIn("borrow", director_prompt["prompt"])
+        bundle = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root, creative_director())
+        creative = [item for item in bundle["attachments"] if item["role"] == "creative_director_svg"]
+        self.assertEqual(len(creative), 1)
+        self.assertEqual(creative[0]["target_component_id"], "audio")
+        self.assertIn("Creative Director brief", bundle["prompt"])
+        self.assertIn("intermediate-shape-language.png", bundle["prompt"])
+        self.assertIn("https://arxiv.org/html/2402.14285v4/figure.svg", bundle["prompt"])
+        write_bundle(bundle, self.root / "prompt-1")
+
     def test_prompt1_contains_every_mapped_figurebench_crop(self):
         bundle = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root)
 
@@ -167,7 +212,7 @@ class Prompt1BundleTests(PromptTestCase):
         )
         self.assertIn("Do not add decoration without a named scientific role", bundle["prompt"])
 
-    def test_prompt1_emits_the_ten_ordered_sections_and_all_contracts(self):
+    def test_prompt1_emits_the_eleven_ordered_sections_and_all_contracts(self):
         methodology = "long explanatory method prose with an explicit user requirement"
         bundle = build_prompt1_bundle(methodology, c1(), c2(), c3(), "input/user.png", self.root)
         prompt = bundle["prompt"]
@@ -176,12 +221,13 @@ class Prompt1BundleTests(PromptTestCase):
             "2. Exact block and structure names",
             "3. Semantic relationships and reading order",
             "4. Content-to-visual mapping for every element",
-            "5. Crop-to-component mapping",
-            "6. Single-palette contract",
-            "7. Layout and taste constraints",
-            "8. Exact labels and text-density limits",
-            "9. Anti-AI visual constraints",
-            "10. Direct PNG generation instruction",
+            "5. Creative Director brief and paper-SVG evidence",
+            "6. Crop-to-component mapping",
+            "7. Single-palette contract",
+            "8. Layout and taste constraints",
+            "9. Exact labels and text-density limits",
+            "10. Anti-AI visual constraints",
+            "11. Direct PNG generation instruction",
         )
         self.assertEqual([prompt.index(section) for section in sections], sorted(prompt.index(section) for section in sections))
         self.assertIn("Prompt Encoder", prompt)
@@ -269,8 +315,8 @@ class Prompt1BundleTests(PromptTestCase):
         prompt = build_prompt1_bundle(
             "method", c1(), c2(), context3, None, self.root
         )["prompt"]
-        palette_section = prompt.split("## 6. Single-palette contract", 1)[1].split(
-            "## 7. Layout and taste constraints", 1
+        palette_section = prompt.split("## 7. Single-palette contract", 1)[1].split(
+            "## 8. Layout and taste constraints", 1
         )[0]
 
         for detail in (
@@ -474,9 +520,9 @@ class Prompt2BundleTests(PromptTestCase):
 
 
 class PromptTemplateAndWritingTests(PromptTestCase):
-    def test_templates_include_four_model_facing_stages_and_direct_svg_guardrails(self):
+    def test_templates_include_creative_director_and_direct_svg_guardrails(self):
         templates = (Path(__file__).resolve().parents[1] / "references" / "prompt-templates.md").read_text(encoding="utf-8")
-        for heading in ("Context extraction", "Prompt 1 generation", "Direct editable SVG transcription", "Prompt 2 revision"):
+        for heading in ("Context extraction", "Creative Director prompt", "Prompt 1 generation", "Direct editable SVG transcription", "Prompt 2 revision"):
             self.assertIn(heading, templates)
         for phrase in (
             "PNG1 is the only visual truth",
@@ -488,6 +534,8 @@ class PromptTemplateAndWritingTests(PromptTestCase):
             "absolute first-pass prohibitions",
             "sticker-like cutout",
             "pasted raster badge",
+            "targeted crop",
+            'source_format: "svg"',
         ):
             self.assertIn(phrase, templates)
 

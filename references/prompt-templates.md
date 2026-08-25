@@ -9,9 +9,27 @@ constraints. Then produce Context 1 as positive domain-convention evidence, Cont
 complete coverage, and one validated palette lineage. Do not turn web-search
 explanations into figure prose.
 
+## Creative Director prompt
+
+Run this bounded ideation pass after Contexts 1–3 and before PNG1. The Creative
+Director proposes a concrete, scientifically relevant treatment for a planned
+component; it does not generate PNG1 or redesign the whole figure. If the idea is
+not already covered by the contexts, find a real scholarly paper figure available
+as SVG or extractable SVG/HTML, inspect its pixels, and request a targeted crop.
+Return `creative-director-brief-v1` with a brief and ideas containing the target
+component, concept, visual intent, construction plan, and whether SVG evidence is
+required. Every requested crop must carry `source_format: "svg"`, HTTPS source and
+evidence URLs, nonempty `borrow` and `must_change` lists, and a human-editability
+reason. Never invent a source, attach a complete paper figure, copy its labels or
+palette, or use a sticker-like cutout. If no new evidence is needed, state
+`no_external_svg_needed` and return no crop.
+
 ## Prompt 1 generation
 
-Generate PNG1 from the compiled Prompt 1 bundle. Follow its ten sections in order.
+Generate PNG1 from the compiled Prompt 1 bundle. Follow its eleven sections in order.
+The bundle includes the validated Creative Director brief and any targeted paper-SVG
+crops. Use each such crop only for its declared component and construction contract;
+it is a variant reference, not a source composition.
 Use every FigureBench or domain crop only for its declared target component, `borrow`,
 and `must_change` contract. Use the single approved base palette lineage only. Keep
 scientific labels sparse and preserve the planned semantic reading order. Do not add

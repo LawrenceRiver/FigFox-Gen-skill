@@ -22,6 +22,8 @@ COMMANDS = {
     "crop-references",
     "validate-reference-coverage",
     "validate-palette",
+    "build-creative-director-prompt",
+    "validate-creative-director",
     "build-prompt1",
     "inspect-svg",
     "render-svg",
@@ -162,6 +164,7 @@ def materialize_complete_run(root):
     for command in (
         "rank-references",
         "crop-references",
+        "build-creative-director-prompt",
         "build-prompt1",
         "render-svg",
         "crop-svg",
@@ -250,6 +253,33 @@ class WorkflowCliTests(unittest.TestCase):
         self.assertEqual(coverage["covered_component_ids"], ["audio", "encoder"])
         palette_result = self.run_cli("validate-palette", "--run", self.run_root)
         self.assertEqual(palette_result["base_palette_id"], "workflow-role-01")
+
+        creative_prompt = self.run_cli(
+            "build-creative-director-prompt", "--run", self.run_root
+        )
+        self.assertEqual(creative_prompt["path"], "creative-director/prompt.md")
+        write_json(
+            self.run_root / "creative-director/brief.json",
+            {
+                "format": "creative-director-brief-v1",
+                "brief": "no_external_svg_needed",
+                "ideas": [
+                    {
+                        "id": "context-baseline",
+                        "target_component_id": "encoder",
+                        "concept": "Keep the validated construction plan.",
+                        "visual_intent": "Preserve clear editable geometry.",
+                        "construction_plan": "Use Contexts 1–3 without a new external treatment.",
+                        "requires_svg_evidence": False,
+                        "svg_crops": [],
+                    }
+                ],
+            },
+        )
+        creative_validation = self.run_cli(
+            "validate-creative-director", "--run", self.run_root
+        )
+        self.assertEqual(creative_validation["status"], "no_external_svg_needed")
 
         prompt1 = self.run_cli("build-prompt1", "--run", self.run_root)
         self.assertEqual(prompt1["attachments"], 3)

@@ -30,6 +30,7 @@ Methodology + 可选参考图
   -> Context 1：领域视觉惯例
   -> Context 2：内容—视觉规划
   -> Context 3：FigureBench 定向裁图 + 单一配色谱系 + Taste 软约束
+  -> 创意师 Prompt -> 创意简报 + 定向论文 SVG 裁图
   -> Prompt 1（包含全部定向裁图）-> PNG1
   -> Codex 裸模型直接视觉转写 -> 可编辑 SVG1
   -> 临时 PNG1.5 -> 诊断清单 + 合格/替换裁图
@@ -64,10 +65,28 @@ Context 2 所需的几何、框架、连接方式、布局关系和特殊可视�
 同领域论文图和用户参考图都不能提供实际使用的颜色。Taste 只负责配色平衡、留白、
 层级、节奏和克制感，并服从科学含义、用户约束、领域证据、人工可编辑性与配色谱系。
 
+### 创意师：PNG1 前的视觉构思
+
+Context 1–3 完成后，先运行一次有边界的创意师 Prompt。它只能为已经规划的构件
+提出具体画法，不能生成 PNG1，也不能重画整张图。如果突然需要 Context 1–3 尚未
+覆盖的成熟画法，创意师必须找到真实论文中可用 SVG 或可提取 SVG/HTML 的图，查看
+像素后，只裁出目标局部，放在
+`references/web/crops/creative-director/`。每个裁图必须记录目标构件、HTTPS
+`source_url` 和 `evidence_url`、`source_format: "svg"`、`borrow`、`must_change`
+以及为何仍可由人编辑。不能伪造来源、不能附整张论文图，也不能使用贴纸式切图。
+如果不需要新的外部画法，必须明确返回 `no_external_svg_needed`。
+
+```bash
+python scripts/figure_workflow.py build-creative-director-prompt --run RUN
+python scripts/figure_workflow.py validate-creative-director --run RUN
+```
+
 ### PNG1、可编辑 SVG1 与诊断
 
-Prompt 1 同时包含 Methodology、Contexts 1–3、可选参考图、论文裁图，以及所有
-定向 FigureBench 裁图。第一次图像生成得到 PNG1。
+Prompt 1 同时包含 Methodology、Contexts 1–3、创意师简报、可选参考图、论文裁图、
+所有定向 FigureBench 裁图，以及创意师批准的论文 SVG 裁图。第一次图像生成得到
+PNG1。论文 SVG 裁图只能指导声明的构件，不能带入来源标签、配色、比例或整张图的
+构图。
 
 PNG1 有两条绝对禁令：任何模块都不能把上半段用横线框出来做成居中的标题栏，不能
 使用截图中那种“标题条 + 内容框”结构；也不能直接贴入贴纸式切图、剪贴画、徽章、

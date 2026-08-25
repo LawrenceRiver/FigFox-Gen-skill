@@ -16,6 +16,7 @@ Methodology + optional reference
   -> Context 1 domain visual conventions
   -> Context 2 content-to-visual plan
   -> Context 3 mapped FigureBench crops + one palette lineage + taste
+  -> Creative Director prompt -> brief + targeted paper-SVG crops
   -> Prompt 1 bundle -> image generation -> PNG1
   -> direct base-model PNG1 transcription -> editable SVG1
   -> deterministic render PNG1.5 -> VLM diagnosis -> approved SVG crops
@@ -139,19 +140,54 @@ python scripts/figure_workflow.py validate-palette --run RUN
 python scripts/figure_workflow.py validate-context --run RUN --context 3
 ```
 
-## 4. Prompt 1 and PNG1
+## 4. Creative Director: pre-PNG1 visual ideation
+
+The Creative Director runs after Contexts 1–3 and before any PNG1 generation. It is
+a bounded ideation pass, not an image-generation pass: it may propose a concrete
+visual treatment for a planned component, but it must not redraw the whole figure or
+invent decorative assets.
+
+Compile its model-facing prompt:
+
+```bash
+python scripts/figure_workflow.py build-creative-director-prompt --run RUN
+```
+
+The model returns `creative-director/brief.json` using the schema in
+[artifact schemas](references/artifact-schemas.md). Validate it before Prompt 1:
+
+```bash
+python scripts/figure_workflow.py validate-creative-director --run RUN
+```
+
+When a new idea needs a visual construction not already covered by Contexts 1–3,
+the Creative Director must locate a real scholarly paper figure available as SVG or
+extractable SVG/HTML, inspect its pixels, and request a targeted crop under
+`references/web/crops/creative-director/`. The crop record must include the target
+component, HTTPS `source_url` and `evidence_url`, `source_format: "svg"`, a nonempty
+`borrow` list, a nonempty `must_change` list, and a human-editability reason. The
+crop is evidence for one component, not a complete paper figure to copy. Never
+invent a paper source, attach a whole figure, or use a sticker-like cutout. If no
+new external treatment is needed, return an explicit `no_external_svg_needed` brief
+instead of fabricating a crop. Palette lineage and both absolute PNG1 prohibitions
+remain in force.
+
+## 5. Prompt 1 and PNG1
 
 Read [prompt templates](references/prompt-templates.md). Compile the bundle only
-after Contexts 1–3 and all mapped crop files exist:
+after Contexts 1–3, the Creative Director brief, and all mapped crop files exist:
 
 ```bash
 python scripts/figure_workflow.py build-prompt1 --run RUN
 ```
 
 Inspect `prompt-1/attachments.json`. It must attach every mapped domain-paper crop,
-every mapped FigureBench crop, and the optional user reference. Attach crop images,
-not complete unexplained papers or FigureBench figures. Each crop guides only its
-declared component and `borrow`/`must_change` contract.
+every mapped FigureBench crop, every validated Creative Director paper-SVG crop, and
+the optional user reference. Attach targeted crop images, not complete unexplained
+papers or FigureBench figures. Each crop guides only its declared component and
+`borrow`/`must_change` contract. A Creative Director crop can suggest construction
+quality and geometry, but cannot donate its source labels, palette, proportions, or
+complete composition.
 
 Prompt 1 gives, in order: purpose/mainline; exact block and structure names;
 relationships/reading order; content-to-visual mapping; crop mapping; one-palette
@@ -214,7 +250,7 @@ python scripts/figure_workflow.py render-svg --run RUN
 The render command creates `svg-diagnostic/png1.5.png`. PNG1.5 exists only so a VLM
 can see what the editable transcription preserved or destabilized.
 
-## 6. Diagnosis and approved SVG crops
+## 7. Diagnosis and approved SVG crops
 
 Compare PNG1, SVG1, PNG1.5, Contexts 1–3, and original evidence. Give exactly one
 verdict per Context 2 component in `svg-diagnostic/diagnosis.json`:
@@ -259,7 +295,7 @@ The crop command writes the separate
 `svg-diagnostic/approved-crops/manifest.json`. PNG1.5 itself is diagnostic-only: do
 not attach it, quote it as an image input, or otherwise expose it to Prompt 2.
 
-## 7. Prompt 2 and final PNG2
+## 8. Prompt 2 and final PNG2
 
 Compile Prompt 2:
 

@@ -273,6 +273,54 @@ records visible pixel evidence rather than a title/abstract inference.
 When an extension is necessary, each `extensions` record has exactly `role`,
 `hex`, `rgb`, `relationship`, `evidence_url`, and `evidence_summary`.
 
+## Creative Director brief — `creative-director/brief.json`
+
+This brief is produced after Context 3 and before Prompt 1. It records bounded
+visual ideas rather than an image-generation result. Every paper-SVG crop is a
+targeted, run-local raster crop of a real scholarly SVG/HTML figure; the URLs preserve
+the source and the exact evidence page.
+
+```json
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Use a restrained nested enclosure for the intermediate representation.",
+  "ideas": [
+    {
+      "id": "intermediate-shape-language",
+      "target_component_id": "audio",
+      "concept": "A compact enclosure with a clear connector rhythm",
+      "visual_intent": "Make the intermediate representation read as an editable scientific construction.",
+      "construction_plan": "Use grouped rectangles and paths, then replace all source labels and proportions.",
+      "requires_svg_evidence": true,
+      "svg_crops": [
+        {
+          "path": "references/web/crops/creative-director/intermediate-shape-language.png",
+          "target_component_id": "audio",
+          "source_url": "https://arxiv.org/html/2402.14285",
+          "evidence_url": "https://arxiv.org/html/2402.14285v4/figure.svg",
+          "source_format": "svg",
+          "borrow": ["editable enclosure", "connector rhythm"],
+          "must_change": ["source labels", "source proportions", "source colours"],
+          "human_editable_reason": "The crop uses editable rectangles and paths rather than a pasted object."
+        }
+      ]
+    }
+  ]
+}
+```
+
+`requires_svg_evidence: true` requires at least one crop. Crop paths must remain
+under `references/web/crops/creative-director/`, be unique, and point to an existing
+run-local file. Both URLs must be HTTPS and `source_format` must be exactly `svg`.
+`borrow`, `must_change`, and `human_editable_reason` are mandatory. When no idea needs
+new external evidence, return an empty `svg_crops` list and the validator reports
+`no_external_svg_needed`.
+
+Creative Director crops enter Prompt 1 with attachment role
+`creative_director_svg` and these fields: `path`, `role`, `idea_id`,
+`target_component_id`, `source_url`, `evidence_url`, `source_format`, `borrow`,
+`must_change`, and `human_editable_reason`. They are never Prompt 2 attachments.
+
 ## Diagnosis — `svg-diagnostic/diagnosis.json`
 
 One record is required for every Context 2 component. Allowed verdicts are `keep`,

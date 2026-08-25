@@ -29,6 +29,8 @@ _UNRESOLVED_SVG_DEFECT_MARKERS = (
 WEB_MANIFEST_FORMAT = "scholarly-domain-figure-manifest-v1"
 _WEB_CROP_ROOT = PurePosixPath("references/web/crops")
 _WEB_REPLACEMENT_ROOT = PurePosixPath("references/web/crops/replacements")
+CREATIVE_DIRECTOR_FORMAT = "creative-director-brief-v1"
+_CREATIVE_DIRECTOR_CROP_ROOT = PurePosixPath("references/web/crops/creative-director")
 
 _RUN_ARTIFACTS = {
     "methodology": "input/methodology.md",
@@ -386,6 +388,84 @@ def validate_context3(
         if not isinstance(constraint, str) or not constraint.strip():
             raise ValueError(f"context3 taste_constraints[{index}] must be non-empty")
         normalized["taste_constraints"].append(constraint.strip())
+    return normalized
+
+
+def validate_creative_director(
+    value: Mapping[str, Any], root: Path, component_ids: Collection[str]
+) -> dict[str, Any]:
+    """Validate the pre-PNG1 creative brief and paper-SVG crop provenance."""
+
+    source = _mapping(value, "creative director brief")
+    if source.get("format") != CREATIVE_DIRECTOR_FORMAT:
+        raise ValueError(f"creative director brief format must be {CREATIVE_DIRECTOR_FORMAT}")
+    normalized = copy.deepcopy(dict(source))
+    normalized["brief"] = _required_string(source, "brief", "creative director brief")
+    ideas = _records(source.get("ideas"), "creative director ideas")
+    known_components = set(component_ids)
+    if not known_components:
+        raise ValueError("creative director brief requires Context 2 component ids")
+    idea_ids: list[str] = []
+    crop_paths: set[str] = set()
+    normalized["ideas"] = []
+    required_idea_fields = ("id", "target_component_id", "concept", "visual_intent", "construction_plan")
+    for index, idea in enumerate(ideas):
+        location = f"creative director ideas[{index}]"
+        for field in required_idea_fields:
+            _required_string(idea, field, location)
+        idea_id = _required_string(idea, "id", location)
+        target = _required_string(idea, "target_component_id", location)
+        if target not in known_components:
+            raise ValueError(f"{location} target_component_id must name a Context 2 component")
+        requires_svg = idea.get("requires_svg_evidence")
+        if not isinstance(requires_svg, bool):
+            raise ValueError(f"{location} requires boolean requires_svg_evidence")
+        raw_crops = idea.get("svg_crops", [])
+        if not isinstance(raw_crops, list) or not all(isinstance(crop, Mapping) for crop in raw_crops):
+            raise ValueError(f"{location} svg_crops must be a list of objects")
+        if requires_svg and not raw_crops:
+            raise ValueError(f"{location} requires at least one paper SVG crop")
+        normalized_idea = copy.deepcopy(dict(idea))
+        normalized_idea["svg_crops"] = []
+        for crop_index, crop in enumerate(raw_crops):
+            crop_location = f"{location} svg_crops[{crop_index}]"
+            crop_target = _required_string(crop, "target_component_id", crop_location)
+            if crop_target != target:
+                raise ValueError(
+                    f"{crop_location} target_component_id must match its idea target_component_id"
+                )
+            path = _required_string(crop, "path", crop_location)
+            relative = PurePosixPath(path)
+            if not relative.is_relative_to(_CREATIVE_DIRECTOR_CROP_ROOT):
+                raise ValueError(
+                    f"{crop_location} path must be under {_CREATIVE_DIRECTOR_CROP_ROOT.as_posix()}"
+                )
+            safe_path = _safe_web_crop(path, root, crop_location)
+            if safe_path in crop_paths:
+                raise ValueError("creative director SVG crop paths must be unique")
+            crop_paths.add(safe_path)
+            if _required_string(crop, "source_format", crop_location).casefold() != "svg":
+                raise ValueError(f"{crop_location} source_format must be svg")
+            normalized_crop = copy.deepcopy(dict(crop))
+            normalized_crop.update(
+                path=safe_path,
+                target_component_id=crop_target,
+                source_url=_https_url(crop, "source_url", crop_location),
+                evidence_url=_https_url(crop, "evidence_url", crop_location),
+                source_format="svg",
+                borrow=_required_string_list(crop, "borrow", crop_location),
+                must_change=_required_string_list(crop, "must_change", crop_location),
+                human_editable_reason=_required_string(crop, "human_editable_reason", crop_location),
+            )
+            normalized_idea["svg_crops"].append(normalized_crop)
+        idea_ids.append(idea_id)
+        normalized["ideas"].append(normalized_idea)
+    if len(idea_ids) != len(set(idea_ids)):
+        raise ValueError("creative director idea ids must be unique")
+    if not crop_paths:
+        normalized["svg_evidence_status"] = "no_external_svg_needed"
+    else:
+        normalized["svg_evidence_status"] = "paper_svg_crops_verified"
     return normalized
 
 

@@ -18,6 +18,7 @@ try:
     from check_installation import validate_installation  # noqa: E402
     from scientific_figure_workflow import (  # noqa: E402
         build_prompt1_bundle,
+        build_creative_director_prompt,
         build_prompt2_bundle,
         find_user_reference,
         inspect_editable_svg,
@@ -33,6 +34,7 @@ try:
         validate_context1,
         validate_context2,
         validate_context3,
+        validate_creative_director,
         validate_diagnosis,
         validate_palette,
         validate_reference_coverage,
@@ -133,6 +135,29 @@ def _cmd_validate_palette(arguments: argparse.Namespace) -> dict[str, Any]:
     return validate_palette(context3.get("palette"), _palette_library())
 
 
+def _cmd_build_creative_director_prompt(arguments: argparse.Namespace) -> dict[str, Any]:
+    root = _run_root(arguments.run)
+    context1, context2, context3 = _contexts(root)
+    methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
+    bundle = build_creative_director_prompt(methodology, context1, context2, context3)
+    destination = root / "creative-director"
+    destination.mkdir(parents=True, exist_ok=True)
+    (destination / "prompt.md").write_text(bundle["prompt"], encoding="utf-8")
+    return {"phase": "creative_director", "path": "creative-director/prompt.md"}
+
+
+def _cmd_validate_creative_director(arguments: argparse.Namespace) -> dict[str, Any]:
+    root = _run_root(arguments.run)
+    context2 = load_json_object(root / _CONTEXT_PATHS[2])
+    brief = load_json_object(root / "creative-director/brief.json")
+    normalized = validate_creative_director(brief, root, _component_ids(context2))
+    return {
+        "ideas": len(normalized["ideas"]),
+        "svg_crops": sum(len(idea["svg_crops"]) for idea in normalized["ideas"]),
+        "status": normalized["svg_evidence_status"],
+    }
+
+
 def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
     context1, context2, context3 = _contexts(root)
@@ -141,7 +166,15 @@ def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
     )
     methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
     bundle = build_prompt1_bundle(
-        methodology, context1, context2, context3, find_user_reference(root), root
+        methodology,
+        context1,
+        context2,
+        context3,
+        find_user_reference(root),
+        root,
+        load_json_object(root / "creative-director/brief.json")
+        if (root / "creative-director/brief.json").is_file()
+        else None,
     )
     write_bundle(bundle, root / "prompt-1")
     return {"phase": "prompt1", "attachments": len(bundle["attachments"]), "path": "prompt-1"}
@@ -224,6 +257,8 @@ def _parser() -> _Parser:
         "crop-references": _cmd_crop_references,
         "validate-reference-coverage": _cmd_validate_reference_coverage,
         "validate-palette": _cmd_validate_palette,
+        "build-creative-director-prompt": _cmd_build_creative_director_prompt,
+        "validate-creative-director": _cmd_validate_creative_director,
         "build-prompt1": _cmd_build_prompt1,
         "inspect-svg": _cmd_inspect_svg,
         "render-svg": _cmd_render_svg,
