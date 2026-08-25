@@ -1,6 +1,6 @@
 interface:
   display_name: "GenLikeScientificSVG"
-  short_description: "Generate complete labelled paper figures with image-generation models"
-  default_prompt: "Use $genlike-scientific-svg to execute a scientific paper-figure image-generation task: create one complete labelled research figure from my brief with one direct image-generation call. Determine the field, learn conventions from 3–4 strong domain references and local FigureBench RAG, then return the first image draft as the final PNG; attempt SVG verification only when it can faithfully convert that actual PNG into editable layers."
+  short_description: "Build evidence-guided two-pass scientific figures"
+  default_prompt: "Use $genlike-scientific-svg with a Methodology and optional reference to build Contexts 1–3 from 3–4 scholarly figure panels, human-producible planning, mapped FigureBench crops and one palette lineage; generate PNG1, have the base Codex model directly transcribe it to editable SVG1 for diagnosis, then generate and return final PNG2 from PNG1 and approved or replacement crops."
 policy:
   allow_implicit_invocation: true

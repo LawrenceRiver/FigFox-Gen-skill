@@ -2,62 +2,113 @@
 
 # GenLikeScientificSVG
 
-### 让图像模型生成有科研结构的论文图，而不是猜出来的 PPT。
+### 用可编辑矢量诊断来修正有证据依据的科研图。
 
-**科研论文图生成 · 网页领域绘图惯例 · FigureBench 结构 · 冻结配色 · 一次直接 PNG 生成**
+**领域视觉惯例 · 可人工制作的规划 · FigureBench 定向裁图 · 单一配色谱系 · 最终 PNG2**
 
-联网搜索领域共识 SVG 表达，结合 FigureBench 精选 RAG 和颜色审美，教会图像生成模型生成真实科研架构图。
-
-[English](./README.md) · [工作流程](#工作流程) · [实跑记录](#实跑记录) · [研究说明](#研究说明)
+[English](./README.md) · [流程](#工作流程) · [内置参考包](#内置参考包) · [安装](#安装)
 
 </div>
 
-将它作为 Skill 安装；安装器会让你选择 Codex、Claude Code 或其他受支持智能体。
+GenLikeScientificSVG 将 Methodology 和可选参考图转成一张带完整标签、经过
+修订的科研架构图。流程有两次图像生成，中间必须进行一次可编辑 SVG 诊断。
+最终结果是 PNG2；SVG1 只是中间诊断材料，不是最终交付物。
+
+## 安装
 
 ```bash
 npx skills@latest add LawrenceRiver/genlike-scientific-svg-skill
 ```
 
-然后直接交给智能体一个 Figure Brief：想法、较长的方法原文、结果、论文片段、草图或参考图均可。内置的开场提示会明确启动一项**带完整文字的科研图像生成任务**。
+安装后提供 Methodology，并可按需附上一张参考图。参考图可以强力引导结构、
+布局、强调方式和明显由人制作的基础视觉，但不能成为配色来源。
 
 ## 工作流程
 
-核心原则是**先识别领域、再参考学习、最后直接图像生成**：筛选 3–4 张高质量同领域论文图，学习共享的专业术语、可视化惯例和构件处理，再与 FigureBench 的结构语法结合；图像模型一次直接生成完整带文字 PNG。SVG 不参与中间规划，只在能够忠实转写该 PNG 时作为可编辑验证/导出。
+```text
+Methodology + 可选参考图
+  -> Context 1：领域视觉惯例
+  -> Context 2：内容—视觉规划
+  -> Context 3：FigureBench 定向裁图 + 单一配色谱系 + Taste 软约束
+  -> Prompt 1（包含全部定向裁图）-> PNG1
+  -> Codex 裸模型直接视觉转写 -> 可编辑 SVG1
+  -> 临时 PNG1.5 -> 诊断清单 + 合格/替换裁图
+  -> Prompt 2（PNG1 + 裁图，绝不含 PNG1.5）
+  -> 最终 PNG2 -> 结束
+```
 
-| 阶段 | 它做什么 |
-| --- | --- |
-| 领域视觉搜索 | 筛选至少 3–4 张高质量论文 HTML/SVG/PDF 图，判断构图、层级、构件惯例、留白、重点与科研感。它提供领域画法与创新证据，不提供最终配色。 |
-| FigureBench 语义–结构 RAG | 返回方法语义、图类型、拓扑、分组、布局、文字密度与几何语法的少量摘要。它不是像素相似检索，也不把完整数据集送给模型。 |
-| 拓扑与配色规划 | 把冗余方法文字压缩为模块、标签、箭头、层级和阅读顺序；每次仅冻结一组批准的颜色，来源是本地库或不相关领域的 SVG。 |
-| 直接图像生成 | 将精确标签、关系、布局、参考摘要与 HEX 颜色角色写入 Image Generation Contract，图像模型直接生成首轮光栅科研图，文字也必须直接生成。不会把渲染后的 SVG 当作生成前输入。 |
-| 一次直接 PNG + 可选 SVG 验证 | 一次直接生成完整带文字 PNG。仅当转换器能忠实地把这张实际 PNG 转为可编辑文字/图层，并保持结构和冻结色组时，才同时交付 SVG；否则保留原 PNG 并明确说明跳过 SVG 验证，绝不重新画一张不同的 SVG。 |
+### Context 1：同领域反复出现的视觉语言
 
-它故意结合**两种参考**：同领域高审美图教会模型“这个概念通常怎样画”，FigureBench 教会模型可复用的科研几何和结构；配色则独立隔离，绝不复制同领域论文的色组。
+模型先识别领域，再筛选 3–4 篇同领域论文的实际图板；优先使用容易取得
+SVG/HTML 图的 arXiv 来源，找不到时再用其他可信且可清晰提取的论文图。它比较
+图板中反复出现、且与当前 Methodology 有关的对象、中间表示、结构关系、画法、
+分组方式和专业术语，同时把一次性画法明确排除在“惯例”之外。
 
-## 实跑记录
+### Context 2：内容—视觉规划
 
-下面是仓库的真实测试输入，而不是复刻原论文图。每个案例以引用论文中的较长 Methodology 原文为输入，让 Skill 生成一张全新的解释性架构图；输出不得复制源论文图。
+模型结合 Methodology、Context 1 和可选参考图，把方法压缩成精确模块、标签、
+关系、阅读顺序，并给每个内容指定视觉表达。普通表达必须能由人制作：基础几何、
+领域论文中反复出现的画法、刻意的手绘、draw.io 式可编辑结构，或科学含义确实
+需要的真实照片切图。特殊表达要解释其必要性，以及人会用几何、手写笔还是现实
+照片来制作；无语义的生成式装饰直接否决。
 
-| 案例 | Methodology 输入 | 生成目标 |
-| --- | --- | --- |
-| Latent Diffusion · 视觉生成 | [Method §3](./README.md#latent-diffusion--visual-generation) | 清楚区分感知压缩、latent 去噪、条件控制和解码。 |
-| MusiCoT · 音乐生成 | [Method §4](./README.md#musicot--music-generation) | 展示音频片段、CLAP thoughts、粗到细 RVQ 与双重采样。 |
-| AlphaFold 3 · 生物分子结构 | [Network architecture and training](./README.md#alphafold-3--biomolecular-structure) | 展示 pair/single representation、Pairformer、坐标扩散与结构输出。 |
+### Context 3：实际像素参考与单一配色
 
-英文 README 保留了三段实际 Methodology 原文、来源、精确标签合同与最终结果位置，避免双份拷贝造成测试输入漂移。
+模型必须查看至少两张不同的内置 FigureBench 完整图片，并继续自适应查看，直到
+Context 2 所需的几何、框架、连接方式、布局关系和特殊可视化都被覆盖。可用区域
+会变成与目标构件绑定的裁图合同，写清借鉴什么、必须改变什么，以及为何仍像人可
+编辑的变体。完整候选图不会被无解释地塞进 Prompt 1。
 
-## 研究说明
+每次运行只能从本地颜色库选择一套完整配色。如果功能角色不够，只能通过有网页
+证据的 tint、shade、tone、邻近色、兼容中性色或受控对比色补充。FigureBench、
+同领域论文图和用户参考图都不能提供实际使用的颜色。Taste 只负责配色平衡、留白、
+层级、节奏和克制感，并服从科学含义、用户约束、领域证据、人工可编辑性与配色谱系。
 
-我是正在从事计算机视觉学习和研究的学生，目前关注科研论文图生成，也有数学建模竞赛和日常科研制图的实际经验。我的研究涉及 diffusion、VLM，以及它们究竟能在多大程度上理解并可控地呈现一个科研图需求。
+### PNG1、可编辑 SVG1 与诊断
 
-我发现生成前的 SVG 或结构描述本身并不会自动让图像生成模型真正理解这张图。模型需要先学习领域术语、常见概念的视觉隐喻和专业构件处理，再从自己的结构化逻辑直接完成一张 PNG。SVG 只有在它确实是对生成 PNG 的可编辑完整转写时才有价值；重新设计出来的一张 SVG 不算转换，也不会替代最终图。
+Prompt 1 同时包含 Methodology、Contexts 1–3、可选参考图、论文裁图，以及所有
+定向 FigureBench 裁图。第一次图像生成得到 PNG1。
 
-因此，这个 Skill 把关键控制前置：领域绘图惯例、语义–结构 FigureBench RAG、隔离的配色合同、精确文字和拓扑合同，然后一次直接调用图像生成模型。目标不是泛化的“AI 图”，而是一张原创、可读、符合严肃科研论文视觉纪律的图。生成结果在作为科学证据使用前仍必须由作者独立核验。
+随后必须把 PNG1 本身直接交给 Codex 裸多模态模型，让它看着像素一次性把标签、
+颜色、几何、路径、分组、线条、箭头、位置和关系转写为可编辑 SVG1。这不是重新
+设计或本地重画；HTML、Python、draw.io、描摹工具和单张栅格包装都不能作为替代。
+如果直接可编辑转写失败，就明确报告失败，不能偷偷手搓一个 SVG。
 
-## 鸣谢
+SVG1 只会被确定性渲染成 PNG1.5 供 VLM 核验。Context 2 的每个构件必须得到
+`keep`、`accept_variation`、`patch`、`reject` 或 `replace` 中的一个判断。只有
+合格的 SVG 局部和定向替换局部会进入第二轮；PNG1.5 永远不能成为 Prompt 2 附件。
 
-项目的本地语义–结构检索受到 FigureBench 启发。运行时的网页参考阶段可以检查 Nature Portfolio、Science、Cell 及各领域公开论文图页，从中学习绘图惯例，或提取与当前主题无关的颜色组。仓库不再分发源论文图、临时裁图、FigureBench 原始图片或原始色卡；同领域参考图也绝不提供最终配色。
+### 最终 PNG2
+
+Prompt 2 以 PNG1 为修改基础，结合诊断、合格 SVG 裁图、替换裁图和前三个
+Context。第二次图像生成得到最终 PNG2，流程到此结束，不再对 PNG2 做第二轮 SVG
+转写。确定性工具只验证文件与来源关系，不声称能够观察模型调用，也不保证科学结论
+自动正确；正式使用前仍需作者核验。
+
+## 内置参考包
+
+Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 FigureBench 开发集图片，
+用于参考几何、布局、间距、连接方式和人工编辑质感。普通用户无需下载 FigureBench；
+完整数据集只在维护者重新策划这 30 张内置图片时使用，并且绝不使用官方测试集图片。
+
+## 示例
+
+仓库中的示例用于展示目标图类别，不承诺每次运行复现同一构图：
+
+- [英文流程图](assets/runs/workflow-en.png)
+- [中文流程图](assets/runs/workflow-zh.png)
+- [Latent Diffusion](assets/runs/latent-diffusion.png)
+- [MusiCoT](assets/runs/musicot.png)
+- [AlphaFold 3](assets/runs/alphafold3.png)
 
 ## 维护者说明
 
-FigureBench 保留在本地。公开仓库只提供检索代码与小型 HEX/RGB 批准色库，不含源图片、原始本地路径或需要用户下载的多 GB 数据集。详见 [FigureBench RAG](./references/figurebench-rag.md) 与 [Palette RAG](./references/palette-rag.md)。
+`scripts/curate_figurebench_reference_pack.py` 只用于维护参考包；运行时的验证和裁图
+由 `scripts/figure_workflow.py` 提供。安装完整性可以这样检查：
+
+```bash
+python scripts/check_installation.py
+```
+
+30 张内置图片的署名和来源信息记录在
+[`assets/figurebench-references/index.json`](assets/figurebench-references/index.json)。
