@@ -91,14 +91,7 @@ Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 Fig
 用于参考几何、布局、间距、连接方式和人工编辑质感。普通用户无需下载 FigureBench；
 完整数据集只在维护者重新策划这 30 张内置图片时使用，并且绝不使用官方测试集图片。
 
-## 示例
-
-仓库中保留的示例只用于展示目标图类别，不是流程说明，也不能证明某次生成实际执行了
-这套流程：
-
-- [Latent Diffusion](assets/runs/latent-diffusion.png)
-- [MusiCoT](assets/runs/musicot.png)
-- [AlphaFold 3](assets/runs/alphafold3.png)
+<!-- FILL IN：下一次端到端运行后再补充经过确认的示例图。 -->
 
 ## 维护者说明
 

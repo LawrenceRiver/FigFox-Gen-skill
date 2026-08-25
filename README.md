@@ -6,11 +6,7 @@
 
 **Domain conventions · human-producible planning · mapped FigureBench crops · one palette lineage · final PNG2**
 
-<p align="center">
-  <img src="assets/runs/latent-diffusion.png" width="23%" alt="Visual-generation example" />
-  <img src="assets/runs/musicot.png" width="23%" alt="Music-generation example" />
-  <img src="assets/runs/alphafold3.png" width="23%" alt="Biomolecular-structure example" />
-</p>
+<!-- FILL IN: approved example figures can be added after the next end-to-end run. -->
 
 [中文说明](./README_ZH.md) · [Workflow](#workflow) · [Reference pack](#bundled-reference-pack) · [Installation](#installation)
 
@@ -110,15 +106,6 @@ development images. They are a compact construction library for geometry, layout
 spacing, connectors, and human-edited finish. Ordinary users do not download
 FigureBench: the larger dataset is only a maintainer input when curating a future
 revision of the bundled pack. The Skill never uses official FigureBench test images.
-
-## Examples
-
-The remaining checked-in gallery images illustrate target figure classes; they are
-not workflow documentation or proof that a particular run followed this process:
-
-- [Latent diffusion](assets/runs/latent-diffusion.png)
-- [MusiCoT](assets/runs/musicot.png)
-- [AlphaFold 3](assets/runs/alphafold3.png)
 
 ## Maintainers
 
