@@ -7,6 +7,7 @@ import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 
 INDEX_FIELDS = {
@@ -23,6 +24,12 @@ INDEX_FIELDS = {
     "description",
 }
 _TAG_FIELDS = ("components", "human_editable_signals")
+_REDISTRIBUTION_LICENSES = {"CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0"}
+_FIGUREBENCH_LICENSE_NOTICE = (
+    "FigureBench dataset license (separate; does not determine original-figure rights): "
+    "CC-BY-4.0; metadata: "
+    "https://huggingface.co/datasets/WestlakeNLP/FigureBench/blob/main/README.md."
+)
 
 
 def _non_empty_string(value: Any, location: str) -> str:
@@ -74,6 +81,30 @@ def _validate_record(record: Mapping[str, Any], location: str) -> dict[str, Any]
         raise ValueError(f"{location} partition must be dev")
     if Path(normalized["file"]).name != normalized["file"] or not normalized["file"].endswith(".png"):
         raise ValueError(f"{location} file must be a PNG filename")
+    if normalized["license"] not in _REDISTRIBUTION_LICENSES:
+        raise ValueError(f"{location} license must permit original-figure redistribution")
+    attribution = normalized["attribution"]
+    evidence_marker = f"original-figure license: {normalized['license']}; evidence: "
+    evidence_start = attribution.find(evidence_marker)
+    evidence_url = ""
+    if evidence_start >= 0:
+        evidence_url = attribution[evidence_start + len(evidence_marker):].split(maxsplit=1)[0].removesuffix(".")
+    parsed_evidence = urlsplit(evidence_url)
+    evidence_is_direct = (
+        "Original figure source:" in attribution
+        and parsed_evidence.scheme == "https"
+        and bool(parsed_evidence.hostname)
+        and parsed_evidence.hostname not in {"creativecommons.org", "huggingface.co"}
+    )
+    if parsed_evidence.hostname == "arxiv.org":
+        evidence_is_direct = evidence_is_direct and parsed_evidence.path.rstrip("/") == (
+            f"/abs/{normalized['source_id']}"
+        )
+    if not evidence_is_direct or _FIGUREBENCH_LICENSE_NOTICE not in attribution:
+        raise ValueError(
+            f"{location} requires original-figure license evidence separate from "
+            "FigureBench dataset licensing"
+        )
     return normalized
 
 

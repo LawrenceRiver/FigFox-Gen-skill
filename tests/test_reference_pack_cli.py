@@ -17,7 +17,51 @@ def make_image(path: Path, colour=(20, 40, 60)):
     Image.new("RGB", (1400, 800), colour).save(path)
 
 
+def attribution_for(source_id: str) -> str:
+    return (
+        f"Original figure source: arXiv:{source_id}; original-figure license: CC-BY-4.0; "
+        f"evidence: https://arxiv.org/abs/{source_id}. "
+        "FigureBench dataset license (separate; does not determine original-figure rights): "
+        "CC-BY-4.0; metadata: "
+        "https://huggingface.co/datasets/WestlakeNLP/FigureBench/blob/main/README.md."
+    )
+
+
+def reviewed_selections(dataset: Path) -> list[dict]:
+    selections = []
+    for position in range(1, 31):
+        source_id = f"paper-{position:03d}"
+        relative_path = f"images/{source_id}/figure.png"
+        make_image(dataset / relative_path, (position, 40, 60))
+        selections.append({
+            "source_path": relative_path,
+            "source_id": source_id,
+            "source_kind": "paper",
+            "license": "CC-BY-4.0",
+            "attribution": attribution_for(source_id),
+            "components": ["rounded_container"],
+            "layout_family": "horizontal_flow",
+            "human_editable_signals": ["flat fill", "consistent stroke"],
+            "description": "Editable grouped flow",
+            "rights_reviewed": True,
+            "human_editability_reviewed": True,
+        })
+    return selections
+
+
 class ReferencePackCliTests(unittest.TestCase):
+    def test_download_requires_explicit_license_acceptance(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), "download", "--destination", temporary_directory],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("--accept-figurebench-license", result.stderr)
+
     def test_prepare_scans_images_only_and_creates_max_1200_thumbnails(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
@@ -45,23 +89,7 @@ class ReferencePackCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
             dataset = root / "dataset"
-            selections = []
-            for position in range(1, 31):
-                relative_path = f"images/paper-{position:03d}/figure.png"
-                make_image(dataset / relative_path, (position, 40, 60))
-                selections.append({
-                    "source_path": relative_path,
-                    "source_id": f"paper-{position:03d}",
-                    "source_kind": "paper",
-                    "license": "CC-BY-4.0",
-                    "attribution": "FigureBench / verify original source",
-                    "components": ["rounded_container"],
-                    "layout_family": "horizontal_flow",
-                    "human_editable_signals": ["flat fill", "consistent stroke"],
-                    "description": "Editable grouped flow",
-                    "rights_reviewed": True,
-                    "human_editability_reviewed": True,
-                })
+            selections = reviewed_selections(dataset)
             selection_path = root / "selection.json"
             selection_path.write_text(json.dumps({"selections": selections}), encoding="utf-8")
             output = root / "pack"
@@ -80,3 +108,44 @@ class ReferencePackCliTests(unittest.TestCase):
                 self.assertEqual(normalized.mode, "RGB")
                 self.assertLessEqual(max(normalized.size), 1600)
 
+    def test_materialize_rejects_false_review_flags(self):
+        for field in ("rights_reviewed", "human_editability_reviewed"):
+            with self.subTest(field=field), tempfile.TemporaryDirectory() as temporary_directory:
+                root = Path(temporary_directory)
+                dataset = root / "dataset"
+                selections = reviewed_selections(dataset)
+                selections[0][field] = False
+                selection_path = root / "selection.json"
+                selection_path.write_text(json.dumps({"selections": selections}), encoding="utf-8")
+
+                result = subprocess.run(
+                    [sys.executable, str(SCRIPT), "materialize", "--dataset", str(dataset),
+                     "--selection", str(selection_path), "--output", str(root / "pack")],
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"requires {field} true", result.stderr)
+
+    def test_materialize_rejects_source_paths_outside_images(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            dataset = root / "dataset"
+            selections = reviewed_selections(dataset)
+            make_image(dataset / "outside.png")
+            selections[0]["source_path"] = "outside.png"
+            selection_path = root / "selection.json"
+            selection_path.write_text(json.dumps({"selections": selections}), encoding="utf-8")
+
+            result = subprocess.run(
+                [sys.executable, str(SCRIPT), "materialize", "--dataset", str(dataset),
+                 "--selection", str(selection_path), "--output", str(root / "pack")],
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("under the development images root", result.stderr)
