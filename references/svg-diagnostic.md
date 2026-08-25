@@ -21,8 +21,14 @@ children, scripts, and `foreignObject` fail closed. Before CairoSVG can run, the
 inspector rejects `xml:base`, file/relative/absolute/HTTP/protocol-relative
 resources, unsafe `href` and `xlink:href` values on every element (including
 `use`), CSS `@import`, and every `url(...)` except an internal `url(#fragment)`.
+CSS is tokenized with `tinycss2`, so escaped function names, quoted URLs, and
+URLs nested in other functions are checked after CSS escape decoding in style
+attributes, presentation values, declaration lists, at-rules, and stylesheets.
 Only an `image` `href` may carry base64 `data:image/png`, `data:image/jpeg`, or
-`data:image/webp`; SVG data URIs are forbidden.
+`data:image/webp`. The decoded payload is limited to 5 MiB and 25 megapixels,
+verified by Pillow as a real image, and required to match its declared MIME
+format; malformed, mislabeled, XML/SVG, and oversized payloads fail before
+CairoSVG.
 
 Editable counts include only visible, positive-size SVG-namespace `text`,
 `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon`, and `path` nodes.
@@ -31,9 +37,17 @@ zero-size geometry, and zero-length geometry cannot satisfy editability. The
 summary reports visible and total raster counts, meaningful editable-node count,
 large/full-canvas raster counts, and dominant-raster status for VLM diagnosis.
 A conservative structural check rejects a dominant raster paired only with
-zero, microscopic, or trivial vector content. A mixed SVG with meaningful
-labels and geometry remains eligible. Python reports these structural facts; it
-does not infer whether an embedded raster depicts a genuine photograph.
+zero, microscopic, or trivial vector content. Candidate geometry must have
+visible paint, intersect the viewport, and remain provably visible after
+inherited inline visibility/opacity, transforms, clipping/filter uncertainty,
+and later-raster paint-order occlusion. Stylesheets capable of changing
+visibility, opacity, paint, clipping, filters, or transforms make vector
+eligibility uncertain and therefore cannot prove editability beside a dominant
+raster. Unhandled complex paths and fragment/variable paint are similarly not
+used to satisfy that gate. A raster painted first followed by meaningful,
+visible flat-colour labels and geometry remains eligible. Python reports these
+structural facts; it does not infer whether an embedded raster depicts a genuine
+photograph.
 
 `render_svg()` calls CairoSVG only after validation. It rejects symlink output
 targets, renders to an exclusive temporary sibling, verifies a real nonempty

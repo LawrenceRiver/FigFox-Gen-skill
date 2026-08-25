@@ -1,8 +1,12 @@
+import base64
 import os
 import tempfile
 import unittest
+from io import BytesIO
 from pathlib import Path
 from unittest.mock import patch
+
+from PIL import Image
 
 from scientific_figure_workflow.prompts import build_prompt2_bundle
 from scientific_figure_workflow.svg_diagnostics import (
@@ -13,6 +17,14 @@ from scientific_figure_workflow.svg_diagnostics import (
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
+PNG_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4z8AAAAMBAQDJ/pLvAAAAAElFTkSuQmCC"
+
+
+def raster_uri(image_format: str = "png") -> str:
+    output = BytesIO()
+    Image.new("RGB", (1, 1), (255, 0, 0)).save(output, format=image_format.upper())
+    payload = base64.b64encode(output.getvalue()).decode("ascii")
+    return f"data:image/{image_format};base64,{payload}"
 
 
 def diagnosis(verdict: str = "keep", component_id: str = "encoder"):
@@ -104,7 +116,7 @@ class SvgInspectionTests(unittest.TestCase):
             mixed = root / "mixed.svg"
             mixed.write_text(
                 "<svg xmlns='http://www.w3.org/2000/svg'><rect width='4' height='4'/>"
-                "<image href='data:image/png;base64,AA==' width='2' height='2'/></svg>",
+                f"<image href='{raster_uri()}' width='2' height='2'/></svg>",
                 encoding="utf-8",
             )
             summary = inspect_editable_svg(mixed)
@@ -151,14 +163,18 @@ class SvgInspectionTests(unittest.TestCase):
                     inspect_editable_svg(write_svg(root, name, child))
 
     def test_allows_fragments_and_only_explicit_base64_raster_image_data(self):
-        safe = (
-            "<defs><linearGradient id='g'/><path id='shape' d='M0 0 L10 10'/></defs>"
-            "<rect width='30' height='30' fill='url(#g)'/>"
-            "<use href='#shape'/><image href='data:image/png;base64,AA==' x='60' y='60' width='20' height='20'/>"
-        )
         with tempfile.TemporaryDirectory() as temporary_directory:
-            summary = inspect_editable_svg(write_svg(Path(temporary_directory), "safe-resources", safe))
-        self.assertEqual(summary["raster_nodes"], 1)
+            root = Path(temporary_directory)
+            for image_format in ("png", "jpeg", "webp"):
+                safe = (
+                    "<defs><linearGradient id='g'/><path id='shape' d='M0 0 L10 10'/></defs>"
+                    "<rect width='30' height='30' fill='url(#g)'/>"
+                    f"<use href='#shape'/><image href='{raster_uri(image_format)}' "
+                    "x='60' y='60' width='20' height='20'/>"
+                )
+                with self.subTest(image_format=image_format):
+                    summary = inspect_editable_svg(write_svg(root, f"safe-{image_format}", safe))
+                    self.assertEqual(summary["raster_nodes"], 1)
 
     def test_rejects_css_import_and_every_non_fragment_css_url(self):
         cases = {
@@ -172,6 +188,41 @@ class SvgInspectionTests(unittest.TestCase):
             root = Path(temporary_directory)
             for name, child in cases.items():
                 with self.subTest(name=name), self.assertRaisesRegex(ValueError, "resource|CSS"):
+                    inspect_editable_svg(write_svg(root, name, child))
+
+    def test_css_parser_rejects_escaped_quoted_and_nested_resource_urls(self):
+        cases = {
+            "escaped-url": r"<rect width='20' height='20' style='fill:u\72l(file:///tmp/paint.svg)'/>",
+            "quoted-url": "<rect width='20' height='20' style='fill:url(\"file:///tmp/paint.svg\")'/>",
+            "nested-url": "<rect width='20' height='20' style='fill:paint(url(file:///tmp/paint.svg))'/>",
+            "stylesheet-escaped": r"<style>rect { fill: u\72l(https://example.test/paint.svg) }</style><rect width='20' height='20'/>",
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, child in cases.items():
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "resource"):
+                    inspect_editable_svg(write_svg(root, name, child))
+
+            safe = write_svg(
+                root,
+                "decoded-safe-fragment",
+                r"<defs><linearGradient id='gradient'/></defs><rect width='20' height='20' style='fill:u\72l(#gradient)'/>",
+            )
+            self.assertEqual(inspect_editable_svg(safe)["vector_nodes"], 1)
+
+    def test_rejects_mislabeled_malformed_xml_and_oversized_raster_payloads(self):
+        oversized = base64.b64encode(b"\0" * (5 * 1024 * 1024 + 1)).decode("ascii")
+        unsafe = {
+            "mislabeled": f"data:image/jpeg;base64,{PNG_BASE64}",
+            "malformed": "data:image/png;base64,AA==",
+            "xml": "data:image/png;base64,PHN2Zz48L3N2Zz4=",
+            "oversized": f"data:image/png;base64,{oversized}",
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, reference in unsafe.items():
+                child = f"<rect width='20' height='20'/><image href='{reference}' width='20' height='20'/>"
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "resource"):
                     inspect_editable_svg(write_svg(root, name, child))
 
     def test_rejects_foreign_and_no_namespace_child_elements(self):
@@ -194,18 +245,95 @@ class SvgInspectionTests(unittest.TestCase):
             "zero-line": "<line x1='2' y1='2' x2='2' y2='2'/>",
             "microscopic": "<rect width='0.01' height='0.01'/>",
         }
-        raster = "<image href='data:image/jpeg;base64,AA==' width='100' height='100'/>"
+        raster = f"<image href='{raster_uri('jpeg')}' width='100' height='100'/>"
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory)
             for name, vector in bypasses.items():
                 with self.subTest(name=name), self.assertRaisesRegex(ValueError, "raster wrapper"):
                     inspect_editable_svg(write_svg(root, name, raster + vector))
 
+    def test_dominant_raster_rejects_stylesheet_bounds_paint_transform_and_occlusion_bypasses(self):
+        raster_first = f"<image href='{raster_uri()}' width='100' height='100'/>"
+        raster_last = f"<image href='{raster_uri()}' width='100' height='100'/>"
+        bypasses = {
+            "class-hidden": (
+                "<style>.hidden { display:none }</style>" + raster_first
+                + "<rect class='hidden' width='80' height='30'/><text class='hidden' x='10' y='20'>Hidden label</text>"
+            ),
+            "element-hidden": (
+                "<style>rect { opacity:0 }</style>" + raster_first
+                + "<rect width='80' height='30'/><rect y='50' width='80' height='30'/>"
+            ),
+            "inherited-hidden": (
+                raster_first + "<g visibility='hidden'><rect width='80' height='30'/>"
+                "<text x='10' y='20'>Hidden label</text></g>"
+            ),
+            "off-canvas": (
+                raster_first + "<rect x='200' y='200' width='80' height='30'/>"
+                "<text x='200' y='250'>Outside label</text>"
+            ),
+            "microscopic-visible-intersection": (
+                raster_first + "<rect x='99.999' width='1000' height='30'/>"
+                "<rect x='99.999' y='50' width='1000' height='30'/>"
+            ),
+            "transformed-off-canvas": (
+                raster_first + "<g transform='translate(500 0)'><rect width='80' height='30'/>"
+                "<text x='10' y='20'>Moved label</text></g>"
+            ),
+            "text-displacement": (
+                raster_first + "<text x='10' y='20' dx='500'>Moved label</text>"
+                "<text x='10' y='60' dx='500'>Moved detail</text>"
+            ),
+            "nested-svg-viewport": (
+                raster_first + "<svg x='500' width='100' height='100'>"
+                "<rect width='80' height='30'/><text x='10' y='20'>Nested label</text></svg>"
+            ),
+            "transformed-raster": (
+                f"<image href='{raster_uri()}' width='100' height='100' transform='translate(0 0)'/>"
+                "<rect width='80' height='30'/><text x='10' y='20'>False proof</text>"
+            ),
+            "no-paint": (
+                raster_first + "<rect width='80' height='30' fill='none' stroke='none'/>"
+                "<line x1='10' y1='50' x2='90' y2='50'/>"
+            ),
+            "covered-by-later-raster": (
+                "<rect width='80' height='30'/><text x='10' y='20'>Covered label</text>" + raster_last
+            ),
+            "unhandled-path-bounds": (
+                raster_first + "<path d='M10 10 C20 20 60 20 80 30' fill='none' stroke='black'/>"
+                "<path d='M10 50 C20 60 60 60 80 70' fill='none' stroke='black'/>"
+            ),
+            "empty-clip": (
+                "<defs><clipPath id='empty'/></defs>" + raster_first
+                + "<g clip-path='url(#empty)'><rect width='80' height='30'/>"
+                "<text x='10' y='20'>Clipped label</text></g>"
+            ),
+            "uncertain-fragment-paint": (
+                "<defs><linearGradient id='transparent'><stop stop-opacity='0'/></linearGradient></defs>"
+                + raster_first + "<rect width='80' height='30' fill='url(#transparent)'/>"
+                "<rect y='50' width='80' height='30' fill='url(#transparent)'/>"
+            ),
+            "transparent-modern-color": (
+                raster_first + "<rect width='80' height='30' fill='rgb(0 0 0 / 0)'/>"
+                "<rect y='50' width='80' height='30' fill='rgba(0 0 0 / 0)'/>"
+            ),
+            "unresolved-current-color": (
+                raster_first + "<rect width='80' height='30' fill='currentColor'/>"
+                "<rect y='50' width='80' height='30' fill='currentColor'/>"
+            ),
+        }
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory)
+            for name, child in bypasses.items():
+                with self.subTest(name=name), self.assertRaisesRegex(ValueError, "raster wrapper"):
+                    inspect_editable_svg(write_svg(root, name, child))
+
     def test_meaningful_mixed_vector_raster_passes_and_reports_dominance_facts(self):
         child = (
-            "<image href='data:image/webp;base64,AA==' width='80' height='100'/>"
+            f"<image href='{raster_uri('webp')}' width='80' height='100'/>"
             "<rect x='5' y='5' width='90' height='90' fill='none' stroke='black'/>"
-            "<line x1='10' y1='50' x2='90' y2='50'/><text x='10' y='20'>Measured sample</text>"
+            "<line x1='10' y1='50' x2='90' y2='50' stroke='black'/>"
+            "<text x='10' y='20'>Measured sample</text>"
         )
         with tempfile.TemporaryDirectory() as temporary_directory:
             summary = inspect_editable_svg(write_svg(Path(temporary_directory), "mixed-meaningful", child))
@@ -218,7 +346,7 @@ class SvgInspectionTests(unittest.TestCase):
             path = Path(temporary_directory) / "defs-wrapper.svg"
             path.write_text(
                 "<svg xmlns='http://www.w3.org/2000/svg'><defs><path d='M0 0'/></defs>"
-                "<image href='data:image/png;base64,AA==' width='2' height='2'/></svg>",
+                f"<image href='{raster_uri()}' width='2' height='2'/></svg>",
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValueError, "raster wrapper"):
