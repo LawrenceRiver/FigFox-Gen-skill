@@ -59,14 +59,16 @@ constraints. Search for 3–4 scholarly papers in that domain. Prefer arXiv and 
 SVG/HTML figures; otherwise use credible papers with clearly extractable panels.
 Inspect actual figure regions, not titles or abstracts alone.
 
-Compare the retained panels and record only Methodology-relevant recurrence:
-objects, intermediate representations, structural relations, drawing treatments,
-grouping, and professional terminology. Mark one-off treatments as one-off. Record
-the recurring dominant-colour count seen across the retained panels as
-`dominant_colour_count` (an integer from 1 to 3); record the count, not the source
-colours. Record source URLs and crop paths in `references/web/manifest.json` and
-`references/web/crops/`. Every mapped crop states its target component, what to
-borrow, what must change, and why the result remains human-editable.
+Use the first representative paper figure selected during this domain search as the
+colour-count anchor. Inspect its visible panel, record its dominant-colour count as
+`dominant_colour_count` (an integer from 1 to 3), and carry that count into Context 3.
+Use the remaining 2–3 papers to corroborate the anchor and the visual conventions; do
+not replace the anchored count with a subjective guess or copy source colours. A broad
+field may justify a larger count only when the representative figure visibly uses more
+dominant roles and the retained papers support that reading. Record source URLs and crop
+paths in `references/web/manifest.json` and `references/web/crops/`. Every mapped crop
+states its target component, what to borrow, what must change, and why the result remains
+human-editable.
 
 If fewer than three credible figures remain, continue searching or report
 insufficient evidence. Do not invent recurrence.

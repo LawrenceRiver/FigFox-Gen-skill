@@ -195,7 +195,7 @@ def _palette_lines(
         f"Use the selected multi-colour palette group `{palette['base_palette_id']}` and its evidenced extensions.",
         "Use multiple colours from that group; this is not a monochrome or single-colour constraint.",
         "Limit the figure to at most three dominant colours from this group.",
-        f"The scholarly figure review observed {dominant_colour_count} dominant colour(s); use exactly that many dominant colours from this group.",
+        f"The first representative scholarly figure selected during Context 1 established {dominant_colour_count} dominant colour(s); use exactly that many dominant colours from this group. Later domain figures may corroborate the count but must not replace this evidence with a subjective guess.",
         "Dominant colour roles (maximum three): " + ", ".join(palette["dominant_colour_roles"]) + ".",
         "Other swatches may appear only as subordinate neutral, tint, shade, or support roles and must not become a fourth dominant hue.",
         "Base palette colours:",

@@ -8,8 +8,10 @@ constraints. Produce Context 1 as positive domain-convention evidence, Context 2
 an exact content-to-visual plan, and Context 3 as mapped FigureBench crops, complete
 coverage, and one selected validated multi-colour palette group. Do not turn research explanations into
 figure prose.
-Context 1 must record the observed dominant-colour count from the retained scholarly
-figures as an integer from 1 to 3; record the count, not the source colours.
+Context 1 must inspect the first representative scholarly figure selected during the
+domain search and use its visible dominant-colour count as the anchor, an integer from
+1 to 3. The remaining retained figures corroborate that anchor; record the count, not
+the source colours.
 
 At the start of each run, randomly select exactly one approved palette-library group
 for Context 3. Record its id and all of its role-labelled colours; use `--seed` only

@@ -181,6 +181,7 @@ class Prompt1BundleTests(PromptTestCase):
         self.assertIn("match its composition, spacing, hierarchy, and visual grammar", prompt.casefold())
         self.assertIn("Use multiple colours from that group", prompt)
         self.assertIn("at most three dominant colours", prompt)
+        self.assertIn("first representative scholarly figure selected during Context 1", prompt)
         self.assertIn("must not become a fourth dominant hue", prompt)
         self.assertIn("Dominant colour roles (maximum three):", prompt)
         for phrase in ("upper title-band", "sticker-like cutout", "pasted raster badge"):

@@ -16,18 +16,21 @@ from standard scholarly SVG/HTML figures and learns their visual conventions as
 human-editable evidence. It also inspects FigureBench's vector-like geometry and SVG-style
 construction patterns for reusable structure and explanatory components.
 
-From the 13 bundled palette groups, each run selects one group. The domain review determines
-how many dominant colours are needed (up to three); those colours are then extended with
-aesthetic neighbouring tints, shades, tones, or analogous variants rather than unrelated
-palette mixing. The Creative Director assembles the evidence into Prompt 1, removes hard
-AI-looking treatments, and provides an open point for contributors to improve the taste
-rules and visual planning. One image-generation pass produces PNG1 for author inspection.
+From the 13 bundled palette groups, each run selects one group. The first representative
+scholarly figure found during the domain search sets how many dominant colours are needed
+(up to three); the remaining papers corroborate that count. Those colours are then extended
+with aesthetic neighbouring tints, shades, tones, or analogous variants rather than
+unrelated palette mixing. The Creative Director assembles the evidence into Prompt 1,
+removes hard AI-looking treatments, and provides an open point for contributors to improve
+the taste rules and visual planning. One image-generation pass produces PNG1 for author
+inspection.
 
 FigFox-Gen-skill 从 Methodology 出发，先识别所属领域，学习该领域论文中反复出现的
 SVG 画法，并把关键构件裁图作为可编辑证据；同时参考 FigureBench 的几何和 SVG 式
-结构，借鉴配图与布局。每次从 13 组配色中选一组，根据领域论文确定最多三个主色，
-再用近色扩展而不是混用无关配色。创意师把证据整理成 Prompt 1，去掉明显 AI 味，
-并留下可由贡献者持续完善的审美规则。最后只生成一次 PNG1，供作者检查。
+结构，借鉴配图与布局。联网检索时先从第一张代表性论文图识别主色数量，再由后续
+论文核对；每次从 13 组配色中选一组，按这个数量选最多三个主色，再用近色扩展，
+而不是混用无关配色。创意师把证据整理成 Prompt 1，去掉明显 AI 味，并留下可由
+贡献者持续完善的审美规则。最后只生成一次 PNG1，供作者检查。
 
 ## Workflow overview
 
@@ -106,9 +109,12 @@ the second. Full verbatim inputs are preserved later in [Full Methodology inputs
 
 The model identifies the field and screens figure panels from 3–4 scholarly papers,
 preferably accessible arXiv SVG/HTML sources and otherwise credible extractable figures.
+The first representative figure selected in this search is the colour-count anchor: inspect
+its visible panel and record its dominant-colour count before using the remaining papers to
+corroborate the count and the recurring conventions.
 It compares actual panels and records only recurring, Methodology-relevant objects,
 intermediate representations, relationships, drawing treatments, grouping, professional
-terminology, and the recurring dominant-colour count. The count is recorded as
+terminology, and the evidence needed for the visual plan. The anchored count is recorded as
 `dominant_colour_count` (1–3); source-figure colours themselves are not copied. One-off
 treatments remain marked as such.
 
