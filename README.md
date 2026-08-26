@@ -2,17 +2,26 @@
 
 # FigFox-Gen-skill
 
-### Evidence-guided scientific figures with a human-editable construction plan.
+### Domain-specific SVG conventions, FigureBench evidence, and human-editable figure generation.
 
-**Domain conventions · content-to-visual planning · FigureBench evidence · named multi-colour palettes · one final PNG1**
+**Scholarly SVG convention crops · FigureBench construction patterns · 13 named palette groups · Creative Director taste control · final PNG1**
 
 [中文说明](./README_ZH.md) · [Installation](#installation) · [Workflow](#workflow) · [Practical results](#practical-results) · [Reference pack](#bundled-reference-pack)
 
 </div>
 
-FigFox-Gen-skill turns a scientific Methodology and an optional reference image into one
-labelled architecture figure. It makes the visual decisions explicit before the single
-image-generation pass, then delivers PNG1 for author inspection.
+FigFox-Gen-skill starts from a scientific Methodology, identifies its related field, and
+studies how that field's papers repeatedly draw their methods. It extracts targeted crops
+from standard scholarly SVG/HTML figures and learns their visual conventions as
+human-editable evidence. It also inspects FigureBench's vector-like geometry and SVG-style
+construction patterns for reusable structure and explanatory components.
+
+From the 13 bundled palette groups, each run selects one group. The domain review determines
+how many dominant colours are needed (up to three); those colours are then extended with
+aesthetic neighbouring tints, shades, tones, or analogous variants rather than unrelated
+palette mixing. The Creative Director assembles the evidence into Prompt 1, removes hard
+AI-looking treatments, and provides an open point for contributors to improve the taste
+rules and visual planning. One image-generation pass produces PNG1 for author inspection.
 
 ## Workflow overview
 
