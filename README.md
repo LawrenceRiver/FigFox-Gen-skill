@@ -23,6 +23,12 @@ palette mixing. The Creative Director assembles the evidence into Prompt 1, remo
 AI-looking treatments, and provides an open point for contributors to improve the taste
 rules and visual planning. One image-generation pass produces PNG1 for author inspection.
 
+FigFox-Gen-skill 从 Methodology 出发，先识别所属领域，学习该领域论文中反复出现的
+SVG 画法，并把关键构件裁图作为可编辑证据；同时参考 FigureBench 的几何和 SVG 式
+结构，借鉴配图与布局。每次从 13 组配色中选一组，根据领域论文确定最多三个主色，
+再用近色扩展而不是混用无关配色。创意师把证据整理成 Prompt 1，去掉明显 AI 味，
+并留下可由贡献者持续完善的审美规则。最后只生成一次 PNG1，供作者检查。
+
 ## Workflow overview
 
 The two overview figures are intentionally different compositions: the English version
