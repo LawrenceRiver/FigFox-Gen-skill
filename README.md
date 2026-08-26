@@ -20,10 +20,14 @@ The two overview figures are intentionally different compositions: the English v
 uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
 side evidence branches.
 
-<p align="center">
-  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="English FigFox-Gen workflow" width="49%" />
-  <img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="Chinese FigFox-Gen workflow" width="49%" />
-</p>
+<div align="center">
+  <table>
+    <tr>
+      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="English FigFox-Gen workflow" width="100%" /></td>
+      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="Chinese FigFox-Gen vertical workflow" width="100%" /></td>
+    </tr>
+  </table>
+</div>
 
 ## Installation
 
@@ -43,11 +47,8 @@ python scripts/check_installation.py
 
 ## Workflow
 
-The complete workflow is shown here before the detailed specification below.
-
-<p align="center">
-  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen workflow overview" width="100%" />
-</p>
+The complete workflow is shown in the two-column overview above; the text path below
+keeps the same order without repeating the image.
 
 ```text
 Methodology + optional reference

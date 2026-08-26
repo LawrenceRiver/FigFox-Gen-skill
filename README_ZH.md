@@ -19,10 +19,14 @@ FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签�
 两张总览图故意采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的
 自上而下主轴。
 
-<p align="center">
-  <img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文流程图" width="49%" />
-  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen English workflow" width="49%" />
-</p>
+<div align="center">
+  <table>
+    <tr>
+      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen English workflow" width="100%" /></td>
+      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文竖向流程图" width="100%" /></td>
+    </tr>
+  </table>
+</div>
 
 ## 安装
 
@@ -41,11 +45,8 @@ python scripts/check_installation.py
 
 ## 工作流程
 
-先用一张流程图说明主路径，再在下面解释配色库和 FigureBench 的构件证据。
-
-<p align="center">
-  <img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文工作流程" width="100%" />
-</p>
+上面的左右两栏已经展示完整主路径；下面用文字复述同一顺序，并解释配色库和
+FigureBench 的构件证据，不再重复放图。
 
 ```text
 Methodology + 可选参考图
