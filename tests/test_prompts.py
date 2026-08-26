@@ -147,6 +147,7 @@ class Prompt1BundleTests(PromptTestCase):
         director_prompt = build_creative_director_prompt("method", c1(), c2(), c3())
         self.assertIn("Creative Director", director_prompt["prompt"])
         self.assertIn("paper SVG", director_prompt["prompt"])
+        self.assertIn("Human construction order is mandatory", director_prompt["prompt"])
         bundle = build_prompt1_bundle("method", c1(), c2(), c3(), None, self.root, creative_director())
         creative = [item for item in bundle["attachments"] if item["role"] == "creative_director_svg"]
         self.assertEqual(len(creative), 1)
@@ -176,11 +177,15 @@ class Prompt1BundleTests(PromptTestCase):
         for heading in headings:
             self.assertIn(heading, prompt)
         self.assertIn("selected multi-colour palette group", prompt)
+        self.assertIn("reference-fidelity lock", prompt.casefold())
+        self.assertIn("match its composition, spacing, hierarchy, and visual grammar", prompt.casefold())
         self.assertIn("Use multiple colours from that group", prompt)
         self.assertIn("at most three dominant colours", prompt)
         self.assertIn("must not become a fourth dominant hue", prompt)
         self.assertIn("Dominant colour roles (maximum three):", prompt)
         for phrase in ("upper title-band", "sticker-like cutout", "pasted raster badge"):
+            self.assertIn(phrase, prompt)
+        for phrase in ("base geometry first", "plain arrows", "real sample", "repeated grid must be regular"):
             self.assertIn(phrase, prompt)
 
     def test_prompt_bundle_round_trips(self):
@@ -208,6 +213,8 @@ class PromptTemplateTests(unittest.TestCase):
         for heading in ("Context extraction", "Creative Director prompt", "Prompt 1 generation", "Validation"):
             self.assertIn(heading, text)
         self.assertIn("only image-generation pass", text)
+        self.assertIn("reference-fidelity lock", text.casefold())
+        self.assertIn("do not beautify", text.casefold())
         self.assertNotIn("SVG1", text)
         self.assertNotIn("PNG2", text)
 

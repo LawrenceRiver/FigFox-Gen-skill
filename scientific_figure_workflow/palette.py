@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import random
 import re
 from collections.abc import Mapping, Sequence
 from typing import Any
@@ -30,6 +31,7 @@ _BASE_COLOUR_FIELDS = frozenset({"role", "hex", "rgb"})
 _EXTENSION_FIELDS = _BASE_COLOUR_FIELDS | frozenset(
     {"relationship", "evidence_url", "evidence_summary"}
 )
+_DOMINANT_ROLE_PRIORITY = ("primary", "secondary", "accent", "comparison", "ink")
 
 
 def _mapping(value: Any, location: str) -> Mapping[str, Any]:
@@ -199,6 +201,50 @@ def validate_palette(
     }:
         raise ValueError("palette colours must exactly match the selected base palette group")
     return normalized
+
+
+def select_palette_group(
+    palette_library: Sequence[Mapping[str, Any]],
+    dominant_colour_count: int,
+    *,
+    seed: int | None = None,
+    exclude_ids: Sequence[str] = (),
+) -> dict[str, Any]:
+    """Select one approved library group for a run.
+
+    Selection is random by default and reproducible when ``seed`` is supplied. The
+    returned record is already shaped for Context 3: every colour in the selected
+    group is preserved, while dominant roles are chosen from semantic roles rather
+    than from a second palette source.
+    """
+
+    if not isinstance(dominant_colour_count, int) or isinstance(dominant_colour_count, bool) or not 1 <= dominant_colour_count <= 3:
+        raise ValueError("dominant_colour_count must be an integer from 1 to 3")
+    if isinstance(palette_library, (str, bytes)) or not isinstance(palette_library, Sequence) or not palette_library:
+        raise ValueError("palette library requires at least one group")
+    excluded = {item.strip() for item in exclude_ids if isinstance(item, str) and item.strip()}
+    candidates = []
+    for index, group in enumerate(palette_library):
+        source = _mapping(group, f"palette library[{index}]")
+        palette_id = _required_string(source, "id", f"palette library[{index}]")
+        if palette_id not in excluded:
+            candidates.append(source)
+    if not candidates:
+        raise ValueError("palette selection has no eligible groups")
+    chooser = random.Random(seed) if seed is not None else random.SystemRandom()
+    selected = chooser.choice(candidates)
+    colours = _validate_colours(selected.get("colours"), "selected base palette colours")
+    roles = [colour["role"] for colour in colours]
+    dominant_roles = [role for role in _DOMINANT_ROLE_PRIORITY if role in roles][:dominant_colour_count]
+    if len(dominant_roles) < dominant_colour_count:
+        dominant_roles.extend(role for role in roles if role not in dominant_roles)
+        dominant_roles = dominant_roles[:dominant_colour_count]
+    return {
+        "base_palette_id": _required_string(selected, "id", "selected palette group"),
+        "dominant_colour_roles": dominant_roles,
+        "colours": copy.deepcopy(colours),
+        "extensions": [],
+    }
 
 
 def palette_hex_set(value: Mapping[str, Any]) -> frozenset[str]:

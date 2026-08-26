@@ -32,6 +32,7 @@ try:
         validate_context3,
         validate_creative_director,
         validate_palette,
+        select_palette_group,
         validate_reference_coverage,
         validate_web_manifest,
         write_json_atomic,
@@ -130,6 +131,29 @@ def _cmd_validate_palette(arguments: argparse.Namespace) -> dict[str, Any]:
     return validate_palette(context3.get("palette"), _palette_library())
 
 
+def _cmd_select_palette(arguments: argparse.Namespace) -> dict[str, Any]:
+    root = _run_root(arguments.run)
+    context1 = validate_context1(load_json_object(root / _CONTEXT_PATHS[1]))
+    context2 = validate_context2(load_json_object(root / _CONTEXT_PATHS[2]))
+    context3 = load_json_object(root / _CONTEXT_PATHS[3])
+    validate_context3(context3, _component_ids(context2))
+    selected = select_palette_group(
+        _palette_library(),
+        context1["dominant_colour_count"],
+        seed=arguments.seed,
+    )
+    updated = dict(context3)
+    updated["palette"] = selected
+    write_json_atomic(root / _CONTEXT_PATHS[3], updated)
+    return {
+        "base_palette_id": selected["base_palette_id"],
+        "dominant_colour_roles": selected["dominant_colour_roles"],
+        "seed": arguments.seed,
+        "palette_count": len(_palette_library()),
+        "path": _CONTEXT_PATHS[3],
+    }
+
+
 def _cmd_build_creative_director_prompt(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
     context1, context2, context3 = _contexts(root)
@@ -202,6 +226,7 @@ def _parser() -> _Parser:
         "crop-references": _cmd_crop_references,
         "validate-reference-coverage": _cmd_validate_reference_coverage,
         "validate-palette": _cmd_validate_palette,
+        "select-palette": _cmd_select_palette,
         "build-creative-director-prompt": _cmd_build_creative_director_prompt,
         "validate-creative-director": _cmd_validate_creative_director,
         "build-prompt1": _cmd_build_prompt1,
@@ -214,6 +239,8 @@ def _parser() -> _Parser:
     for name, handler in handlers.items():
         command = commands.add_parser(name)
         command.add_argument("--run", required=True)
+        if name == "select-palette":
+            command.add_argument("--seed", type=int)
         command.set_defaults(handler=handler)
     return parser
 

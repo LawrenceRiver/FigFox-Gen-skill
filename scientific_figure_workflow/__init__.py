@@ -8,7 +8,7 @@ from .artifacts import (
     validate_run_manifest,
     validate_web_manifest,
 )
-from .palette import palette_hex_set, validate_palette
+from .palette import palette_hex_set, select_palette_group, validate_palette
 from .prompts import (
     build_prompt1_bundle,
     build_creative_director_prompt,
@@ -41,6 +41,7 @@ __all__ = [
     "validate_run_manifest",
     "validate_web_manifest",
     "validate_palette",
+    "select_palette_group",
     "palette_hex_set",
     "load_reference_index",
     "validate_reference_pack",

@@ -4,50 +4,52 @@
 
 ### Evidence-guided scientific figures with a human-editable construction plan.
 
-**Domain conventions · human-producible planning · mapped FigureBench crops · named multi-colour palette groups · final PNG1**
+**Domain conventions · content-to-visual planning · FigureBench evidence · named multi-colour palettes · one final PNG1**
 
-[中文说明](./README_ZH.md) · [Why FigFox-Gen](#why-figfox-gen) · [Workflow](#workflow) · [Reference pack](#bundled-reference-pack) · [Installation](#installation)
+[中文说明](./README_ZH.md) · [Hook](#hook) · [Installation](#installation) · [Workflow](#workflow) · [Practical results](#practical-results) · [Reference pack](#bundled-reference-pack)
 
 </div>
 
-FigFox-Gen-skill turns a scientific Methodology and an optional reference image
-into one labelled, human-editable-style architecture figure. It performs one
-image-generation pass and delivers PNG1 as the final output.
+FigFox-Gen-skill turns a scientific Methodology and an optional reference image into one
+labelled architecture figure. It makes the visual decisions explicit before the single
+image-generation pass, then delivers PNG1 for author inspection.
 
-## Generated figure examples
+## Flowchart first
 
-These are four PNG1 outputs made with the current Skill: the first visualizes the
-FigFox-Gen methodology itself, followed by the three recorded Methodology cases.
-They are examples of the workflow's human-editable-style interpretation, not
-copies of the cited papers' figures.
+The two overview figures are intentionally different compositions: the English version
+uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
+side evidence branches.
 
 <p align="center">
-  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen Skill methodology workflow" width="48%" />
-  <img src="assets/generated-figures/02-latent-diffusion.png" alt="Latent Diffusion methodology figure" width="48%" />
-</p>
-<p align="center">
-  <img src="assets/generated-figures/03-musicot.png" alt="MusiCoT methodology figure" width="48%" />
-  <img src="assets/generated-figures/04-alphafold3.png" alt="AlphaFold 3 methodology figure" width="48%" />
+  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="English FigFox-Gen workflow" width="49%" />
+  <img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="Chinese FigFox-Gen workflow" width="49%" />
 </p>
 
+## Hook
+
+**English.** A generic prompt starts from a Methodology and jumps straight to an image.
+FigFox-Gen first asks what the field repeatedly draws: for example, how music papers
+visualize a piano, how a model paper lays out a transformer, or how a biology paper groups
+an intermediate representation. It then maps each Methodology block to a human-producible
+visual, checks real FigureBench geometry and scholarly SVG construction evidence, and lets
+a Creative Director reject AI-looking decorations. One named palette group supplies the
+colour lineage; the final context produces one complete PNG1.
+
+**中文。** 普通图像生成把 Methodology 和通用 Prompt 直接交给模型。FigFox-Gen 先问
+“这个领域反复怎样画”：例如音乐论文怎样表现钢琴，模型论文怎样排 Transformer，
+生物论文怎样组织中间表示；再把 Methodology 的每个模块映射为人能制作的视觉，
+检查 FigureBench 的真实几何和论文 SVG 的画法证据，让创意师拒绝 AI 味的装饰；
+最后从一套命名配色组中保持颜色谱系，一次生成完整 PNG1。
+
+When a user-cited reference is present, a **reference-fidelity lock** applies: match its
+composition, spacing, hierarchy, line weight, corner radius, fill treatment, typography
+scale, arrow grammar, and sample treatment wherever the Methodology permits. The model
+may change only scientific content and geometry required by the Methodology; it may not
+beautify, complicate, stylize, or switch visual language just because it can. Active
+colours still come from the selected palette group.
+
 <p align="center">
-  <a href="assets/generated-figures/01-figfox-gen-workflow.png">FigFox-Gen workflow</a> ·
-  <a href="assets/generated-figures/02-latent-diffusion.png">Latent Diffusion</a> ·
-  <a href="assets/generated-figures/03-musicot.png">MusiCoT</a> ·
-  <a href="assets/generated-figures/04-alphafold3.png">AlphaFold 3</a>
-</p>
-
-## Why FigFox-Gen
-
-The central hook is the evidence chain below: the Methodology determines which
-domain visual conventions matter; content-to-visual planning turns those conventions
-into human-producible components; FigureBench and scholarly SVG figures contribute
-construction evidence; the Creative Director rejects AI-looking treatments; and one
-named palette group contributes several compatible colours before the final context is
-generated.
-
-<p align="center">
-  <img src="assets/generated-figures/figfox-hook-contrast-zh.png" alt="Top-to-bottom contrast between generic image generation and the FigFox-Gen evidence chain" width="100%" />
+  <img src="assets/generated-figures/figfox-hook-contrast-zh.png" alt="Generic image generation compared with the FigFox-Gen evidence chain" width="100%" />
 </p>
 
 ## Installation
@@ -56,73 +58,122 @@ generated.
 npx skills@latest add LawrenceRiver/FigFox-Gen-skill
 ```
 
-Then provide a Methodology and, if useful, one reference image. The reference may
-guide structure, layout, emphasis, and visibly human-made treatments, but it is not
-a colour source.
+Then provide a Methodology and, if useful, one reference image. A reference image may
+strongly guide structure, layout, emphasis, and visibly human-made treatments, but it is
+not an active colour source. For a local integrity check after installation:
+
+```bash
+python scripts/check_installation.py
+```
 
 ## Workflow
 
+The complete workflow is shown here before the detailed specification below.
+
+<p align="center">
+  <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen workflow overview" width="100%" />
+</p>
+
 ```text
 Methodology + optional reference
-  -> Context 1: domain visual conventions
+  -> Context 1: recurring domain visual language
   -> Context 2: content-to-visual plan
-  -> Context 3: mapped FigureBench crops + selected palette group + taste
-  -> Creative Director prompt -> brief + targeted paper-SVG crops
-  -> Prompt 1 with all mapped crops -> PNG1
+  -> Context 3: inspected FigureBench crops + one selected palette group
+  -> Creative Director brief + targeted paper-SVG crops when needed
+  -> Prompt 1 with every mapped crop -> PNG1
   -> stop
 ```
+
+### FigureBench and palette-library preview
+
+FigureBench is a compact local construction library, not a colour source. The model
+inspects at least two distinct bundled figures and continues until every required frame,
+connector, geometric primitive, layout relationship, and special visualization has
+evidence. The palette library stores named groups; each run selects one complete group and
+may use several role-labelled colours from that group. The preview below shows the kind of
+geometry evidence and the current 13 bundled palette groups.
+
+<p align="center">
+  <img src="assets/figurebench-palette-preview.png" alt="FigureBench geometry references and named palette groups" width="100%" />
+</p>
+
+## Practical results
+
+These are the three recorded Methodology cases. The table keeps the comparison horizontal:
+the original Methodology is named in the first column and the generated result is shown in
+the second. Full verbatim inputs are preserved later in [Full Methodology inputs](#full-methodology-inputs).
+
+| Methodology | Generated result |
+|---|---|
+| **Latent Diffusion**<br>[Rombach et al.](https://arxiv.org/abs/2112.10752)<br>Image space → latent space → denoising U-Net → generated image | <img src="assets/generated-figures/02-latent-diffusion.png" alt="Latent Diffusion generated figure" width="620" /> |
+| **MusiCoT**<br>[MusiCoT](https://arxiv.org/abs/2503.19611)<br>Text/audio inputs → CLAP/RVQ thought tokens → semantic LM → music sample | <img src="assets/generated-figures/03-musicot.png" alt="MusiCoT generated figure" width="620" /> |
+| **AlphaFold 3**<br>[Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)<br>Chemical complex → pairformer/diffusion module → final structure | <img src="assets/generated-figures/04-alphafold3.png" alt="AlphaFold 3 generated figure" width="620" /> |
+
+## Full workflow specification
 
 ### Context 1: recurring domain visual language
 
 The model identifies the field and screens figure panels from 3–4 scholarly papers,
-preferably accessible arXiv SVG/HTML sources and otherwise credible extractable
-figures. It compares actual panels and records only recurring, Methodology-relevant
-objects, intermediate representations, relationships, drawing treatments, grouping,
-professional terminology, and the recurring dominant-colour count. The count is
-recorded as `dominant_colour_count` (1–3); source-figure colours themselves are not
-copied. One-off treatments remain marked as such.
+preferably accessible arXiv SVG/HTML sources and otherwise credible extractable figures.
+It compares actual panels and records only recurring, Methodology-relevant objects,
+intermediate representations, relationships, drawing treatments, grouping, professional
+terminology, and the recurring dominant-colour count. The count is recorded as
+`dominant_colour_count` (1–3); source-figure colours themselves are not copied. One-off
+treatments remain marked as such.
 
 ### Context 2: content-to-visual planning
 
 The Methodology, Context 1, and optional reference are compressed into exact blocks,
 labels, relationships, reading order, and a visual treatment for every component.
-Treatments must be human-producible: basic geometry, a recurring domain convention,
-a deliberate manual drawing, a draw.io-like construction, or a scientifically
-necessary real photo crop. Any special visual explains why it is needed and how a
-human would make it. Decorative generated-looking elements are rejected.
+Treatments must be human-producible: basic geometry, a recurring domain convention, a
+deliberate manual drawing, a draw.io-like construction, or a scientifically necessary real
+photo crop. Any special visual explains why it is needed and how a human would make it.
+Decorative generated-looking elements are rejected.
+
+The Creative Director plans the build in the order a person would use an editor: choose the
+base canvas and simple geometry, build the meaningful structures, add plain arrows, place
+concise exact text, then place a nearby explanatory visual. Inputs should be real or
+explicitly documented samples; known topologies, grids, and model diagrams should use
+targeted scholarly construction evidence when available. Regular grids must stay exact,
+each geometric block uses a flat or single controlled fill, and arrows remain visually
+subordinate. A subtle fill transition is allowed only on a planned base shape; gradients
+inside blocks or as decoration are rejected.
 
 ### Context 3: inspected construction evidence and named palette groups
 
-The model inspects the pixels of at least two distinct bundled FigureBench images,
-then continues adaptively until every required geometry, frame, connector, layout
-relationship, and special visualization is covered. Useful regions become mapped
-crops with a target component, what to borrow, what must change, and why the result
-remains human-editable. Complete reference images are not dumped into Prompt 1.
+The model inspects the pixels of at least two distinct bundled FigureBench images, then
+continues adaptively until every required geometry, frame, connector, layout relationship,
+and special visualization is covered. Useful regions become mapped crops with a target
+component, what to borrow, what must change, and why the result remains human-editable.
+Complete reference images are not dumped into Prompt 1.
 
-The local palette library stores every named palette group (each `palettes` record is
-one group), with multiple role-labelled colours in each group. Each run selects one
-group and may use several colours from it;
-this is not a single-colour or monochrome rule. If that group lacks a functional
-colour, only an evidenced tint, shade, tone, analogous neighbour, compatible neutral,
-or controlled contrast may extend it. FigureBench, domain figures, and the user
-reference never supply active palette colours. Taste guidance is subordinate to
-scientific meaning, user constraints, domain evidence, human editability, and the
-selected palette-group lineage. The final figure uses at most three dominant colours
-from that group and matches Context 1's observed dominant-colour count; other swatches
-remain subordinate neutral, tint, shade, or support roles and cannot become a fourth
-dominant hue.
+The local palette library stores every named palette group (`palettes` records). Each run
+randomly selects one eligible group and may use several role-labelled colours from it:
+
+```bash
+python scripts/figure_workflow.py select-palette --run RUN
+python scripts/figure_workflow.py select-palette --run RUN --seed SEED  # reproducible
+```
+
+This is not a single-colour or monochrome rule. If a group lacks a functional colour, only
+an evidenced tint, shade, tone, analogous neighbour, compatible neutral, or controlled
+contrast may extend it. FigureBench, domain figures, and the user reference never supply
+active palette colours. Taste guidance is subordinate to scientific meaning, user
+constraints, domain evidence, human editability, and the selected palette-group lineage.
+The final figure uses at most three dominant colours from that group and matches Context
+1's observed dominant-colour count; other swatches remain subordinate neutral, tint, shade,
+or support roles and cannot become a fourth dominant hue.
 
 ### Creative Director: pre-PNG1 visual ideation
 
 After Contexts 1–3, a Creative Director prompt gives the model one bounded chance to
-propose a new visual treatment before PNG1 exists. It does not generate an image or
-redesign the figure. If an idea needs a construction not already evidenced, the
-model must find a real scholarly paper figure available as SVG or extractable
-SVG/HTML, inspect it, and request a targeted crop under
-`references/web/crops/creative-director/`. Each crop records its target component,
-HTTPS source and evidence URLs, `source_format: "svg"`, `borrow`, `must_change`, and
-why the construction remains human-editable. Complete paper figures are never
-attached, and sources cannot be invented. If no new treatment is needed, the brief
+propose a new visual treatment before PNG1 exists. It does not generate an image or redesign
+the figure. If an idea needs a construction not already evidenced, the model must find a
+real scholarly paper figure available as SVG or extractable SVG/HTML, inspect it, and request
+a targeted crop under `references/web/crops/creative-director/`. Each crop records its
+target component, HTTPS source and evidence URLs, `source_format: "svg"`, `borrow`,
+`must_change`, and why the construction remains human-editable. Complete paper figures are
+never attached, and sources cannot be invented. If no new treatment is needed, the brief
 must say `no_external_svg_needed`.
 
 ```bash
@@ -132,30 +183,29 @@ python scripts/figure_workflow.py validate-creative-director --run RUN
 
 ### Prompt 1 and final PNG1
 
-Prompt 1 contains the Methodology, Contexts 1–3, the Creative Director brief, the
-optional reference, domain crops, every mapped FigureBench crop, and any validated
-paper-SVG crops proposed by the Creative Director. The only image-generation pass
-creates PNG1. Paper-SVG crops guide only their declared component and are variants;
-they do not donate source labels, colours, proportions, or complete compositions.
+Prompt 1 contains the Methodology, Contexts 1–3, the Creative Director brief, the optional
+reference, domain crops, every mapped FigureBench crop, and any validated paper-SVG crops
+proposed by the Creative Director. The only image-generation pass creates PNG1. Paper-SVG
+crops guide only their declared component and are variants; they do not donate source
+labels, colours, proportions, or complete compositions.
 
-PNG1 has two absolute anti-AI bans: no module may use a boxed-off upper title band
-with a horizontal divider (the screenshot-like title-bar/content-box pattern), and
-no sticker-like cutout, clip-art badge, medal, seal, or pasted raster badge may be
-inserted. Use inline labels or editable geometry; only a scientifically necessary
-real photo can be an explicitly documented special treatment.
+PNG1 has two absolute anti-AI bans: no module may use a boxed-off upper title band with a
+horizontal divider (the screenshot-like title-bar/content-box pattern), and no sticker-like
+cutout, clip-art badge, medal, seal, or pasted raster badge may be inserted. Use inline labels
+or editable geometry; only a scientifically necessary real photo can be an explicitly
+documented special treatment.
 
-The image-generation model receives `prompt-1/prompt.md` and every manifest
-attachment once. It must produce one complete labelled figure with flat,
-deliberate, human-producible geometry. PNG1 is the final deliverable for this
-workflow; there is no conversion or second generation after it. Authors must
-inspect PNG1 before publication.
+The image-generation model receives `prompt-1/prompt.md` and every manifest attachment once.
+It must produce one complete labelled figure with flat, deliberate, human-producible
+geometry. PNG1 is the final deliverable for this workflow; there is no conversion or second
+generation after it. Authors must inspect PNG1 before publication.
 
-## Recorded methodology cases
+## Full Methodology inputs
 
-These examples preserve the original Methodology inputs rather than replacing them
-with keyword-only summaries. They are recorded source inputs for the workflow, not
-reconstructions of the cited papers' figures. The generated figures above are
-original interpretations and must not copy the source figures.
+These examples preserve the original Methodology inputs rather than replacing them with
+keyword-only summaries. They are recorded source inputs for the workflow, not
+reconstructions of the cited papers' figures. The generated figures above are original
+interpretations and must not copy the source figures.
 
 ### Latent Diffusion · visual generation
 
@@ -164,7 +214,7 @@ original interpretations and must not copy the source figures.
 <details>
 <summary>Methodology input (verbatim)</summary>
 
-> We propose to circumvent this drawback by introducing an explicit separation of the compressive from the generative learning phase. To achieve this, we utilize an autoencoding model which learns a space that is perceptually equivalent to the image space, but offers significantly reduced computational complexity. By leaving the high-dimensional image space, we obtain DMs which are computationally much more efficient because sampling is performed on a low-dimensional space. We exploit the inductive bias of DMs inherited from their UNet architecture, which makes them particularly effective for data with spatial structure.
+> We propose to circumvent this drawback by introducing an explicit separation of the compressive from the generative learning phase. To achieve this, we utilize an autoencoding model which learns a space that is perceptually equivalent to the image space, but offers significantly reduced computational complexity. By leaving the high-dimensional image space, we obtain DMs which are much more computationally efficient because sampling is performed on a low-dimensional space. We exploit the inductive bias of DMs inherited from their UNet architecture, which makes them particularly effective for data with spatial structure.
 >
 > Given an image x in RGB space, the encoder E encodes x into a latent representation z = E(x), and the decoder D reconstructs the image from the latent, giving x-tilde = D(z) = D(E(x)). Our subsequent DM is designed to work with the two-dimensional structure of our learned latent space z = E(x). The neural backbone of our model is realized as a time-conditional UNet. Samples from p(z) can be decoded to image space with a single pass through D. We turn DMs into more flexible conditional image generators by augmenting their underlying UNet backbone with the cross-attention mechanism.
 
@@ -211,20 +261,19 @@ original interpretations and must not copy the source figures.
 ## Bundled reference pack
 
 The installed Skill includes exactly 30 complete, indexed, attributed FigureBench
-development images. They are a compact construction library for geometry, layout,
-spacing, connectors, and human-edited finish. Ordinary users do not download
-FigureBench: the larger dataset is only a maintainer input when curating a future
-revision of the bundled pack. The Skill never uses official FigureBench test images.
+development images. They are a compact construction library for geometry, layout, spacing,
+connectors, and human-edited finish. Ordinary users do not download FigureBench; the larger
+dataset is only a maintainer input when curating a future revision of the bundled pack.
+The Skill never uses official FigureBench test images.
+
+Attributions and source metadata for all 30 bundled images are in
+[`assets/figurebench-references/index.json`](assets/figurebench-references/index.json).
 
 ## Maintainers
 
-Use `scripts/curate_figurebench_reference_pack.py` only for pack curation. Runtime
-artifact validation and crop execution are exposed through
-`scripts/figure_workflow.py`; installation integrity can be checked with:
+Use `scripts/curate_figurebench_reference_pack.py` only for pack curation. Runtime artifact
+validation and crop execution are exposed through `scripts/figure_workflow.py`.
 
 ```bash
 python scripts/check_installation.py
 ```
-
-Attributions and source metadata for all 30 bundled images are in
-[`assets/figurebench-references/index.json`](assets/figurebench-references/index.json).

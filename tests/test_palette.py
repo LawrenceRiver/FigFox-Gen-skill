@@ -3,7 +3,7 @@ from pathlib import Path
 import unittest
 
 import scientific_figure_workflow
-from scientific_figure_workflow.palette import palette_hex_set, validate_palette
+from scientific_figure_workflow.palette import palette_hex_set, select_palette_group, validate_palette
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -170,6 +170,19 @@ class PaletteLineageTests(unittest.TestCase):
             palette_hex_set(palette),
             frozenset({"#203040", "#406080", "#6E8FA3"}),
         )
+
+    def test_select_palette_group_is_seeded_and_preserves_one_group(self):
+        first = select_palette_group(palette_library_fixture(), 1, seed=11)
+        second = select_palette_group(palette_library_fixture(), 1, seed=11)
+        self.assertEqual(first, second)
+        self.assertEqual(first["base_palette_id"], "group-b")
+        self.assertEqual(first["dominant_colour_roles"], ["accent"])
+        self.assertEqual(first["extensions"], [])
+
+    def test_select_palette_group_can_avoid_a_previously_used_group(self):
+        selected = select_palette_group(palette_library_fixture(), 2, seed=11, exclude_ids=["group-b"])
+        self.assertEqual(selected["base_palette_id"], "group-a")
+        self.assertEqual(selected["dominant_colour_roles"], ["primary", "ink"])
 
 
 class TasteGuidanceTests(unittest.TestCase):
