@@ -6,7 +6,7 @@
 
 **领域视觉惯例 · 内容—视觉规划 · FigureBench 证据 · 命名多色配色组 · 最终 PNG1**
 
-[English](./README.md) · [Hook](#hook) · [安装](#安装) · [工作流程](#工作流程) · [实测结果](#实测结果) · [内置参考包](#内置参考包)
+[English](./README.md) · [安装](#安装) · [工作流程](#工作流程) · [实测结果](#实测结果) · [内置参考包](#内置参考包)
 
 </div>
 
@@ -14,7 +14,7 @@ FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签�
 逻辑的科研架构图。它先把视觉决策写清楚，再进行唯一一次图像生成，交付 PNG1
 供作者检查。
 
-## 先看流程图
+## 流程概览
 
 两张总览图故意采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的
 自上而下主轴。
@@ -24,35 +24,16 @@ FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签�
   <img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen English workflow" width="49%" />
 </p>
 
-## Hook
-
-普通图像生成把 Methodology 和通用 Prompt 直接交给模型。FigFox-Gen 先问“这个
-领域反复怎样画”：例如音乐论文怎样表现钢琴，模型论文怎样排 Transformer，
-生物论文怎样组织中间表示；再把 Methodology 的每个模块映射为人能制作的视觉，
-检查 FigureBench 的真实几何和论文 SVG 的画法证据，让创意师拒绝 AI 味的装饰；
-最后从一套命名配色组中保持颜色谱系，一次生成完整 PNG1。
-
-如果用户提供或明确引用参考图，立即进入**参考保真锁定**：尽量严格匹配参考图的
-构图、间距、层级、线宽、圆角、填充、文字尺度、箭头语法和 sample 处理。只有
-Methodology 必须改变的科学内容和几何才能改变；不能因为模型“觉得更漂亮”就擅自
-美化、复杂化、换风格或重排。实际使用的颜色仍然只能来自选定的配色组。
-
-英文版 Hook 也保留在 [English README](./README.md#hook) 中，便于直接复制到项目
-主页或论文说明里。
-
-<p align="center">
-  <img src="assets/generated-figures/figfox-hook-contrast-zh.png" alt="普通图像生成与 FigFox-Gen 证据链的上下对比" width="100%" />
-</p>
-
 ## 安装
 
 ```bash
 npx skills@latest add LawrenceRiver/FigFox-Gen-skill
 ```
 
-安装后提供 Methodology，并可按需附上一张参考图。参考图可以强力引导结构、
-布局、强调方式和明显由人制作的基础视觉，但不能成为实际配色来源。安装完整性
-可以这样检查：
+安装后提供 Methodology，并可按需附上一张参考图。用户参考图是严格的视觉样本：
+在 Methodology 允许的范围内匹配它的构图、间距、层级、线宽、圆角、填充、文字
+尺度、箭头语法和 sample 处理；不能擅自美化、复杂化、换风格或重排。它不能成为
+实际配色来源。安装完整性可以这样检查：
 
 ```bash
 python scripts/check_installation.py

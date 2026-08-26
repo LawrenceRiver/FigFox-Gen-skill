@@ -6,7 +6,7 @@
 
 **Domain conventions · content-to-visual planning · FigureBench evidence · named multi-colour palettes · one final PNG1**
 
-[中文说明](./README_ZH.md) · [Hook](#hook) · [Installation](#installation) · [Workflow](#workflow) · [Practical results](#practical-results) · [Reference pack](#bundled-reference-pack)
+[中文说明](./README_ZH.md) · [Installation](#installation) · [Workflow](#workflow) · [Practical results](#practical-results) · [Reference pack](#bundled-reference-pack)
 
 </div>
 
@@ -14,7 +14,7 @@ FigFox-Gen-skill turns a scientific Methodology and an optional reference image 
 labelled architecture figure. It makes the visual decisions explicit before the single
 image-generation pass, then delivers PNG1 for author inspection.
 
-## Flowchart first
+## Workflow overview
 
 The two overview figures are intentionally different compositions: the English version
 uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
@@ -25,41 +25,16 @@ side evidence branches.
   <img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="Chinese FigFox-Gen workflow" width="49%" />
 </p>
 
-## Hook
-
-**English.** A generic prompt starts from a Methodology and jumps straight to an image.
-FigFox-Gen first asks what the field repeatedly draws: for example, how music papers
-visualize a piano, how a model paper lays out a transformer, or how a biology paper groups
-an intermediate representation. It then maps each Methodology block to a human-producible
-visual, checks real FigureBench geometry and scholarly SVG construction evidence, and lets
-a Creative Director reject AI-looking decorations. One named palette group supplies the
-colour lineage; the final context produces one complete PNG1.
-
-**中文。** 普通图像生成把 Methodology 和通用 Prompt 直接交给模型。FigFox-Gen 先问
-“这个领域反复怎样画”：例如音乐论文怎样表现钢琴，模型论文怎样排 Transformer，
-生物论文怎样组织中间表示；再把 Methodology 的每个模块映射为人能制作的视觉，
-检查 FigureBench 的真实几何和论文 SVG 的画法证据，让创意师拒绝 AI 味的装饰；
-最后从一套命名配色组中保持颜色谱系，一次生成完整 PNG1。
-
-When a user-cited reference is present, a **reference-fidelity lock** applies: match its
-composition, spacing, hierarchy, line weight, corner radius, fill treatment, typography
-scale, arrow grammar, and sample treatment wherever the Methodology permits. The model
-may change only scientific content and geometry required by the Methodology; it may not
-beautify, complicate, stylize, or switch visual language just because it can. Active
-colours still come from the selected palette group.
-
-<p align="center">
-  <img src="assets/generated-figures/figfox-hook-contrast-zh.png" alt="Generic image generation compared with the FigFox-Gen evidence chain" width="100%" />
-</p>
-
 ## Installation
 
 ```bash
 npx skills@latest add LawrenceRiver/FigFox-Gen-skill
 ```
 
-Then provide a Methodology and, if useful, one reference image. A reference image may
-strongly guide structure, layout, emphasis, and visibly human-made treatments, but it is
+Then provide a Methodology and, if useful, one reference image. A supplied reference is a
+strict visual exemplar: match its composition, spacing, hierarchy, line weight, corner
+radius, fill treatment, typography scale, arrow grammar, and sample treatment wherever the
+Methodology permits. Do not beautify, complicate, stylize, or switch visual language. It is
 not an active colour source. For a local integrity check after installation:
 
 ```bash
