@@ -136,10 +136,15 @@ class ContextArtifactTests(unittest.TestCase):
         self.assertEqual([item["id"] for item in context2["components"]], ["encoder", "audio"])
         self.assertEqual(set(item["component_id"] for item in validate_context3(valid_context3(), {"encoder", "audio"})["coverage_matrix"]), {"encoder", "audio"})
 
-    def test_context1_rejects_more_than_three_observed_dominant_colours(self):
+    def test_context1_accepts_the_count_observed_in_a_representative_figure(self):
         context = valid_context1()
         context["dominant_colour_count"] = 4
-        with self.assertRaisesRegex(ValueError, "dominant_colour_count.*1 to 3"):
+        self.assertEqual(validate_context1(context)["dominant_colour_count"], 4)
+
+    def test_context1_rejects_non_positive_observed_dominant_colour_count(self):
+        context = valid_context1()
+        context["dominant_colour_count"] = 0
+        with self.assertRaisesRegex(ValueError, "positive integer"):
             validate_context1(context)
 
     def test_context2_rejects_dangling_relationship(self):

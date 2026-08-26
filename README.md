@@ -16,9 +16,10 @@ from standard scholarly SVG/HTML figures and learns their visual conventions as
 human-editable evidence. It also inspects FigureBench's vector-like geometry and SVG-style
 construction patterns for reusable structure and explanatory components.
 
-From the 13 bundled palette groups, each run selects one group. The first representative
-scholarly figure found during the domain search sets how many dominant colours are needed
-(up to three); the remaining papers corroborate that count. Those colours are then extended
+From the 13 bundled palette groups, each run selects one eligible group. The first representative
+scholarly figure found during the domain search sets how many dominant colours are needed;
+the remaining papers corroborate that count. The selected group must provide that many
+compatible colour roles. Those colours are then extended
 with aesthetic neighbouring tints, shades, tones, or analogous variants rather than
 unrelated palette mixing. The Creative Director assembles the evidence into Prompt 1,
 removes hard AI-looking treatments, and provides an open point for contributors to improve
@@ -28,7 +29,7 @@ inspection.
 FigFox-Gen-skill 从 Methodology 出发，先识别所属领域，学习该领域论文中反复出现的
 SVG 画法，并把关键构件裁图作为可编辑证据；同时参考 FigureBench 的几何和 SVG 式
 结构，借鉴配图与布局。联网检索时先从第一张代表性论文图识别主色数量，再由后续
-论文核对；每次从 13 组配色中选一组，按这个数量选最多三个主色，再用近色扩展，
+论文核对；每次从 13 组配色中选一组，按这个数量选对应的主色角色，再用近色扩展，
 而不是混用无关配色。创意师把证据整理成 Prompt 1，去掉明显 AI 味，并留下可由
 贡献者持续完善的审美规则。最后只生成一次 PNG1，供作者检查。
 
@@ -115,8 +116,9 @@ corroborate the count and the recurring conventions.
 It compares actual panels and records only recurring, Methodology-relevant objects,
 intermediate representations, relationships, drawing treatments, grouping, professional
 terminology, and the evidence needed for the visual plan. The anchored count is recorded as
-`dominant_colour_count` (1–3); source-figure colours themselves are not copied. One-off
-treatments remain marked as such.
+`dominant_colour_count`; source-figure colours themselves are not copied. One-off treatments
+remain marked as such. The selected palette group must contain at least that many colour
+roles; if it does not, select another eligible group rather than silently reducing the count.
 
 ### Context 2: content-to-visual planning
 
@@ -157,9 +159,10 @@ an evidenced tint, shade, tone, analogous neighbour, compatible neutral, or cont
 contrast may extend it. FigureBench, domain figures, and the user reference never supply
 active palette colours. Taste guidance is subordinate to scientific meaning, user
 constraints, domain evidence, human editability, and the selected palette-group lineage.
-The final figure uses at most three dominant colours from that group and matches Context
-1's observed dominant-colour count; other swatches remain subordinate neutral, tint, shade,
-or support roles and cannot become a fourth dominant hue.
+The final figure uses exactly Context 1's observed dominant-colour count from that group.
+Other swatches remain subordinate neutral, tint, shade, or support roles and cannot be
+promoted beyond that anchored count. If no group can support the count, report the palette
+selection failure instead of changing the scientific evidence.
 
 ### Creative Director: pre-PNG1 visual ideation
 

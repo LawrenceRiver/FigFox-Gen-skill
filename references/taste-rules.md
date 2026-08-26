@@ -9,9 +9,10 @@ construction provenance, or the selected multi-colour palette-group lineage. Sel
 one named palette-library group for the active base colours, then use multiple compatible
 colours from that group as needed. This is not a monochrome rule. Do not borrow a second library group,
 user-reference colours, or FigureBench colours.
-Limit the figure to at most three dominant colours from the selected group. Other swatches
-may appear only as subordinate neutral, tint, shade, or support roles and must not become
-a fourth dominant hue.
+Use exactly the dominant-colour count anchored by the first representative scholarly
+figure in Context 1. Other swatches may appear only as subordinate neutral, tint, shade,
+or support roles and must not be promoted beyond that anchored count. If the selected
+group lacks enough roles, choose another eligible group rather than altering the evidence.
 
 Only when the chosen group is insufficient, make targeted web colour-relationship
 research a deliberate step. Add a related extension only with an allowed relationship,

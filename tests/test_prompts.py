@@ -180,10 +180,10 @@ class Prompt1BundleTests(PromptTestCase):
         self.assertIn("reference-fidelity lock", prompt.casefold())
         self.assertIn("match its composition, spacing, hierarchy, and visual grammar", prompt.casefold())
         self.assertIn("Use multiple colours from that group", prompt)
-        self.assertIn("at most three dominant colours", prompt)
+        self.assertIn("established 2 dominant colour(s); use exactly that many", prompt)
         self.assertIn("first representative scholarly figure selected during Context 1", prompt)
-        self.assertIn("must not become a fourth dominant hue", prompt)
-        self.assertIn("Dominant colour roles (maximum three):", prompt)
+        self.assertIn("Remaining swatches may be subordinate", prompt)
+        self.assertIn("Dominant colour roles (anchored count 2):", prompt)
         for phrase in ("upper title-band", "sticker-like cutout", "pasted raster badge"):
             self.assertIn(phrase, prompt)
         for phrase in ("base geometry first", "plain arrows", "real sample", "repeated grid must be regular"):

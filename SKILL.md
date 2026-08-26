@@ -61,7 +61,8 @@ Inspect actual figure regions, not titles or abstracts alone.
 
 Use the first representative paper figure selected during this domain search as the
 colour-count anchor. Inspect its visible panel, record its dominant-colour count as
-`dominant_colour_count` (an integer from 1 to 3), and carry that count into Context 3.
+`dominant_colour_count` (a positive integer supported by an eligible palette group), and
+carry that count into Context 3.
 Use the remaining 2–3 papers to corroborate the anchor and the visual conventions; do
 not replace the anchored count with a subjective guess or copy source colours. A broad
 field may justify a larger count only when the representative figure visibly uses more
@@ -143,10 +144,11 @@ required functional role, only an evidenced tint, shade, tone, analogous neighbo
 compatible neutral, or controlled contrast may extend it. Never mix a second library
 group or take colours from the user reference, FigureBench, or domain papers. Taste
 is a low-priority soft constraint for spacing, hierarchy, rhythm, balance, restraint,
-and human-edited finish. The final figure may have at most three dominant colours
-from the selected group and must match Context 1's observed dominant-colour count.
-Other swatches are subordinate neutral, tint, shade, or support roles and must not
-become a fourth dominant hue.
+and human-edited finish. The final figure must use exactly Context 1's observed
+dominant-colour count from the selected group. Other swatches are subordinate neutral,
+tint, shade, or support roles and must not be promoted beyond that anchored count. If a
+group cannot provide enough roles, select another eligible group or report that no palette
+group can support the evidence.
 
 Write `context/context-3-visual-kit.json` from the materialized crops, coverage
 matrix, selected palette-group lineage, and taste constraints, then validate:

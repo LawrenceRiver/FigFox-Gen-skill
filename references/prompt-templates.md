@@ -9,9 +9,8 @@ an exact content-to-visual plan, and Context 3 as mapped FigureBench crops, comp
 coverage, and one selected validated multi-colour palette group. Do not turn research explanations into
 figure prose.
 Context 1 must inspect the first representative scholarly figure selected during the
-domain search and use its visible dominant-colour count as the anchor, an integer from
-1 to 3. The remaining retained figures corroborate that anchor; record the count, not
-the source colours.
+domain search and use its visible dominant-colour count as the anchor. The remaining
+retained figures corroborate that anchor; record the count, not the source colours.
 
 At the start of each run, randomly select exactly one approved palette-library group
 for Context 3. Record its id and all of its role-labelled colours; use `--seed` only
@@ -64,10 +63,9 @@ recompose, or switch to a different visual language because the model prefers it
 only generated-looking, fake, or decorative parts. Active colours still come only from
 the selected palette group.
 
-Use exactly the dominant-colour count observed in Context 1, never exceeding three.
-Other swatches may appear
-only as subordinate neutral, tint, shade, or support roles; they must not become a
-fourth dominant hue.
+Use exactly the dominant-colour count observed in Context 1. Other swatches may appear
+only as subordinate neutral, tint, shade, or support roles; they must not be promoted
+beyond that anchored count.
 
 PNG1 has two absolute first-pass prohibitions: no upper title-band formed by boxing
 off the top of a module with a horizontal divider and centered title, and no

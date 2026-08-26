@@ -70,11 +70,16 @@ class PaletteLineageTests(unittest.TestCase):
                 palette_library_fixture(),
             )
 
-    def test_rejects_more_than_three_dominant_colour_roles(self):
+    def test_accepts_as_many_dominant_roles_as_the_selected_group_provides(self):
+        library = copy.deepcopy(palette_library_fixture())
+        library[0]["colours"].extend([
+            {"role": "accent", "hex": "#A04040", "rgb": [160, 64, 64]},
+            {"role": "secondary", "hex": "#408040", "rgb": [64, 128, 64]},
+        ])
         palette = valid_palette()
+        palette["colours"] = copy.deepcopy(library[0]["colours"])
         palette["dominant_colour_roles"] = ["ink", "primary", "accent", "secondary"]
-        with self.assertRaisesRegex(ValueError, "at most three dominant"):
-            validate_palette(palette, palette_library_fixture())
+        self.assertEqual(validate_palette(palette, library)["dominant_colour_roles"], palette["dominant_colour_roles"])
 
     def test_related_colour_requires_web_evidence_and_relationship(self):
         palette = validate_palette(valid_palette(), palette_library_fixture())
@@ -184,6 +189,19 @@ class PaletteLineageTests(unittest.TestCase):
         self.assertEqual(selected["base_palette_id"], "group-a")
         self.assertEqual(selected["dominant_colour_roles"], ["primary", "ink"])
 
+    def test_select_palette_group_requires_a_group_with_the_anchored_count(self):
+        with self.assertRaisesRegex(ValueError, "at least 2 colours"):
+            select_palette_group(palette_library_fixture(), 2, exclude_ids=["group-a"])
+
+    def test_select_palette_group_can_select_four_anchored_dominant_roles(self):
+        library = copy.deepcopy(palette_library_fixture())
+        library[0]["colours"].extend([
+            {"role": "accent", "hex": "#A04040", "rgb": [160, 64, 64]},
+            {"role": "secondary", "hex": "#408040", "rgb": [64, 128, 64]},
+        ])
+        selected = select_palette_group(library, 4, seed=11, exclude_ids=["group-b"])
+        self.assertEqual(selected["dominant_colour_roles"], ["primary", "secondary", "accent", "ink"])
+
 
 class TasteGuidanceTests(unittest.TestCase):
     def test_taste_guidance_keeps_palette_lineage_subordinate_to_scientific_constraints(self):
@@ -196,8 +214,8 @@ class TasteGuidanceTests(unittest.TestCase):
             "construction provenance",
             "selected multi-colour palette-group lineage",
             "multi-colour palette-group",
-            "three dominant colours",
-            "fourth dominant hue",
+            "dominant-colour count anchored",
+            "Other swatches may appear",
             "web colour-relationship research",
             "exact evidence",
             "second library group",

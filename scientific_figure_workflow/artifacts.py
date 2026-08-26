@@ -101,9 +101,9 @@ def validate_context1(value: Mapping[str, Any]) -> dict[str, Any]:
     if (
         not isinstance(dominant_colour_count, int)
         or isinstance(dominant_colour_count, bool)
-        or not 1 <= dominant_colour_count <= 3
+        or dominant_colour_count < 1
     ):
-        raise ValueError("context1 dominant_colour_count must be an integer from 1 to 3")
+        raise ValueError("context1 dominant_colour_count must be a positive integer")
     normalized["dominant_colour_count"] = dominant_colour_count
     conventions = _records(source.get("conventions"), "context1 conventions")
     normalized["conventions"] = []

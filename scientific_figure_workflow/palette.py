@@ -139,8 +139,11 @@ def _validate_extensions(value: Any, active_hexes: set[str]) -> list[dict[str, A
 
 
 def _validate_dominant_colour_roles(value: Any, colour_roles: set[str]) -> list[str]:
-    if not isinstance(value, list) or not 1 <= len(value) <= 3:
-        raise ValueError("palette dominant_colour_roles requires at most three dominant colours")
+    if not isinstance(value, list) or not 1 <= len(value) <= len(colour_roles):
+        raise ValueError(
+            "palette dominant_colour_roles must contain at least one role and no more roles "
+            "than the selected base palette provides"
+        )
     roles: list[str] = []
     for index, role in enumerate(value):
         if not isinstance(role, str) or not role.strip():
@@ -218,8 +221,12 @@ def select_palette_group(
     than from a second palette source.
     """
 
-    if not isinstance(dominant_colour_count, int) or isinstance(dominant_colour_count, bool) or not 1 <= dominant_colour_count <= 3:
-        raise ValueError("dominant_colour_count must be an integer from 1 to 3")
+    if (
+        not isinstance(dominant_colour_count, int)
+        or isinstance(dominant_colour_count, bool)
+        or dominant_colour_count < 1
+    ):
+        raise ValueError("dominant_colour_count must be a positive integer")
     if isinstance(palette_library, (str, bytes)) or not isinstance(palette_library, Sequence) or not palette_library:
         raise ValueError("palette library requires at least one group")
     excluded = {item.strip() for item in exclude_ids if isinstance(item, str) and item.strip()}
@@ -228,12 +235,16 @@ def select_palette_group(
         source = _mapping(group, f"palette library[{index}]")
         palette_id = _required_string(source, "id", f"palette library[{index}]")
         if palette_id not in excluded:
-            candidates.append(source)
+            colours = _validate_colours(source.get("colours"), "selected base palette colours")
+            if len(colours) >= dominant_colour_count:
+                candidates.append((source, colours))
     if not candidates:
-        raise ValueError("palette selection has no eligible groups")
+        raise ValueError(
+            "palette selection requires a group with at least "
+            f"{dominant_colour_count} colours"
+        )
     chooser = random.Random(seed) if seed is not None else random.SystemRandom()
-    selected = chooser.choice(candidates)
-    colours = _validate_colours(selected.get("colours"), "selected base palette colours")
+    selected, colours = chooser.choice(candidates)
     roles = [colour["role"] for colour in colours]
     dominant_roles = [role for role in _DOMINANT_ROLE_PRIORITY if role in roles][:dominant_colour_count]
     if len(dominant_roles) < dominant_colour_count:

@@ -133,8 +133,9 @@ Context 3 must reproduce its selected references and coverage matrix exactly.
 ```
 
 Use exactly one named multi-colour palette group; use multiple colours from that group.
-Declare at most three dominant colours for the final figure; the remaining swatches
-are subordinate support roles and must not become a fourth dominant hue.
+Declare exactly the dominant-colour count anchored by Context 1 for the final figure;
+the remaining swatches are subordinate support roles and must not be promoted beyond
+that anchored count.
 Extensions, if needed, have role, exact
 uppercase HEX, matching RGB, relationship, HTTPS evidence_url, and an evidence
 summary. FigureBench, scholarly figures, and the user reference are never active
