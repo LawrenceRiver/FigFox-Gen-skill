@@ -14,7 +14,7 @@ from tests.test_prompts import c1, c2, c3
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/figure_workflow.py"
 COMMANDS = {
-    "check-installation", "validate-context", "rank-references", "crop-references",
+    "init-style", "check-installation", "validate-context", "rank-references", "crop-references",
     "validate-reference-coverage", "validate-palette", "select-palette", "build-creative-director-prompt",
     "validate-creative-director", "build-prompt1", "validate-run",
 }
@@ -103,7 +103,7 @@ class WorkflowCliTests(unittest.TestCase):
         self.assertEqual(self.run_cli("validate-context", "--context", 2)["context"], 2)
         self.assertEqual(self.run_cli("validate-context", "--context", 3)["context"], 3)
         selected = self.run_cli("select-palette", "--seed", 11)
-        self.assertEqual(selected["palette_count"], 13)
+        self.assertEqual(selected["palette_count"], 14)
         self.assertEqual(selected["base_palette_id"], "epitope-blue-coral-01")
         self.assertEqual(self.run_cli("rank-references")["candidates"], 30)
         self.run_cli("crop-references")
