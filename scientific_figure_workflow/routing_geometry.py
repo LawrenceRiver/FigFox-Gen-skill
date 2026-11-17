@@ -69,6 +69,12 @@ def _touches(point, box, port):
             'west':px==x and y<=py<=y+h, 'east':px==x+w and y<=py<=y+h}[port]
 
 
+def _port_direction(endpoint, neighbor, port):
+    nx,ny={'north':(0,-1),'east':(1,0),'south':(0,1),'west':(-1,0)}[port]
+    dx,dy=neighbor[0]-endpoint[0],neighbor[1]-endpoint[1]
+    return dx*ny == dy*nx and dx*nx+dy*ny>0
+
+
 def _intersection(a,b,c,d):
     """Return None, a point, or the two ends of a positive overlap."""
     horizontal=a[1]==b[1]; other_horizontal=c[1]==d[1]
@@ -147,11 +153,8 @@ def compile_routing_geometry(geometry, routes, component_ids):
         for endpoint,ident,field in [(cleaned[0],source,'source_port'),(cleaned[-1],target,'target_port')]:
             port=route.get(field)
             if port not in _PORTS or not _touches(endpoint,boxes[ident],port):raise ValueError(f'route {index} endpoint is detached or on wrong {field}')
-        normals={'north':(0,-1),'east':(1,0),'south':(0,1),'west':(-1,0)}
         for endpoint,neighbor,field in [(cleaned[0],cleaned[1],'source_port'),(cleaned[-1],cleaned[-2],'target_port')]:
-            nx,ny=normals[route[field]]
-            dx,dy=neighbor[0]-endpoint[0],neighbor[1]-endpoint[1]
-            if dx*ny != dy*nx or dx*nx+dy*ny<=0:
+            if not _port_direction(endpoint,neighbor,route[field]):
                 raise ValueError(f'route {index} has wrong direction at {field}')
         segments=list(zip(cleaned,cleaned[1:]))
         for a,b in segments:
@@ -165,7 +168,9 @@ def compile_routing_geometry(geometry, routes, component_ids):
                     raise ValueError(f'route {index} intersects or overlaps itself')
         if len(cleaned)-2>_BENDS[kind]:raise ValueError(f'route {index} has excessive bends for {kind}')
         first,last=cleaned[0],cleaned[-1]
-        if len(cleaned)>2 and (first[0]==last[0] or first[1]==last[1]):
+        if (len(cleaned)>2 and (first[0]==last[0] or first[1]==last[1])
+                and _port_direction(first,last,route['source_port'])
+                and _port_direction(last,first,route['target_port'])):
             if all(not _hits_box(first,last,box,0 if ident in (source,target) else clearance) for ident,box in boxes.items()):
                 raise ValueError(f'route {index} makes a needless detour from a clear direct path')
         route['points']=cleaned

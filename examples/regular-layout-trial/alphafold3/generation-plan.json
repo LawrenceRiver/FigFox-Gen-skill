@@ -1,0 +1,392 @@
+{
+  "format": "figfox-generation-plan-v2",
+  "scientific_summary": "AlphaFold 3 evolves pair and single representations with Pairformer, then conditions an atom-coordinate diffusion model that recurrently denoises random coordinates into a biomolecular structure.",
+  "invariants": [
+    "MSA embedding is much smaller and simpler; its information passes via the pair representation and MSA is not retained by Pairformer.",
+    "Pairformer operates on pair and single representations only; do not invent its inner attention mechanisms.",
+    "Diffusion receives pair, single and input representations and operates on raw atomic coordinates plus coarse tokens.",
+    "Training predicts true coordinates from noised coordinates; inference starts with random noise and recurrently denoises. Keep these modes visually distinct.",
+    "Schematic geometry illustrates artifact type only, not empirical molecular predictions. No AF2 results, RFdiffusion motifs or benchmark claims."
+  ],
+  "layout": "One complete 1480×950 rectangular macro footprint from x80 to1560 and y180 to1130, divided into three equal-width 420px columns and three equal-height 250px rows, with consistent 110px horizontal and 100px vertical gutters. Input and Pairformer each span the first two rows at left and right; MSA and Pair + single occupy upper-middle and middle-middle; Random noise, Diffusion Module and Atomic structure fill the three bottom cells. All nine cells are occupied exactly once. Reserve title above the grid and the feedback loop below it. Scientific flow is directionally explicit: MSA goes right into Pairformer, input passes through the upper/middle gutter to Pairformer, Pairformer returns left into pair and single, then conditioning descends into diffusion. No fictional symmetric branch or invented operation. Equal rectangular frames and shared outer edges give balance without duplicating science. Keep the tall input area sparse: one large aligned feature artifact, no extra stages or filler.",
+  "typography": "Arial throughout; dark plum text on white or pale fills, 30–34px titles and 22–25px local labels on an 1640×1280 canvas. Short necessary notes use readable dark Arial Italic. No visible underscore, gray microcopy, numbered badges or stage counters.",
+  "placements": [
+    {
+      "component_id": "input",
+      "placement": "Left column, upper two rows; feature artifact centered within one tall frame."
+    },
+    {
+      "component_id": "msa",
+      "placement": "Upper middle cell; compact MSA artifact with matched frame."
+    },
+    {
+      "component_id": "pairformer",
+      "placement": "Right column, upper two rows; pair grid and single strip are the only internal representation lanes."
+    },
+    {
+      "component_id": "reps",
+      "placement": "Middle row, middle cell; pair grid and single strip aligned."
+    },
+    {
+      "component_id": "noise",
+      "placement": "Bottom-left cell; random atom coordinates."
+    },
+    {
+      "component_id": "diffusion",
+      "placement": "Bottom-middle cell; one compact inference miniature plus clearly separated Training inset."
+    },
+    {
+      "component_id": "output",
+      "placement": "Bottom-right cell; final atomic geometry, inside shared footprint."
+    }
+  ],
+  "routes": [
+    {
+      "source_id": "input",
+      "target_id": "pairformer",
+      "label": "initial pair and single",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          500,
+          480
+        ],
+        [
+          1140,
+          480
+        ]
+      ]
+    },
+    {
+      "source_id": "msa",
+      "target_id": "pairformer",
+      "label": "via pair representation only",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "branch",
+      "points": [
+        [
+          1030,
+          300
+        ],
+        [
+          1140,
+          300
+        ]
+      ],
+      "caption": "pair only",
+      "caption_box": [
+        1043,
+        330,
+        86,
+        60
+      ]
+    },
+    {
+      "source_id": "pairformer",
+      "target_id": "reps",
+      "label": "evolved representations",
+      "source_port": "west",
+      "target_port": "east",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1140,
+          650
+        ],
+        [
+          1030,
+          650
+        ]
+      ]
+    },
+    {
+      "source_id": "reps",
+      "target_id": "diffusion",
+      "label": "conditioning",
+      "source_port": "south",
+      "target_port": "north",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "branch",
+      "points": [
+        [
+          820,
+          780
+        ],
+        [
+          820,
+          880
+        ]
+      ]
+    },
+    {
+      "source_id": "input",
+      "target_id": "diffusion",
+      "label": "input representation",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "reference",
+      "points": [
+        [
+          500,
+          700
+        ],
+        [
+          550,
+          700
+        ],
+        [
+          550,
+          980
+        ],
+        [
+          610,
+          980
+        ]
+      ]
+    },
+    {
+      "source_id": "noise",
+      "target_id": "diffusion",
+      "label": "initial coordinates",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          500,
+          1070
+        ],
+        [
+          610,
+          1070
+        ]
+      ]
+    },
+    {
+      "source_id": "diffusion",
+      "target_id": "diffusion",
+      "label": "recurrent denoising",
+      "source_port": "south",
+      "target_port": "west",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "feedback",
+      "points": [
+        [
+          930,
+          1130
+        ],
+        [
+          930,
+          1210
+        ],
+        [
+          570,
+          1210
+        ],
+        [
+          570,
+          1110
+        ],
+        [
+          610,
+          1110
+        ]
+      ]
+    },
+    {
+      "source_id": "diffusion",
+      "target_id": "output",
+      "label": "final atomic positions",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal border-to-border path following exact points; arrowhead attached at target.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1030,
+          1010
+        ],
+        [
+          1140,
+          1010
+        ]
+      ]
+    }
+  ],
+  "visual_needs": [
+    {
+      "id": "representation",
+      "need": "pair matrix and single token state",
+      "methodology_evidence": "Pairformer operates only on pair and single representations.",
+      "peer_evidence": "AF2 Fig1e matrix/strip and RFdiffusion Fig1a conditioning matrix."
+    },
+    {
+      "id": "geometry",
+      "need": "coordinate cloud and molecular structure",
+      "methodology_evidence": "Diffusion operates on raw atom coordinates and generates final atomic positions.",
+      "peer_evidence": "AF2 molecular geometry and RFdiffusion clouds→structure."
+    },
+    {
+      "id": "iteration",
+      "need": "repeated denoising with intermediate geometry",
+      "methodology_evidence": "At inference random noise is recurrently denoised.",
+      "peer_evidence": "AF2 recycling lane and RFdiffusion repeated coordinate-state progression."
+    }
+  ],
+  "local_visuals": [
+    {
+      "need_id": "representation",
+      "target_component_id": "pairformer",
+      "meaning": "learned states",
+      "construction": "Draw one 6×6 teal pair matrix and one aligned six-cell single strip; small input and output states coherent with same grammar.",
+      "basis": "AF2 Fig1e and audited FigureBench reference-003 grid construction."
+    },
+    {
+      "need_id": "geometry",
+      "target_component_id": "diffusion",
+      "meaning": "raw coordinates become geometry",
+      "construction": "Draw sparse atom circles evolving toward a bonded molecular coordinate fragment; coarse abstract token strip sits above atom states. Final output schematic uses same geometry style.",
+      "basis": "AF2 Fig1b/c molecular output and RFdiffusion Fig1a cloud-to-geometry; only abstract construction borrowed."
+    },
+    {
+      "need_id": "iteration",
+      "target_component_id": "diffusion",
+      "meaning": "inference recurrent denoising",
+      "construction": "Three tiny coordinate snapshots share a horizontal inference baseline inside the diffusion frame. One continuous bottom U return follows the locked feedback points, from the right bottom port to a distinct low west port.",
+      "basis": "AF2 Fig1e separate recycling lane and RFdiffusion Fig1a repeated coordinate view."
+    }
+  ],
+  "detail_hierarchy": {
+    "peer_depth_observation": "AF2 shows representation grids and molecular atomic details but keeps whole-model blocks; RFdiffusion exposes coordinate denoising states, not all network internals.",
+    "innovation_focuses": [
+      {
+        "claim": "Pairformer replaces Evoformer and discards retained MSA state",
+        "component_ids": [
+          "pairformer"
+        ],
+        "draw_to": "pair matrix plus single strip, MSA information enters only pair"
+      },
+      {
+        "claim": "Diffusion replaces the structure module and works on raw atom coordinates with coarse tokens",
+        "component_ids": [
+          "diffusion"
+        ],
+        "draw_to": "coordinate snapshots, coarse tokens, separate training mapping and recurrent inference"
+      }
+    ],
+    "common_depth": "Input, MSA embedding, representation output and final structure stay at artifact or whole-block depth.",
+    "keep_whole": [
+      "input",
+      "msa",
+      "reps",
+      "noise",
+      "output"
+    ]
+  },
+  "attached_reference_paths": [],
+  "display_labels": {
+    "input": "Input representation",
+    "msa": "MSA embedding",
+    "pairformer": "Pairformer",
+    "reps": "Pair + single",
+    "noise": "Random noise",
+    "diffusion": "Diffusion Module",
+    "output": "Atomic structure"
+  },
+  "notation_map": {
+    "X_t": "Xₜ",
+    "X_0": "X₀",
+    "pair_representation": "Pair",
+    "single_representation": "Single",
+    "input_representation": "Input representation"
+  },
+  "routing_geometry": {
+    "canvas": [
+      1640,
+      1280
+    ],
+    "margin": 30,
+    "clearance": 12,
+    "columns": [
+      [
+        80,
+        500
+      ],
+      [
+        610,
+        1030
+      ],
+      [
+        1140,
+        1560
+      ]
+    ],
+    "rows": [
+      [
+        180,
+        430
+      ],
+      [
+        530,
+        780
+      ],
+      [
+        880,
+        1130
+      ]
+    ],
+    "slots": {
+      "input": [
+        0,
+        0,
+        2,
+        1
+      ],
+      "msa": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "pairformer": [
+        0,
+        2,
+        2,
+        1
+      ],
+      "reps": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "noise": [
+        2,
+        0,
+        1,
+        1
+      ],
+      "diffusion": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "output": [
+        2,
+        2,
+        1,
+        1
+      ]
+    },
+    "crossings": []
+  }
+}

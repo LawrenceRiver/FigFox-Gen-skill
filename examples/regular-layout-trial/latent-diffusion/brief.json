@@ -1,0 +1,35 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Organizing rule: equal-width columns, two matched-height horizontal scientific lanes, common left/right image bounds, and one short centered conditioning strip. The whole silhouette is rectangular and balanced; denoising spans two cells and the single shared decoder spans the lane height. Keep the blue architectural palette and red cross-attention focus. Every main route is a straight axis-aligned source-border to target-border arrow. Training-only noising uses the empty left inter-lane corridor; the condition branch uses the short central corridor. Draw bounding boxes as invisible layout bounds except where a scientific model/group needs a frame. No extra stages, empty cards, ornament or invented scientific symmetry. Place all text clear of the actual continuous shafts.",
+  "notation_map": {
+    "z_t": "zₜ",
+    "z_0": "z₀",
+    "epsilon_theta": "εθ",
+    "tau_theta": "τθ",
+    "x_tilde": "x̃",
+    "x_hat": "x̂",
+    "W_Q": "WQ",
+    "W_K": "WK",
+    "W_V": "WV"
+  },
+  "ideas": [
+    {
+      "id": "matched-lanes",
+      "target_component_id": "latent",
+      "concept": "Separate perceptual compression and latent generation in equal-height aligned lanes.",
+      "visual_intent": "Preserve image-valued thumbnails and two-dimensional spatial latent states while making their two roles immediately comparable.",
+      "construction_plan": "Match input/reconstruction/generated thumbnail sizes; use aligned native plane grids for latents. The fixed forward-noising training branch uses exact reserved points and a short nearby dark caption. Caption never erases a shaft. Decoder appears once as a shared vertical whole-model block with two independent port pairs, not repeated stand-ins.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "bounded-attention",
+      "target_component_id": "denoise",
+      "concept": "Give the innovative denoising and conditional attention mechanism an integer two-column span.",
+      "visual_intent": "Show what condition controls and retain meaningful small scientific visuals without losing the regular silhouette.",
+      "construction_plan": "Draw one flat U-shaped multiscale feature icon with one red cross-attention insert. Q originates at a spatial feature, K,V enter from the condition encoder at the declared top port. A small internal sequence of spatial grids conveys iteration rather than decorative particle dots. Use readable short labels, true subscript t and zero, identical arrowheads and consistent stroke. Re-trace every shaft after text placement.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

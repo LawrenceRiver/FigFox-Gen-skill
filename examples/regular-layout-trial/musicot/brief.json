@@ -1,0 +1,66 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Original equal-division 3×3 MusiCoT diagram: nine matched rectangular panels establish one complete balanced silhouette, with one coherent teal and warm neutral palette and a single vermilion RVQ emphasis. Start with the bounded frame and exact validated boxes, construct native scientific microviews, route all eight continuous shafts at the exact points, then add short dark Arial labels. This is a fresh text-only ideation pass informed by the copied inspected research cache, with no repeated research, image attachment or borrowed composition. The right-column training and prediction cascade makes the dominant path clear; two modest two-bend branches carry text conditioning and reconstructed embeddings. Dual Sampling has a full central panel equal to its peers, so control detail no longer dangles beneath the figure. Plain supporting modules stay whole; the RVQ ordering, predicted thought structure, analyzability and two-domain controls carry meaningful detail. Only the two declared route captions print; no prose footer, numbered steps or tiny gray notes.",
+  "notation_map": {
+    "C_clap": "CLAP embeddings",
+    "c_clap": "CLAP token",
+    "cot_bos": "thought start",
+    "cot_eos": "thought end",
+    "T_1": "T₁",
+    "T_2": "T₂",
+    "lambda_1": "λ₁",
+    "lambda_2": "λ₂",
+    "c_mk": "cᵐₖ",
+    "M": "M",
+    "L": "L",
+    "CE": "CE",
+    "CFG": "CFG"
+  },
+  "ideas": [
+    {
+      "id": "equal-matrix-rvq",
+      "target_component_id": "rvq",
+      "concept": "Coarse-first lattice within a fixed peer panel",
+      "visual_intent": "Make the actual innovation legible without breaking the regular outer grid.",
+      "construction_plan": "Keep the exact 440×260 frame. Heading on the shared 30-pixel inset baseline. Below, draw a compact 3×4 symbolic token lattice: Codebook 1, Codebook 2, Codebook L; columns 1, 2, …, M. All M time positions from one codebook precede the next. A short level-major flattened strip at the bottom repeats full row 1, full row 2, …, full row L. Use row labels rather than difficult superscript token indices when space is tight; never portray the final codebook index as a superscript. Pale vermilion background and deeper vermilion token edges provide the only contrasting focus. This is a representation schematic, not measured token data.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "paired-central-controls",
+      "target_component_id": "sampling",
+      "concept": "Two-domain parameter table in the reserved central cell",
+      "visual_intent": "Give sampling controls the same deliberate rectangular footprint as every other scientific component.",
+      "construction_plan": "Use the common heading baseline and a compact native table with column labels Temperature and CFG, two aligned domain rows Thoughts and Audio, entries T₁ and λ₁ then T₂ and λ₂. Use dark readable 23-pixel Arial. Keep the rest of the panel calm; no knobs, sliders, oversized empty decorative cards or tiny explanatory paragraphs. The sole outgoing control arrow is the exact horizontal east-to-west shaft into the LM.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "whole-lm-prediction",
+      "target_component_id": "lm",
+      "concept": "Single LM with a two-domain prediction rhythm",
+      "visual_intent": "Keep a standard model whole while stating the training and generation contract.",
+      "construction_plan": "Inside the equal frame draw one plain teal whole-model rectangle with Semantic LM heading and a concise CE: thoughts + audio label. Do not draw transformer layers or invent fixed/trainable flags. Text conditioning and RVQ training enter distinct north ports; controls enter west; the sole south output predicts thoughts first. Maintain distinct continuous arrowheads at each exact landing.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "thought-stream",
+      "target_component_id": "thought",
+      "concept": "Readable coarse-to-fine intermediate stream",
+      "visual_intent": "Retain a meaningful thought representation and make its two uses explicit.",
+      "construction_plan": "Inside the bottom-right panel show thought start, a row-major symbolic CLAP RVQ strip divided into coarse and fine groups, then thought end. Use true T₁/λ₁ indices only in the control table; here short Coarse and Fine captions suffice. The west arrow leads to Audio Tokens; the south branch runs continuously along the reserved bottom lane then up into Structural Analysis. No natural-language reasoning bubbles. Keep a uniform 3-pixel line and 12-pixel arrowhead throughout.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "schematic-analysis",
+      "target_component_id": "analysis",
+      "concept": "Quantized-vector and text-anchor comparison",
+      "visual_intent": "Show what analyzability computes without inventing an experimental result.",
+      "construction_plan": "Within the equal panel, put short Quantized CLAP and Text anchors captions above a compact cosine-similarity tile map. Use two rows piano and drums, time columns 0–10 s and 10–20 s plus ellipsis. Native light/deep teal tiles remain schematic, without numerical scores, colorbar claims or results trend. Print Schematic in readable dark Arial on the shared lower baseline. Keep this component inside the common bottom edge.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

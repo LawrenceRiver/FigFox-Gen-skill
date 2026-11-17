@@ -55,6 +55,12 @@ class RoutingGeometryTests(unittest.TestCase):
         r['route_kind']='feedback'
         with self.assertRaisesRegex(ValueError,'detour'):self.compile(self.grid(),[r])
 
+    def test_same_face_feedback_is_not_a_direct_path_detour(self):
+        # The apparent shortcut lies along the boundary and violates port normals.
+        route=self.route('a','a',[[120,120],[120,180],[60,180],[60,120]])
+        route.update(source_port='south',target_port='south',route_kind='feedback')
+        self.compile(self.grid(),[route])
+
     def test_bad_grid_and_slot_bounds(self):
         for key,value in [('canvas',[0,400]),('rows',[[40,120],[110,200]]),
                           ('columns',[[40,140],[240,340],[450,550]]),

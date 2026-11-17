@@ -16,7 +16,13 @@ ROUTING_GRAMMAR = (
     'target arrowhead: no disappearing shafts, isolated arrowheads, empty-space starts or unexplained gaps. '
     'Keep labels beside the shaft, never erase the shaft to fit text. Avoid intersections; if a crossing '
     'is scientifically unavoidable, use a clear continuous bridge and distinguish it from a junction. '
-    'Mainline arrows should read immediately; return loops use a separate perimeter lane.'
+    'Align source and target ports on one shared horizontal or vertical axis wherever possible. '
+    'Use a single consistent arrowhead size and stroke weight; local microview arrows follow the same grammar. '
+    'Mainline arrows should read immediately; return loops use a separate perimeter lane. '
+    'When a frame contains different processes, a loop lands in its actual process subregion, '
+    'never in a nearby training/evaluation inset merely because it shares the outer frame. '
+    'Reserve section-heading bands separately from connector corridors. Background fills and title bands never erase shafts. '
+    'After placing labels and icons, trace each complete shaft again; revise crowded placement instead of extending routes.'
 )
 
 LABEL_GRAMMAR = (
@@ -31,6 +37,11 @@ LABEL_GRAMMAR = (
 )
 
 GRID_GRAMMAR = (
+    'Imagine the whole structural overview as one clean, complete rectangular silhouette before details. '
+    'Choose an explicit organizing rule: equal-width stage columns, equal-height parallel bands, or '
+    'a balanced bilateral arrangement, according to the scientific graph. State which rule is used. '
+    'Equalize peer regions, margins and gutters; innovation may span integer cells without protruding. '
+    'Visual balance never invents a second branch, reverses an edge, or turns unrelated edges into a bus. '
     'Fix the canvas and row/column grid first; reserve the final-output cell before drawing. '
     'Align sibling block edges/baselines; innovation panels may span cells. Keep every planned block and '
     'the final output inside that same footprint. If crowded, simplify or reflow upstream content '
@@ -230,6 +241,13 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
         '| Need / location | Reference construction or source basis | Our adapted drawing |',
         '| --- | --- | --- |',
         *[f"| {v.get('need_id', v['meaning'])} / {v['target_component_id']} | {v['basis']} | {v['construction']} |" for v in plan.get('local_visuals', [])],
+        'For every visual need, choose direct use of a suitable collected asset, a source crop, or borrowed construction. '
+        'Do not treat all existing imagery as style evidence: when a real visual instance communicates the content best, '
+        'reserve an aligned inset for the actual file instead of inventing a drawn substitute. '
+        'Only explicitly collected and approved direct-content insets get reserved slots; invent no blank panels when none are selected. '
+        'Those insets are composited after generation; leave only those declared slots clean and preserve their aspect ratios. '
+        'This choice is open-ended across domains, not limited to any media category. '
+        'Source material used illustratively must not masquerade as this method’s measured result.',
         'These are intentional visual content, not ornamental stickers. Keep them small, readable and coherent with the main reference. No invented observations, numerical results or unlabelled decorative particles.',
         '## Typography reference', plan['typography'], LABEL_GRAMMAR,
     ]

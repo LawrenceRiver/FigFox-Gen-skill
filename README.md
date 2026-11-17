@@ -10,6 +10,9 @@
 
 </div>
 
+Development trial: [rectangular layouts, connector corrections and request timings](examples/regular-layout-trial/README.md). Optional [direct visual insets](references/direct-visual-insets.md) retain selected content assets instead of redrawing them.
+
+
 V2 is the default on `main`, released as `v2.0.0`. It turns a scientific Methodology into
 one labelled PNG1 through a compact, evidence-grounded drawing plan. Detail explains the
 method's actual innovations; supporting stages stay at a consistent level. The output is
@@ -56,7 +59,7 @@ Methodology + about two inspected peer figures
   → need-to-drawing correspondence + scientific graph
   → Creative Director: innovation detail, whole-frame grid, notation and routes
   → deterministic V2 grid/route preflight → compact Prompt 1
-  → one image-generation call → final PNG1 → author inspection
+  → one image-generation call → optional direct-content inset placement → final PNG1 → author inspection
 ```
 
 1. **Anchor once.** Inspect about two relevant scholarly figures and retain shared visual
@@ -79,7 +82,7 @@ Methodology + about two inspected peer figures
 5. **Generate once.** Compile the compact drawing packet and make one image call for PNG1.
    In no-reference mode the manifest has `attachments: []`; omit image-input arguments
    (`referenced_image_paths` and `num_last_images_to_include`) from the image-generation call.
-   The normal workflow ends at this single PNG1, without an automatic repair loop.
+   When selected direct-content assets are used, reserve clean regions and place the collected files with the optional deterministic helper after generation; that composite is PNG1. This is no additional model call. The normal workflow ends at this single PNG1, without an automatic repair loop.
 
 File, graph, notation and geometry validation checks the declared artifacts. It does **not**
 prove that the generated pixels preserve scientific meaning, labels, arrowheads, symbols,

@@ -1,0 +1,93 @@
+{
+  "tool": "built-in image_gen",
+  "fresh_generations": 3,
+  "targeted_edits": 2,
+  "calls": [
+    {
+      "index": 1,
+      "slug": "latent-diffusion",
+      "mode": "generate",
+      "seconds": 39.211,
+      "reference_images": 0,
+      "prompt_sha256": "dad62f6d7cacc9a3df39ad3ce91b05ec4a52b16d87ed423da081dea88db70af0",
+      "reference_kind": "no image input arguments",
+      "pixels": [
+        1616,
+        973
+      ],
+      "request_prompt": "latent-diffusion/generation-prompt.md"
+    },
+    {
+      "index": 2,
+      "slug": "musicot",
+      "mode": "generate",
+      "seconds": 41.435,
+      "reference_images": 0,
+      "prompt_sha256": "22c56fdaae91e2be3989fa429fef0c90f668a4e0f98c16c2bad46d26e5edaec2",
+      "reference_kind": "no image input arguments",
+      "pixels": [
+        1606,
+        979
+      ],
+      "request_prompt": "musicot/generation-prompt.md"
+    },
+    {
+      "index": 3,
+      "slug": "alphafold3",
+      "mode": "generate",
+      "seconds": 114.446,
+      "reference_images": 0,
+      "prompt_sha256": "68ddbd740a7c2f5d83f0172374611b57027f938b2381bbb577fec9c160c4b8f4",
+      "reference_kind": "no image input arguments",
+      "pixels": [
+        1587,
+        991
+      ],
+      "request_prompt": "alphafold3/generation-prompt.md"
+    },
+    {
+      "index": 4,
+      "slug": "latent-diffusion",
+      "mode": "edit",
+      "seconds": 76.34,
+      "reference_images": 1,
+      "prompt_sha256": "2b99e8ddd9836d4578e9ecdff249829e7153ab035d925a8f0c56076c8022f414",
+      "reference_kind": "edit target only",
+      "pixels": [
+        1616,
+        973
+      ],
+      "request_prompt": "latent-diffusion/edit-prompt.md"
+    },
+    {
+      "index": 5,
+      "slug": "alphafold3",
+      "mode": "edit",
+      "seconds": 35.553,
+      "reference_images": 1,
+      "prompt_sha256": "595aad19a353af6b16643bf848bb1633ddc148985cd0a0095cb6b1fd0e643969",
+      "reference_kind": "edit target only",
+      "pixels": [
+        1587,
+        991
+      ],
+      "request_prompt": "alphafold3/edit-prompt.md"
+    }
+  ],
+  "search": "Reused previously inspected source and peer evidence. No fresh search; not a cold-search benchmark.",
+  "validation": "Exact request prompts and outputs retained. Macro V2 geometry passed; actual pixels assessed separately. Two edits are explicit connector corrections, not fresh text-only generations.",
+  "selected_outputs": {
+    "latent-diffusion": {
+      "path": "assets/generated-figures/regular-layout-trial/latent-diffusion.png",
+      "sha256": "8bce1bda992856fd42340ceea925044a9dd85781b962d308e3c2493ea88bc151"
+    },
+    "musicot": {
+      "path": "assets/generated-figures/regular-layout-trial/musicot.png",
+      "sha256": "59cb1797a2b0a0204722e7e2fc7664554324a7527754ecffe46606042deabcdb"
+    },
+    "alphafold3": {
+      "path": "assets/generated-figures/regular-layout-trial/alphafold3.png",
+      "sha256": "7c8fa9cb9835aed476f430c22b8a6d793d46cc6ee1bd0f9a79a31c0590036b85"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Fresh model ideation pass for the requested rectangular regular-layout rerun, using only the cached inspected evidence and unchanged earth-data-01 palette. Build one complete three-column by three-row rectangle on the exact equal-width and equal-height tracks. Treat the tall input and Pairformer frames as two-row spans, with the final output inside the reserved bottom-right cell. The grid is a composition device and never implies invented symmetric processing. Left-to-right arrows carry input and MSA into Pairformer; the scientifically required Pairformer output travels left into the representation cell, then down into diffusion. This short return is directionally explicit and removes all crossings. Input conditioning uses a separate two-bend left gutter route into the diffusion west border. Initial random coordinates and recurrent denoising each use separate west landing ports; never merge these three relationships into a bus. Every shaft follows its exact locked points and remains visible continuously. No bitmap reference or previous generated image is attached. Use white canvas, pale related teal frames, a restrained coral diffusion focus and readable dark plum Arial text. Keep the overall rectangular silhouette and use sparse scientific artifacts within each assigned frame. Source names, schema fields, routing IDs and workflow labels remain provenance only.",
+  "ideas": [
+    {
+      "id": "filled-equal-track-framework",
+      "target_component_id": "input",
+      "concept": "A complete rectangle with every grid cell occupied",
+      "visual_intent": "Make the whole scientific overview regular and reconstructible without creating false parallel branches.",
+      "construction_plan": "First place the seven exact rectangular node boxes, each on a common 420px column width, using the two approved two-row spans. Draw the title above the footprint and leave the dedicated feedback gutter below. Add one native token strip and aligned compact feature cells within the tall input frame; do not subdivide it into fictional operations. Use a short title and a single central artifact with ample white space. Align tall input and Pairformer top and bottom edges. The three bottom cells share one top edge, bottom edge and title baseline. Place the MSA matrix and pair/single representation as two middle-column artifacts aligned to the same frame edges.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "representation-return-without-crossings",
+      "target_component_id": "pairformer",
+      "concept": "Pair and single states in a clear tall innovation frame",
+      "visual_intent": "Explain the Pairformer substitution at the finest supported detail while retaining the exact MSA constraint.",
+      "construction_plan": "Inside the tall pale teal Pairformer frame, draw a 6×6 pair matrix and a six-cell single strip under separate short labels Pair and Single. MSA enters from the upper-middle cell at y300 into the pair side only. The independent input arrow enters at y480 through the empty inter-row gutter. Evolved representations leave the west border at y650 into the adjacent middle cell. Arrow direction is explicitly leftward; do not draw a bidirectional shaft or retain MSA in Pairformer. A short dark note No retained MSA can sit inside the Pairformer frame below its artifacts. Draw every source and target arrowhead attached to its actual frame.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "compact-coordinate-denoising",
+      "target_component_id": "diffusion",
+      "concept": "Coordinate inference and distinct training within the reserved bottom cell",
+      "visual_intent": "Preserve atom-coordinate denoising and all three conditioning/noise inputs without cluttering the rectangular framework.",
+      "construction_plan": "Use the bottom-middle 420×250 frame with a short Diffusion Module heading. Beneath it place a compact coarse-token strip as conditioning, never a conversion from atoms to tokens. The main Inference miniature has three tiny native coordinate snapshots on one baseline: dispersed circles, organizing coordinates, bonded local fragment. Use a thin horizontal divider above a compact Training row showing Noised coordinates → True coordinates. Shorten labels rather than reducing readable type. Keep separate west input ports y980 for input representation, y1070 for initial random coordinates and y1110 for recurrent denoising. The self-loop leaves the south border at [930,1130], travels down to1210, left to570, up to1110 and right into the west border at [610,1110]. The output arrow leaves east at y1010 into the final Atomic structure cell. The loop is one continuous three-bend perimeter path; it crosses no node, shaft or caption. Final output uses the same circles/bonds grammar as the final inference snapshot, without a claim of empirical molecular prediction.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ],
+  "notation_map": {
+    "X_t": "Xₜ",
+    "X_0": "X₀",
+    "pair_representation": "Pair",
+    "single_representation": "Single",
+    "input_representation": "Input representation"
+  },
+  "visible_text_inventory": [
+    "AlphaFold 3",
+    "Input representation",
+    "MSA embedding",
+    "Pairformer",
+    "Pair",
+    "Single",
+    "Pair + single",
+    "pair only",
+    "No retained MSA",
+    "Random noise",
+    "Diffusion Module",
+    "Coarse tokens",
+    "Inference",
+    "Training",
+    "Noised coordinates",
+    "True coordinates",
+    "Atomic structure"
+  ]
+}

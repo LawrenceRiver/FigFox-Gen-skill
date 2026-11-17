@@ -35,6 +35,8 @@ _REQUIRED_FILES = (
     "scientific_figure_workflow/run_validation.py",
     "scripts/check_installation.py",
     "scripts/figure_workflow.py",
+    "scripts/place_raster_insets.py",
+    "references/direct-visual-insets.md",
     "assets/figurebench-references/index.json",
 )
 _REQUIRED_REQUIREMENTS = {"pillow": "PIL"}
