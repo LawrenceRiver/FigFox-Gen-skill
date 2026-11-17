@@ -1,10 +1,14 @@
 # FigFox-Gen V2 architecture overview / V2 架构总览
 
-This first-pass image visualizes the current generation skill itself, from Methodology and visual needs through parallel preparation, drawing correspondence, creative planning, preflight, one image call, optional asset placement and author inspection. It is not the FigFox SVG reconstruction pipeline.
+This overview visualizes the current generation skill itself, from Methodology and visual needs through parallel preparation, drawing correspondence, creative planning, preflight, one image call, optional asset placement and author inspection. It is not the FigFox SVG reconstruction pipeline.
 
-这张首次生成图介绍当前生成技能自身的完整流程，不是 FigFox 的 SVG 重建业务。V2 为当前默认版本，V1 原图继续保留在仓库和首页。
+这张总览图介绍当前生成技能自身的完整流程，不是 FigFox 的 SVG 重建业务。V2 为当前默认版本，V1 原图继续保留在仓库和首页。
 
-![FigFox-Gen V2 architecture](../../assets/generated-figures/figfox-gen-v2-architecture.png)
+![FigFox-Gen V2 editable architecture](../../assets/generated-figures/figfox-gen-v2-architecture-editable.svg)
+
+The displayed overview is the editable SVG reconstruction; the [original first-pass PNG](../../assets/generated-figures/figfox-gen-v2-architecture.png) is preserved.
+
+上方直接展示可编辑 SVG，首次生成 PNG 原样保留。
 
 [English Methodology](methodology.md) · [中文 Methodology](methodology-zh.md) · [Exact generation prompt / 精确提示词](prompt.md)
 

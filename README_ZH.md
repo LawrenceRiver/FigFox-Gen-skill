@@ -12,9 +12,9 @@
 
 ## V2 architecture / V2 架构总览
 
-Current default workflow, visualized with FigFox-Gen itself. / 用 FigFox-Gen 自身绘制当前默认版本的完整流程。
+Current default workflow, generated with FigFox-Gen and reconstructed as editable SVG with FigFox. / 用 FigFox-Gen 生成、再由 FigFox 还原为可编辑 SVG 的当前默认流程。
 
-<img src="assets/generated-figures/figfox-gen-v2-architecture.png" alt="FigFox-Gen V2 architecture: evidence-grounded planning, single generation and author inspection / V2 架构总览" width="100%" />
+<img src="assets/generated-figures/figfox-gen-v2-architecture-editable.svg" alt="FigFox-Gen V2 architecture: evidence-grounded planning, single generation and author inspection / V2 架构总览" width="100%" />
 
 [Methodology & generation record / 方法正文与生成记录](examples/v2-architecture/README.md)
 
