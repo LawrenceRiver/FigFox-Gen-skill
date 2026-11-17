@@ -1,3 +1,5 @@
+> V1 compatibility release: install `npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v1.0.0 --skill figfox-gen-v1` and invoke `$figfox-gen-v1` explicitly. The original algorithm and assets below are preserved. Current default: [V2](https://github.com/LawrenceRiver/FigFox-Gen-skill). Untouched historical snapshot: `v1-original`.
+
 <div align="center">
 
 # FigFox-Gen-skill

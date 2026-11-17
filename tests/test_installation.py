@@ -43,7 +43,7 @@ class InstallationCliTests(unittest.TestCase):
         self.assertIsNotNone(match, "default_prompt must be one quoted YAML string")
         prompt = json.loads(match.group(1))
         required_phrases = (
-            "$FigFox-Gen-skill",
+            "$figfox-gen-v1",
             "Methodology",
             "optional reference",
             "Contexts 1–3",
@@ -57,7 +57,7 @@ class InstallationCliTests(unittest.TestCase):
             self.assertIn(phrase, prompt)
         self.assertEqual(prompt.count("."), 1)
         self.assertTrue(prompt.endswith("."))
-        self.assertIn('allow_implicit_invocation: true', text)
+        self.assertIn('allow_implicit_invocation: false', text)
 
     def test_public_docs_explain_the_bundled_thirty_image_reference_pack(self):
         english = " ".join((ROOT / "README.md").read_text(encoding="utf-8").split())

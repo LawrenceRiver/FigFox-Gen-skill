@@ -1,11 +1,11 @@
 ---
-name: FigFox-Gen-skill
+name: figfox-gen-v1
 description: Use when turning a scientific Methodology, with an optional reference image, into one evidence-grounded, human-editable final PNG figure.
 metadata:
   short-description: Build evidence-guided single-pass scientific figures
 ---
 
-# FigFox-Gen-skill
+# FigFox-Gen-skill · V1 legacy
 
 ## Core workflow
 
