@@ -37,6 +37,22 @@ V2 按所需粒度采用标准模型的经典结构画法，默认在普通背�
 [布局和连线对照](examples/regular-layout-trial/README.md)，以及
 [直接视觉插图合同](references/direct-visual-insets.md)。旧的独立 V2 入口已移除，当前流程统一为默认 V2；V1 仍可通过 `$figfox-gen-v1` 明确调用。
 
+## From generated figure to editable SVG / 从生成图到可编辑 SVG
+
+After choosing a generated PNG, use the separate [FigFox skill](https://github.com/LawrenceRiver/FigFox#use-as-a-skill--作为-skill-使用) to reconstruct it as an editable SVG. Text, shapes and connectors remain native, while photos can be independently movable image elements.
+
+生成 PNG 后，可调用独立的 [FigFox skill](https://github.com/LawrenceRiver/FigFox/tree/main/skills/figfox)，还原为可编辑 SVG：文字、图形、箭头保持原生元素，照片可独立移动与替换。
+
+```bash
+npx skills@latest add LawrenceRiver/FigFox --skill figfox
+```
+
+Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the selected image; conversion is explicitly invoked rather than an automatic generation/repair loop.
+
+先用 `$FigFox-Gen-skill` 生成，再用 `$figfox` 还原选定图片；两步分别调用，不自动进入重建或修图循环。
+
+[Installation & workflow / 安装与流程](https://github.com/LawrenceRiver/FigFox/blob/main/docs/skill.md) · [Our editable V2 example / 本仓库 V2 可编辑示例](examples/v2-architecture/editable/README.md)
+
 ## V2 更新亮点
 
 1. **不再出现过度配色的 Mermaid 式拓扑图。** 用主视觉参考统一图形、箭头和字体，让生成结果具有真正科研架构图的构造感。

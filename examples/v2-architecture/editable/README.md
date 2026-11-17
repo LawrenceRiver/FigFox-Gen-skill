@@ -1,6 +1,6 @@
 # Editable V2 architecture / V2 可编辑架构图
 
-The original first-pass PNG is preserved. This separate SVG reconstructs it with [FigFox](https://github.com/LawrenceRiver/FigFox), using its prompts as a task-local skill and its native local editing executor. The calling assistant performed the reconstruction and sequential review passes; no external model API or SAM service was started.
+The original first-pass PNG is preserved. This separate SVG reconstructs it with [FigFox](https://github.com/LawrenceRiver/FigFox), using its prompts as a task-local skill and its native local editing executor; the reusable [official FigFox skill](https://github.com/LawrenceRiver/FigFox/tree/main/skills/figfox) is now available for new conversions. The calling assistant performed the reconstruction and sequential review passes; no external model API or SAM service was started.
 
 保留首次生成 PNG，另提供通过 FigFox 任务内 skill 重建的可编辑 SVG；由当前助手执行重建、顺序对照检查和本地编辑，没有启动外部模型 API 或 SAM 服务。
 
@@ -24,3 +24,13 @@ The original first-pass PNG is preserved. This separate SVG reconstructs it with
 独立 SVG 中的文字、图形、图表、波形与箭头均为原生可编辑元素；仅四处街景使用独立图片。已实际测试改字、移动/换色图形和移动照片。原图自身的并行区箭头歧义保持原样；字体、笔触和渐变存在少量近似，不声称逐像素一致或独立盲审通过。
 
 [Editing probe / 编辑探针](editability-check.json) · [Asset manifest / 图片清单](asset-manifest.json) · [Paired observations / 对照观察](G1-observations.json) · [Scoped transactions / 局部编辑计划](G2-transactions.json) · [Execution receipts / 执行记录](native-execution.json)
+
+## Use the official skill / 使用正式技能
+
+```bash
+npx skills@latest add LawrenceRiver/FigFox --skill figfox
+```
+
+See [FigFox skill installation / 技能安装与使用](https://github.com/LawrenceRiver/FigFox/blob/main/docs/skill.md). This example predates the packaged skill and is retained as the original task-local run, not relabeled as a new packaged-skill reconstruction.
+
+本例保留原任务内执行记录；新任务可以直接安装正式 `$figfox`，不把本例重新标成正式包的端到端重建测试。
