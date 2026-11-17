@@ -92,3 +92,5 @@ python -m unittest discover -s tests -v
 ```
 
 Use the same Methodology/reference for main-vs-branch trials, with one PNG per variant. Compare scientific topology/labels first, then overall style, local/global coherence, density, frames/arrows, typography and colour proximity. Synthetic compiler tests are not an aesthetic image trial. No new image generation has occurred merely because the tests pass.
+
+Prompt1 tool budget: style-mode compilation removes JSON indentation and the duplicate component listing when needed to fit the image tool's 32,000-character limit. It retains every normalized Context value, scientific edge, and the full component mapping. If this lossless reduction is insufficient, compilation stops before submission; shorten repeated planning prose while preserving the science. A rejected request that produced no image is not a completed generation pass.

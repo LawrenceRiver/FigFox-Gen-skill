@@ -57,3 +57,22 @@ class CreativeCLIIntegrationTests(unittest.TestCase):
   self.assertEqual(result.returncode,0,result.stderr)
   attached=json.loads((self.root/'creative-director/attachments.json').read_text())
   self.assertEqual(attached[0]['path'],'input/main.png');self.assertIn('attachments',json.loads(result.stdout))
+
+class PromptBudgetTests(unittest.TestCase):
+ def test_compaction_preserves_context_values_and_scientific_edges(self):
+  import re
+  from scientific_figure_workflow.prompts import _fit_style_prompt
+  context={'components':[{'id':str(i),'label':'Scientific label','visual_treatment':'Flat native geometry'} for i in range(170)],'relationships':[{'source_id':'0','target_id':'169','label':'feedback'}]}
+  original=json.dumps(context,indent=2)
+  redundant='\n'.join(['Duplicate component mapping']*800)
+  prompt='BEGIN NORMALIZED CONTEXT 2 JSON\n'+original+'\nEND NORMALIZED CONTEXT 2 JSON\n## 2. Exact block and structure names\n'+redundant+'\n## 3. Semantic relationships and reading order\n0 -> 169: feedback\n## 4. Content-to-visual mapping for every element\nComplete mapping retained'
+  self.assertGreater(len(prompt),32000)
+  compact=_fit_style_prompt(prompt)
+  self.assertLessEqual(len(compact),32000)
+  evidence=re.search(r'BEGIN NORMALIZED CONTEXT 2 JSON\n(.*?)\nEND NORMALIZED CONTEXT 2 JSON',compact,re.S)[1]
+  self.assertEqual(json.loads(evidence),context)
+  self.assertIn('0 -> 169: feedback',compact)
+  self.assertIn('Complete mapping retained',compact)
+ def test_irreducible_overflow_stops_before_model_submission(self):
+  from scientific_figure_workflow.prompts import _fit_style_prompt
+  with self.assertRaisesRegex(ValueError,'exceeds 32000'):_fit_style_prompt('scientific content '*2000)

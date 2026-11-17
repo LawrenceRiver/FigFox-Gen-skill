@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import tempfile
 from collections.abc import Mapping
 from pathlib import Path, PurePosixPath, PureWindowsPath
@@ -151,6 +152,26 @@ def _validated_contexts(context1: Mapping[str, Any], context2: Mapping[str, Any]
 
 def _json_evidence(title: str, value: Any) -> list[str]:
     return [f"BEGIN {title}", json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False), f"END {title}"]
+
+
+def _fit_style_prompt(prompt: str) -> str:
+    """Remove serialization whitespace and repeated mapping, never scientific data."""
+    if len(prompt) <= 32000:
+        return prompt
+    prompt = re.sub(
+        r"(BEGIN NORMALIZED CONTEXT [123] JSON\n)(.*?)(\nEND NORMALIZED CONTEXT [123] JSON)",
+        lambda match: match[1] + json.dumps(json.loads(match[2]), sort_keys=True,
+                                           ensure_ascii=False, separators=(",", ":")) + match[3],
+        prompt, flags=re.S,
+    )
+    prompt = re.sub(
+        r"## 2\. Exact block and structure names\n.*?(?=## 3\.)",
+        "## 2. Exact block and structure names\nSee the full mapping in section 4.\n\n",
+        prompt, flags=re.S,
+    )
+    if len(prompt) > 32000:
+        raise ValueError("style Prompt1 exceeds 32000 characters; shorten repeated planning prose without removing scientific components or relationships")
+    return prompt
 
 
 def _evidence_blocks(methodology: str, context1: Mapping[str, Any], context2: Mapping[str, Any], context3: Mapping[str, Any]) -> list[str]:
@@ -425,6 +446,7 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
         prompt = "\n".join([*style_lines(style), *lines,
             "Global coherence is mandatory: every local crop/idea must use the main style's linework, typography, density and visual grammar. Reference role does not change scientific labels or relations.",
             "Purposeful dividers or title tabs visible in the chosen style may organize real scientific content; no generic dashboard/card chrome. Hand-drawn semantic icons are constructed consistently, not pasted clip-art. Curved routes are allowed when endpoints and arrowheads are clear."])
+        prompt = _fit_style_prompt(prompt)
     return {"format": _FORMAT, "phase": "prompt1", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}
 
 
