@@ -45,12 +45,12 @@ class InstallationCliTests(unittest.TestCase):
         required_phrases = (
             "$FigFox-Gen-skill",
             "Methodology",
-            "optional reference",
-            "Contexts 1–3",
-            "mapped FigureBench crops",
+            "inspected peer figures",
+            "parallel",
+            "V2 grid/route preflight",
             "PNG1",
             "Creative Director",
-            "paper-SVG crops",
+            "exact ports/path points",
             "PNG1",
         )
         for phrase in required_phrases:

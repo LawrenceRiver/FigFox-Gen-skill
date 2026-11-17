@@ -1,198 +1,127 @@
 <div align="center">
 
-# FigFox-Gen-skill
+# FigFox-Gen-skill · V2
 
-### 用有证据的视觉规划生成符合人工编辑逻辑的科研图。
+### 从 Methodology 和真实证据出发，生成一张科研图。
 
-**领域视觉惯例 · 内容—视觉规划 · FigureBench 证据 · 命名多色配色组 · 最终 PNG1**
+**同类图需求锚点 · 按需配图 · 有范围的风格借鉴 · 14 组配色 · 最终 PNG1**
 
-[English](./README.md) · [安装](#安装) · [工作流程](#工作流程) · [实测结果](#实测结果) · [内置参考包](#内置参考包)
+[English](./README.md) · [安装](#安装) · [工作流程](#工作流程) · [案例](#案例) · [版本说明](references/versions.md)
 
 </div>
 
-**实验分支 `codex/style-anchor-fast`**：当前流程为“同类图＋Methodology 一次形成视觉需求锚点 → 配图／喜欢的风格特征／配色并行 → 逐项画法对照表 → 创意师按创新点分配细节并检查走线 → 紧凑生成清单”。见 [当前 Skill](SKILL.md) 和 [清单格式](references/compact-generation.md)。下方保留原始工作流说明；本分支不自动替换已安装版本。
-
-
-FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签、符合人工编辑
-逻辑的科研架构图。它先把视觉决策写清楚，再进行唯一一次图像生成，交付 PNG1
-供作者检查。
-
-## 流程概览
-
-两张总览图故意采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的
-自上而下主轴。
-
-<div align="center">
-  <table>
-    <tr>
-      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen English workflow" width="100%" /></td>
-      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文竖向流程图" width="100%" /></td>
-    </tr>
-  </table>
-</div>
+`main` 默认提供 V2，发布版本为 `v2.0.0`。它把科学 Methodology 转成紧凑、有来源
+依据的绘图计划，再生成一张带标签的 PNG1。创新机制得到必要的细节，辅助模块保持
+一致的表达层级。交付的是按人工编辑逻辑规划的栅格图，不是可编辑 SVG；正式使用前
+仍需作者检查实际像素。
 
 ## 安装
 
+[skills CLI](https://github.com/vercel-labs/skills) 需要 Node.js 22.20 或以上。
+安装默认版本，并在提示中选择 Codex：
+
 ```bash
-npx skills@latest add LawrenceRiver/FigFox-Gen-skill
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill --skill FigFox-Gen-skill
 ```
 
-安装后提供 Methodology，并可按需附上一张参考图。用户参考图是严格的视觉样本：
-在 Methodology 允许的范围内匹配它的构图、间距、层级、线宽、圆角、填充、文字
-尺度、箭头语法和 sample 处理；不能擅自美化、复杂化、换风格或重排。它不能成为
-实际配色来源。安装完整性可以这样检查：
+默认安装到当前项目；加 `-g` 可用于所有项目，加 `-a codex` 可直接选择 Codex。
+已经安装的副本需要主动更新：
+
+```bash
+npx skills@latest check
+npx skills@latest update FigFox-Gen-skill
+```
+
+远端仓库更新不会自动改动本地安装。手动安装或固定在 V1 的副本，可用上面的 V2
+安装命令切换来源；先保存本地自定义修改。固定版本与 V1/V2 共存方法见
+[版本说明](references/versions.md)。在已安装的 Skill 目录检查文件完整性：
 
 ```bash
 python scripts/check_installation.py
 ```
+
+使用时提供 Methodology，可选附上参考图。一般请求默认使用 V2；保留的旧版名为
+`figfox-gen-v1`，只在明确指定它时调用。
 
 ## 工作流程
 
-上面的左右两栏已经展示完整主路径；下面用文字复述同一顺序，并解释配色库和
-FigureBench 的构件证据，不再重复放图。
-
 ```text
-Methodology + 可选参考图
-  -> Context 1：领域视觉惯例
-  -> Context 2：内容—视觉规划
-  -> Context 3：FigureBench 定向裁图 + 选定一套配色组
-  -> 创意师简报 + 必要时的定向论文 SVG 裁图
-  -> Prompt 1（包含全部映射裁图）-> PNG1
-  -> 结束
+Methodology + 约两张实际查看过的同类论文图
+  → 一次形成有来源依据的视觉需求锚点
+  → 构件证据 / 喜欢的风格特征 / 配色选择并行
+  → 需求—画法对照表 + 科学关系图
+  → 创意师：创新细节、完整画布网格、符号与走线
+  → V2 确定性网格/路径预检 → 紧凑 Prompt 1
+  → 一次图像生成 → 最终 PNG1 → 作者检查
 ```
 
-### FigureBench 与配色库预览
+1. **先确定需求。** 查看约两个同类论文案例，只保留 Methodology 确实需要的共同
+   视觉惯例。准确保留科学模块、方向关系、原文支持的贡献和必要假设。
+2. **按需并行。** 查找有效的构件画法、明确喜欢的参考图特征，并从 14 组配色中
+   选取适合本次任务的一组。参考图分别承担字体、线条或局部构造等明确角色，不能
+   整体照搬构图、标签和颜色。每个已选视觉需求都有对应画法，不要求每个模块都搜图。
+3. **先规划完整画布。** 创意师按创新点分配细节，在规则行列中安排所有内容与输出。
+   标签使用简洁科学术语；索引采用真实上下标或经确认的符号别名，不允许可见下划线。
+   每次重新判断合适的配色，不把演示图的色相当成固定主题。
+4. **先走线再生成。** 声明精确节点端口和路径点，由 V2 确定性预检检查计划几何。
+   主线至多一个转弯，尽量消除交叉；不可避免的交叉必须明确使用连续跨线桥，或经
+   批准且可区分的线色处理。先通过移动模块改善路径，再锁定计划；不能用文字遮住
+   断裂线段。
+5. **只生成一次。** 将紧凑绘图清单交给图像模型，交付一张 PNG1。无参考图模式下，
+   清单为 `attachments: []`，图像生成调用省略 `referenced_image_paths` 和
+   `num_last_images_to_include`。常规流程到 PNG1 结束，不自动进入修图循环。
 
-FigureBench 是本地的构件参考库，不是配色来源。模型至少查看两张不同的内置图片，
-并继续查看到当前图所需的框架、连接、基础几何、布局关系和特殊可视化都有证据。
-颜色库保存命名配色组；每次运行只从其中随机选一套，但可以使用组内多个带角色的
-颜色。下面的组合图展示了几何证据和当前内置的 13 套配色组。
+文件、图关系、符号与几何验证检查的是声明的产物，**不能证明最终像素正确**。
+实际输出的科学含义、符号、箭头端点、文字、布局与美观仍须逐项目检。
+执行步骤见 [SKILL.md](SKILL.md)，产物和命令见
+[紧凑生成合同](references/compact-generation.md)。旧版详细工作流保留在
+[V1 标签文档](https://github.com/LawrenceRiver/FigFox-Gen-skill/blob/v1.0.0/README_ZH.md)。
 
-<p align="center">
-  <img src="assets/figurebench-palette-preview.png" alt="FigureBench 几何参考与命名配色组预览" width="100%" />
-</p>
+## 案例
 
-## 实测结果
+### V2 预览：必须由作者检查
 
-下面横向对比三个 Methodology 案例：第一列是 Methodology，第二列是生成效果。
-完整的原文输入保留在 [Methodology 原文](#methodology-原文) 中。
+这三个 V2 案例仍存在已知的小符号或连接问题，只是预览，不能称为已经验证的高保真
+终稿。[英文 README](README.md#full-methodology-inputs) 完整保留三个案例的原始
+Methodology，不以关键词摘要替代原文。
 
-| Methodology | 生成效果 |
+| Methodology | V2 预览 |
 |---|---|
-| **Latent Diffusion**<br>[Rombach et al.](https://arxiv.org/abs/2112.10752)<br>图像空间 → 潜空间 → 去噪 U-Net → 生成图像 | <img src="assets/generated-figures/02-latent-diffusion.png" alt="Latent Diffusion 生成图" width="620" /> |
-| **MusiCoT**<br>[MusiCoT](https://arxiv.org/abs/2503.19611)<br>文本/音频输入 → CLAP/RVQ 思维 token → 语义 LM → 音乐样本 | <img src="assets/generated-figures/03-musicot.png" alt="MusiCoT 生成图" width="620" /> |
-| **AlphaFold 3**<br>[Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w)<br>化学复合物 → Pairformer/扩散模块 → 最终结构 | <img src="assets/generated-figures/04-alphafold3.png" alt="AlphaFold 3 生成图" width="620" /> |
+| **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v2/latent-diffusion.png" alt="Latent Diffusion V2 预览，需作者检查" width="620" /> |
+| **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v2/musicot.png" alt="MusiCoT V2 预览，需作者检查" width="620" /> |
+| **AlphaFold 3** · [Abramson 等](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v2/alphafold3.png" alt="AlphaFold 3 V2 预览，需作者检查" width="620" /> |
 
-## 完整规范
+### 原样保留的 V1 案例
 
-### Context 1：同领域反复出现的视觉语言
+旧图与原路径保持不变，作为 V1 案例；历史配色预览展示的是旧版颜色库。
 
-模型先识别领域，再筛选 3–4 篇同领域论文的实际图板；优先使用容易取得 SVG/HTML
-图的 arXiv 来源，找不到时再用其他可信且可清晰提取的论文图。第一张选定的代表性
-论文图先确定可见的主色数量，记录为 `dominant_colour_count`（1–3）；后续论文用于
-核对这个数量和反复出现的对象、中间表示、结构关系、画法、分组方式与专业术语。
-只记录数量，不复制论文图的具体颜色；一次性画法要明确标出并排除在惯例之外。
+| V1 Methodology | 原 V1 结果 |
+|---|---|
+| Latent Diffusion | <img src="assets/generated-figures/02-latent-diffusion.png" alt="保留的 V1 Latent Diffusion 案例" width="620" /> |
+| MusiCoT | <img src="assets/generated-figures/03-musicot.png" alt="保留的 V1 MusiCoT 案例" width="620" /> |
+| AlphaFold 3 | <img src="assets/generated-figures/04-alphafold3.png" alt="保留的 V1 AlphaFold 3 案例" width="620" /> |
 
-### Context 2：内容—视觉规划
-
-模型结合 Methodology、Context 1 和可选参考图，把方法压缩成精确模块、标签、
-关系、阅读顺序，并给每个内容指定视觉表达。普通表达必须能由人制作：基础几何、
-领域论文中反复出现的画法、刻意的手绘、draw.io 式可编辑结构，或科学含义确实
-需要的真实照片切图。特殊表达要解释其必要性，以及人会用几何、手写笔还是现实
-照片来制作；无语义的生成式装饰直接否决。
-
-创意师必须按人类使用编辑器的顺序规划：先选画布和底座几何，再搭建有语义的
-结构，之后画朴素清晰的箭头，再放精简且准确的文字，最后把解释性配图放在文字
-下方或旁边。输入优先使用真实或明确记录的 sample；拓扑、网格、模型结构等已有
-成熟画法时，优先找论文 SVG/HTML 的定向构件作为证据，不凭空画假的拓扑。规则网格
-必须保持整齐，几何块使用纯色或单一受控填充，箭头保持从属而不抢主体；只有规划
-好的底座形状可以使用轻微、单一的变色过渡，几何块内部或装饰性的渐变直接否决。
-
-### Context 3：实际像素参考与命名配色组
-
-模型必须查看至少两张不同的内置 FigureBench 完整图片，并继续自适应查看，直到
-Context 2 所需的几何、框架、连接方式、布局关系和特殊可视化都被覆盖。可用区域
-会变成与目标构件绑定的裁图合同，写清借鉴什么、必须改变什么，以及为何仍像人可
-编辑的变体。完整候选图不会被无解释地塞进 Prompt 1。
-
-本地颜色库保存了每一套命名配色组；`palettes` 数组中的每条记录就是一组，每组
-都有多个带角色的颜色。每次运行随机选择一组，并可以使用该组中的多个颜色：
-
-```bash
-python scripts/figure_workflow.py select-palette --run RUN
-python scripts/figure_workflow.py select-palette --run RUN --seed SEED  # 可复现
-```
-
-这不是单色或黑白化约束。如果功能角色不够，只能通过有证据的 tint、shade、tone、
-邻近色、兼容中性色或受控对比色补充。FigureBench、同领域论文图和用户参考图都
-不能提供实际使用的颜色。Taste 只负责配色平衡、留白、层级、节奏和克制感，并服从
-科学含义、用户约束、领域证据、人工可编辑性与选定的配色组谱系。最终图严格使用
-Context 1 观察到的主色数量；其余颜色只能作为中性、浅色、阴影或辅助角色，不能
-超出这个锚定数量。如果某组颜色不足以支持该数量，就换用其他合格配色组，不能
-悄悄减少主色数量。
-
-### 创意师：PNG1 前的视觉构思
-
-Context 1–3 完成后，先运行一次有边界的创意师 Prompt。它只能为已经规划的构件
-提出具体画法，不能生成 PNG1，也不能重画整张图。如果突然需要尚未覆盖的成熟画法，
-创意师必须找到真实论文中可用 SVG 或可提取 SVG/HTML 的图，查看像素后，只裁出
-目标局部，放在 `references/web/crops/creative-director/`。每个裁图记录目标构件、
-HTTPS `source_url` 和 `evidence_url`、`source_format: "svg"`、`borrow`、
-`must_change` 以及为何仍可由人编辑。不能伪造来源、不能附整张论文图、不能使用
-贴纸式切图。如果不需要新的外部画法，必须明确返回 `no_external_svg_needed`。
-
-```bash
-python scripts/figure_workflow.py build-creative-director-prompt --run RUN
-python scripts/figure_workflow.py validate-creative-director --run RUN
-```
-
-### Prompt 1 与最终 PNG1
-
-Prompt 1 同时包含 Methodology、Contexts 1–3、创意师简报、可选参考图、论文裁图、
-所有定向 FigureBench 裁图，以及创意师批准的论文 SVG 裁图。唯一一次图像生成得到
-PNG1。论文 SVG 裁图只能指导声明的构件，不能带入来源标签、配色、比例或整张图的
-构图。
-
-PNG1 有两条绝对禁令：任何模块都不能把上半段用横线框出来做成居中的标题栏，不能
-使用截图中那种“标题条 + 内容框”结构；也不能直接贴入贴纸式切图、剪贴画、徽章、
-勋章、印章或栅格徽章。需要的科学对象必须用可编辑几何表达；只有科学上确有必要、
-并在 Context 2 明确记录的真实照片才能作为特殊视觉。
-
-图像模型只接收一次 `prompt-1/prompt.md` 和全部清单附件，生成一张完整、有标签、
-符合人工编辑逻辑的图。PNG1 是本 Skill 的最终交付物；之后不再转换或再次生成。
-正式使用前仍需作者检查 PNG1。
-
-## Methodology 原文
-
-英文 README 的 [Full Methodology inputs](./README.md#full-methodology-inputs) 保留了
-Latent Diffusion、MusiCoT 和 AlphaFold 3 三组案例的完整 Methodology 原文；这里不
-用简版关键词替代原文。三组案例对应的示例图已在上面的横向实测表中展示。
+[V1 英文流程图](assets/generated-figures/01-figfox-gen-workflow.png) ·
+[V1 中文流程图](assets/generated-figures/01-figfox-gen-workflow-zh.png) ·
+[V1 FigureBench/配色预览](assets/figurebench-palette-preview.png)
 
 ## 内置参考包
 
-Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 FigureBench 开发集图片，
-用于参考几何、布局、间距、连接方式和人工编辑质感。普通用户无需下载 FigureBench；
-完整数据集只在维护者重新策划这 30 张内置图片时使用，并且绝不使用
-官方测试集图片。
+安装包内有恰好 30 张完整、已索引且有署名的 FigureBench 开发集图片，以及
+**14 组命名配色**。普通用户无需下载 FigureBench；不使用官方测试集图片。
+FigureBench 提供几何与布局证据，不提供实际配色；FigFoxBench 是另一个独立来源。
+署名信息见 [图片索引](assets/figurebench-references/index.json)。来源可访问或属于
+某数据集并不等于允许重新分发；用户图片和权限未确定的素材留在本地。
 
-30 张内置图片的署名和来源信息记录在
-[`assets/figurebench-references/index.json`](assets/figurebench-references/index.json)。
+## 维护者
 
-## 维护者说明
-
-`scripts/curate_figurebench_reference_pack.py` 只用于维护参考包；运行时的验证和裁图
-由 `scripts/figure_workflow.py` 提供。
+`scripts/curate_figurebench_reference_pack.py` 用于维护参考包，
+`scripts/figure_workflow.py` 用于运行产物和验证。
 
 ```bash
 python scripts/check_installation.py
-```
-
-
-## Experimental: main style anchor / 主风格参考分支
-
-The `codex/style-anchor` branch adds opt-in Methodology + main-reference intake, separate component references, six style families, compatible palette selection and proximity-aware contrast. Read [the style-first guide and parallel circuit](references/style-first.md). FigureBench and FigFoxBench remain distinct optional sources; see the [source research catalog](references/style-source-notes.md). No user screenshots are bundled; unverified images remain local. Tests validate compilation and permissions, not aesthetic output quality. Main and the installed Skill are unchanged.
-
-```sh
-python scripts/figure_workflow.py init-style --run local/trial --family handdrawn
 python -m unittest discover -s tests -v
 ```
+
+检查通过不能替代像素目检。固定安装、迁移与旧版保留策略见
+[版本说明](references/versions.md)。

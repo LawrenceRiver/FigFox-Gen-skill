@@ -5,12 +5,13 @@ import hashlib
 import json
 import re
 from pathlib import Path
+from .routing_geometry import compile_routing_geometry
 
 ROUTING_GRAMMAR = (
     'Plan module placement and connector clearance together, before locking the composition. '
     'Prefer straight source-to-target arrows. Reposition nearby modules to eliminate crossings '
     'and unnecessary bends rather than drawing a detour around a poor layout. '
-    'Use only a few consistent right-angle bends or one deliberate smooth feedback arc when needed. '
+    'Use only a few consistent right-angle bends; geometry-locked routes follow their exact path points. '
     'Every arrow is one continuous, human-reproducible path from the actual source border to the '
     'target arrowhead: no disappearing shafts, isolated arrowheads, empty-space starts or unexplained gaps. '
     'Keep labels beside the shaft, never erase the shaft to fit text. Avoid intersections; if a crossing '
@@ -95,7 +96,7 @@ def load_generation_plan(root, context2):
 
 
 def validate_generation_plan(plan, context2):
-    if not isinstance(plan, dict) or plan.get('format') != 'figfox-generation-plan-v1':
+    if not isinstance(plan, dict) or plan.get('format') not in {'figfox-generation-plan-v1', 'figfox-generation-plan-v2'}:
         raise ValueError('unsupported generation plan')
     plan = copy.deepcopy(plan)
     for key in ('scientific_summary', 'layout', 'typography'):
@@ -177,6 +178,11 @@ def validate_generation_plan(plan, context2):
         whole = hierarchy.get('keep_whole', [])
         if not isinstance(whole, list) or any(not isinstance(t, str) or t not in ids for t in whole):
             raise ValueError('innovation hierarchy keep_whole must name existing components')
+    if plan['format'] == 'figfox-generation-plan-v2' or 'routing_geometry' in plan:
+        if 'routing_geometry' not in plan:
+            raise ValueError('V2 generation plan requires routing geometry')
+        plan['routing_geometry'], plan['routes'] = compile_routing_geometry(
+            plan['routing_geometry'], plan['routes'], ids)
     return plan
 
 
@@ -185,6 +191,9 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
     digest = hashlib.sha256(json.dumps([methodology, context1, context2, context3, plan],
         sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     placements = {p['component_id']: p['placement'] for p in plan['placements']}
+    geometry = plan.get('routing_geometry')
+    if geometry:
+        placements = {key: 'box ' + json.dumps(box) for key, box in geometry['node_boxes'].items()}
     display_labels = plan.get('display_labels', {})
     notation = plan.get('notation_map', {})
     labels = {c['id']: typeset_notation(display_labels.get(c['id'], c['label']), notation) for c in context2['components']}
@@ -205,13 +214,17 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
            'Allocate detail to the actual contributions; do not expand standard components just because they are familiar. Match supporting regions at the shared level.'] if 'detail_hierarchy' in plan else []),
         '## Locked overall framework', plan['layout'],
         GRID_GRAMMAR,
+        *(['Canvas pixels: ' + json.dumps(geometry['canvas']) + '; preserve the exact boxes and path points below. Scale the entire composition uniformly.',
+           'Grid rows: ' + json.dumps(geometry['rows']) + '; columns: ' + json.dumps(geometry['columns']),
+           'Clearance: ' + str(geometry['clearance']) + ' pixels. Captions must stay in their reserved boxes; never cut shafts.',
+           *[f"Declared crossing of routes {c['routes']} at {c['point']}: {c['treatment'].replace('_', ' ')}; {c['reason']}" for c in geometry.get('crossings', [])]] if geometry else []),
         '## Connector construction (Creative Director and generator)', ROUTING_GRAMMAR,
         'Draw every named component once. A container may be the component itself; do not add duplicate stand-ins. Repeated snapshots inside a component are insets, not extra pipeline nodes.',
         '## Exact components and placement',
         *[f"- {c['id']} = `{labels[c['id']]}` | {placements[c['id']]} | {c['visual_treatment']}" for c in context2['components']],
         '## Exact directed connections (one arrowhead per relationship)',
         'These relationship labels specify meaning. Show only short relation captions where needed; not every arrow needs visible explanatory text. Preserve essential scientific notation and conditions.',
-        *[f"- {r['source_id']}.{r['source_port']} -> {r['target_id']}.{r['target_port']} | `{r['label']}` | {r['via']}" for r in plan['routes']],
+        *[f"- {r['source_id']}.{r['source_port']} -> {r['target_id']}.{r['target_port']} | `{r['label']}` | {_route_construction(r, geometry)}" for r in plan['routes']],
         'Ports name the actual object/frame boundary. Never stop at an empty margin, nearby input, or unrelated enclosing stage. Independent evidence edges have distinct landing ports and arrowheads; crossings are not junctions. Do not merge unrelated evidence into one long bus.',
         '## One-to-one drawing correspondence',
         '| Need / location | Reference construction or source basis | Our adapted drawing |',
@@ -220,3 +233,12 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
         'These are intentional visual content, not ornamental stickers. Keep them small, readable and coherent with the main reference. No invented observations, numerical results or unlabelled decorative particles.',
         '## Typography reference', plan['typography'], LABEL_GRAMMAR,
     ]
+
+
+def _route_construction(route, geometry):
+    if not geometry:
+        return route['via']
+    result = route['route_kind'] + ' points ' + json.dumps(route['points'])
+    if route.get('caption'):
+        result += ' | visible caption `' + route['caption'] + '` in box ' + json.dumps(route['caption_box'])
+    return result

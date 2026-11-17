@@ -1,6 +1,6 @@
-# Compact generation handoff (`codex/style-anchor-fast`)
+# V2 compact generation handoff
 
-Use this route for style-first tasks. Complete the same evidence artifacts, then write `input/generation-plan.json` after Context2 is resolved. Both Creative Director and Prompt1 consume one checked generation checklist instead of raw Context JSON and search notes. No plan means legacy/style-anchor compilation remains available. This branch does not reinstall the production skill or merge main.
+Use this default route for new tasks. Complete the same evidence artifacts, then write `input/generation-plan.json` after Context2 is resolved. Both Creative Director and Prompt1 consume one checked generation checklist instead of raw Context JSON and search notes. New runs require a V2 plan with exact grid and route geometry. Legacy compilation remains available for archived replay only; use the separately named V1 skill for intentional legacy generation.
 
 ## Circuit and retrieval stop conditions
 
@@ -18,7 +18,11 @@ The complete JSON has these fields (replace the two-component example with the a
 
 ```json
 {
-  "format": "figfox-generation-plan-v1",
+  "format": "figfox-generation-plan-v2",
+  "routing_geometry": {
+    "canvas": [600, 240], "columns": [[20, 220], [380, 580]],
+    "rows": [[20, 220]], "slots": {"input": [0,0,1,1], "output": [0,1,1,1]}
+  },
   "scientific_summary": "Input is encoded into Output under fixed model parameters.",
   "invariants": ["Model parameters remain fixed."],
   "layout": "Landscape; Input left, Output right, with room for labels.",
@@ -29,7 +33,8 @@ The complete JSON has these fields (replace the two-component example with the a
   ],
   "routes": [
     {"source_id": "input", "target_id": "output", "label": "encodes",
-     "source_port": "east", "target_port": "west", "via": "direct arrow"}
+     "source_port": "east", "target_port": "west", "via": "direct arrow",
+     "route_kind": "mainline", "points": [[220,120],[380,120]]}
   ],
   "local_visuals": [
     {"target_component_id": "input", "meaning": "source document",
@@ -67,7 +72,7 @@ The existing permission/provenance contracts still apply. Main/reference scope i
 
 ## Creative Director: route before freezing placement
 
-Arrows should be easy for a person to reproduce in an editor. Plan object placement and connection clearance together: prefer a straight mainline, move modules to remove avoidable intersections, and only then lock ports/routes. Keep short local branches; use a consistent few right-angle bends or one purposeful feedback arc when necessary. A long perimeter return is appropriate for an actual outer loop. Do not accept a maze of detours just because coordinates were chosen early. Revise the plan and recompile the Director prompt before generation if the proposed placement forces such a maze.
+Arrows should be easy for a person to reproduce in an editor. Plan object placement and connection clearance together: prefer a straight mainline, move modules to remove avoidable intersections, and only then lock ports/routes. Keep short local branches; use a consistent few right-angle bends within the exact V2 route geometry when necessary. A long perimeter return is appropriate for an actual outer loop. Do not accept a maze of detours just because coordinates were chosen early. Revise the plan and recompile the Director prompt before generation if the proposed placement forces such a maze.
 
 Every shaft is continuous from its real source border to its target arrowhead. No empty-space starts, isolated arrowheads, suddenly disappearing lines or broken segments hidden behind text. Put relation labels beside the line. Avoid crossings; an unavoidable crossing uses a visibly continuous bridge, never an unexplained erased gap or an ambiguous junction. Inspect each source-to-target route against these rules, not merely the presence of endpoint names in the JSON. These requirements are sent to both Creative Director and generator.
 
@@ -142,3 +147,18 @@ Creative Director checks every intended visible string, including transaction fi
 Prompt1 merges the plan/Director mappings, rejects conflicting aliases and display values containing underscores, typesets mapped tokens in labels and illustrative code, and preflights remaining underscore forms in image-facing prose. Attachment paths and declared internal routing/schema keys remain internal metadata; they are not labels to draw. Actual source records are preserved for replay. This text preflight cannot prove correct pixels: inspect the generated image and do not accept any visible underscore as successful compliance.
 
 Plan one bounded canvas and row/column grid, including the output, before placing individual views. Sibling blocks align horizontally or vertically; common baselines, edges, sizes and gutters give a regular overall silhouette. Novel mechanisms can span more cells. When the final Visual Check → Editable SVG chain does not fit, simplify earlier content or redistribute it inside the existing frame. Do not append another protruding row merely to accommodate an unplanned output. Default stage headings are concise scientific terms without added step numbers.
+
+
+## V2 grid and route preflight
+
+New runs use `format: "figfox-generation-plan-v2"`; V1 plans remain readable only for archived replay. Both prompt builders validate V2 geometry before issuing an image packet. Failed geometry requires layout revision, never fallback to V1.
+
+`routing_geometry` uses canvas pixels. `canvas: [width,height]`, `margin` (default 20) and `clearance` (default 8) bound all objects. `columns` and `rows` are sorted nonoverlapping `[start,end]` tracks with consistent gutters within each axis. `slots` maps every exact Context2 component ID to zero-based `[row,column,row_span,column_span]`; no occupied cells may overlap. Innovation groups may span cells. The compiler derives `node_boxes` as `[x,y,width,height]`; the image packet uses these exact boxes instead of loose placement prose.
+
+Each existing route retains its scientific endpoints/label and port names (`north`, `east`, `south`, `west`), adding `route_kind` (`mainline`, `branch`, `reference`, `feedback`) and `points: [[x,y],...]`. Each path must touch the correct object boundaries, stay orthogonal and continuous, avoid node interiors and preserve clearance from other nodes. Redundant forward-collinear points collapse. Bend limits are 1/2/2/4 respectively; a clear direct path cannot become a detour. Independent edges cannot merge at a shared target landing. A common initial stem is allowed only for the same source.
+
+Avoid crossings by moving modules. A scientifically unavoidable crossing requires an entry in `routing_geometry.crossings`: `{ "routes": [zeroBasedRouteA,zeroBasedRouteB], "point": [x,y], "treatment": "bridge", "reason": "source-grounded reason" }`. `distinct_ink` is also supported; no more than one crossing per route. Records must match actual intersections; duplicate/stale declarations fail. This describes a treatment to draw, not permission for a disconnected shaft.
+
+An optional visible `caption` requires `caption_box: [x,y,width,height]`, clear of every node, other caption and shaft. The long scientific route `label` is meaning for the model, not a demand to print an explanation on each arrow. Geometry is macro-layout planning; do not fabricate numerical values or expand ordinary model internals to populate it.
+
+The validated packet includes exact canvas, boxes, points and crossing treatments. It is a planning check, not a pixel guarantee or automatic router. Inspect PNG1 at full size: continuous shafts, attached arrowheads, consistent frame alignment and readable notation must still hold. Preserve an imperfect result as a preview rather than marking it accepted.

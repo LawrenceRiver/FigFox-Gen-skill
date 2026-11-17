@@ -209,3 +209,31 @@ class GenerationChecklistTests(unittest.TestCase):
         prompt=self.bundle()['prompt']
         for unrelated in ['SVG Reconstruction', 'Visual Inspection', 'Native Editing', 'Visual Check', 'Editable SVG']:
             self.assertNotIn(unrelated,prompt)
+
+
+class V2GeometryIntegrationTests(unittest.TestCase):
+    setUp = fixtures.PromptIntegrationTests.setUp
+    tearDown = fixtures.PromptIntegrationTests.tearDown
+    plan = GenerationChecklistTests.plan
+    save = GenerationChecklistTests.save
+    bundle = GenerationChecklistTests.bundle
+    def v2_plan(self):
+        plan=self.plan();plan['format']='figfox-generation-plan-v2'
+        plan['routing_geometry']={'canvas':[600,240], 'columns':[[20,220],[380,580]],
+            'rows':[[20,220]], 'slots':{'input':[0,0,1,1],'output':[0,1,1,1]}}
+        plan['routes'][0].update(route_kind='mainline',points=[[220,120],[380,120]])
+        return plan
+
+    def test_v2_requires_geometry(self):
+        plan=self.v2_plan();del plan['routing_geometry'];self.save(plan)
+        with self.assertRaisesRegex(ValueError,'routing geometry'):self.bundle()
+
+    def test_v2_compiles_boxes_and_exact_points(self):
+        self.save(self.v2_plan());prompt=self.bundle()['prompt']
+        self.assertIn('box [20, 20, 200, 200]',prompt)
+        self.assertIn('[[220, 120], [380, 120]]',prompt)
+        self.assertNotIn('direct separate arrow',prompt)
+
+    def test_v2_rejects_detached_endpoint(self):
+        plan=self.v2_plan();plan['routes'][0]['points'][0][0]=230;self.save(plan)
+        with self.assertRaises(ValueError):self.bundle()

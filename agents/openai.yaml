@@ -1,6 +1,6 @@
 interface:
   display_name: "FigFox-Gen-skill"
   short_description: "Build evidence-guided single-pass scientific figures"
-  default_prompt: "Use $FigFox-Gen-skill with a Methodology and optional reference to build Contexts 1–3 from 3–4 scholarly figure panels, human-producible planning, a Creative Director brief with targeted paper-SVG crops when needed, mapped FigureBench crops and one palette lineage, then generate and return final PNG1 in one image pass."
+  default_prompt: "Use $FigFox-Gen-skill to anchor a Methodology in about two inspected peer figures, develop need-driven constructions, scoped style traits and a per-run palette in parallel, have Creative Director plan innovation-focused detail with notation aliases and exact ports/path points, pass the V2 grid/route preflight, then generate one final PNG1 for author inspection."
 policy:
   allow_implicit_invocation: true
