@@ -1,0 +1,22 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Titles are bold dark text directly on white or ordinary panel background: NO coloured title ribbons, tabs, header bars, white reversed headings, or whole-figure banner. Soft colour highlights only meaningful interior content and the key mechanism; avoid a repeated card-header grid. Use a clear matched family of moderately bold, slightly hand-drawn shaft arrows with solid readable triangular heads and palette-matched ink. Keep planned endpoints and exact centerlines; all shafts continuous beside text, including across model titles. Equal peer regions and clean rectangular outer silhouette remain. Keep the filled 3×3 rectangular organization with two spanning components, but headings are free-standing bold dark plum text with no tinted header stripe. Pairformer uses only a pair matrix and single strip, not invented attention internals. Diffusion retains a small readable Training row above a larger Inference region; the coral fill highlights coordinate denoising content, not the title. Input picture slot remains clean white for the actual myoglobin exemplar, which is context rather than a required known-structure input or predicted output. All source arrows and the south-to-south U loop are continuous and moderately bold; the recurrent loop lands only in Inference.",
+  "notation_map": {
+    "X_t": "Xₜ",
+    "X_0": "X₀",
+    "pair_representation": "Pair",
+    "single_representation": "Single",
+    "input_representation": "Input representation"
+  },
+  "ideas": [
+    {
+      "id": "content-emphasis",
+      "target_component_id": "diffusion",
+      "concept": "Scientific content hierarchy with recognizable model construction and a coherent arrow family.",
+      "visual_intent": "Preserve meaningful miniatures and actual content assets in a regular whole-frame layout.",
+      "construction_plan": "Keep the filled 3×3 rectangular organization with two spanning components, but headings are free-standing bold dark plum text with no tinted header stripe. Pairformer uses only a pair matrix and single strip, not invented attention internals. Diffusion retains a small readable Training row above a larger Inference region; the coral fill highlights coordinate denoising content, not the title. Input picture slot remains clean white for the actual myoglobin exemplar, which is context rather than a required known-structure input or predicted output. All source arrows and the south-to-south U loop are continuous and moderately bold; the recurrent loop lands only in Inference.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

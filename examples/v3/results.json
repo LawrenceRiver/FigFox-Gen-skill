@@ -1,0 +1,191 @@
+{
+  "release": "3.0.0",
+  "selected": [
+    {
+      "case": "latent-diffusion",
+      "generation_seconds": 39.127,
+      "prompt_sha256": "c82273c60060b7c8078d164f0a170200101ab337de769d694873b6fe2f4f4319",
+      "composition_seconds": 0.352,
+      "artifact_validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "pixels": [
+        1616,
+        973
+      ],
+      "receipt": {
+        "format": "figfox-raster-inserts-v1",
+        "step": "optional final deterministic raster composition; no model call",
+        "canvas": [
+          1616,
+          973
+        ],
+        "background": "input/generated-layout.png",
+        "background_sha256": "3b02a10feda5e4f08d9faf77e1fb35e7578e0a3497395b8c21222fad28bf1345",
+        "output": "png1.png",
+        "output_sha256": "7586d07dbbbd644d059cee0b6dcdfc343c71dd017231956c93d09debc23c378c",
+        "insets": [
+          {
+            "path": "input/raster/apollo17-earth-crop.png",
+            "target_component_id": "image",
+            "box": [
+              51,
+              150,
+              172,
+              161
+            ],
+            "source": "https://images.nasa.gov/details/ARC-1972-AS17-148-22727",
+            "permission_evidence": "NASA / Apollo 17 crew; source-specific public-domain NASA photo AS17-148-22727.",
+            "attribution": "NASA / Apollo 17 crew; source-specific public-domain NASA photo AS17-148-22727.",
+            "fit": "contain",
+            "sha256": "fbbd8a21806fe627349aad11b2c0157779f12dac2118a37b7f7fd58d8f2c52ca",
+            "original_size": [
+              1840,
+              1840
+            ],
+            "requested_box": [
+              51,
+              150,
+              172,
+              161
+            ],
+            "actual_box": [
+              56,
+              150,
+              161,
+              161
+            ]
+          }
+        ]
+      },
+      "selected_image": "assets/generated-figures/v3/latent-diffusion.png",
+      "selected_sha256": "7586d07dbbbd644d059cee0b6dcdfc343c71dd017231956c93d09debc23c378c"
+    },
+    {
+      "generation_seconds": 39.557,
+      "edit_seconds": 32.225,
+      "composition_seconds": 0.258,
+      "receipt": {
+        "format": "figfox-raster-inserts-v1",
+        "step": "optional final deterministic raster composition; no model call",
+        "canvas": [
+          1606,
+          979
+        ],
+        "background": "input/generated-layout.png",
+        "background_sha256": "18bf3465510620a4189e84cb55978d2d9286c3231e160f6d2ef9c98449f910c3",
+        "output": "png1.png",
+        "output_sha256": "26cd5efcdbadedd9bdd22c7782772afafa721643e8b4b8166be1604f436ea5ef",
+        "insets": [
+          {
+            "path": "input/raster/input-example-waveform.png",
+            "target_component_id": "audio",
+            "box": [
+              57,
+              174,
+              378,
+              134
+            ],
+            "source": "https://commons.wikimedia.org/wiki/File:Chopin_-_Waltz_in_A_minor,_B_150.ogg",
+            "permission_evidence": "Specific performance by Aya Higuchi licensed CC0. Same first20s real samples, re-rendered to the selected indigo/violet palette without invented signal.",
+            "attribution": "Aya Higuchi, Chopin Waltz B.150, CC0 performance",
+            "fit": "contain",
+            "sha256": "3dbfef06f69085dbdc982647a7f0e52edf505f7ab62718cf0b9afb5add886a67",
+            "original_size": [
+              1140,
+              411
+            ],
+            "requested_box": [
+              57,
+              174,
+              378,
+              134
+            ],
+            "actual_box": [
+              60,
+              174,
+              372,
+              134
+            ]
+          }
+        ]
+      },
+      "validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "selected_image": "assets/generated-figures/v3/musicot.png",
+      "selected_sha256": "26cd5efcdbadedd9bdd22c7782772afafa721643e8b4b8166be1604f436ea5ef",
+      "case": "musicot"
+    },
+    {
+      "case": "alphafold3",
+      "generation_seconds": 80.741,
+      "prompt_sha256": "3d035312a36369acd47c9c4f28f2c07858100aa82050cae7ee76024d5a6eba4d",
+      "composition_seconds": 0.256,
+      "artifact_validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "pixels": [
+        1587,
+        991
+      ],
+      "receipt": {
+        "format": "figfox-raster-inserts-v1",
+        "step": "optional final deterministic raster composition; no model call",
+        "canvas": [
+          1587,
+          991
+        ],
+        "background": "input/generated-layout.png",
+        "background_sha256": "c7b9df763466b14cb2abd1dd49a544158d903dbada37ad3669fed00cb8de41fa",
+        "output": "png1.png",
+        "output_sha256": "969000fcd192db3773eede3700d170194f1ee926570202adbb82a79c177d773c",
+        "insets": [
+          {
+            "path": "input/raster/myoglobin-1mbo.png",
+            "target_component_id": "input",
+            "box": [
+              108,
+              151,
+              284,
+              236
+            ],
+            "source": "https://commons.wikimedia.org/wiki/File:Myoglobin.png",
+            "permission_evidence": "AzaToth, PD-self dedication, Myoglobin / PDB 1MBO; illustrative input context.",
+            "attribution": "AzaToth, PD-self dedication, Myoglobin / PDB 1MBO; illustrative input context.",
+            "fit": "contain",
+            "sha256": "737d1e84c7eb023840da66c4d918e9fa38f96bd6ca12e3bab511325a087d81c3",
+            "original_size": [
+              1159,
+              1173
+            ],
+            "requested_box": [
+              108,
+              151,
+              284,
+              236
+            ],
+            "actual_box": [
+              133,
+              151,
+              233,
+              236
+            ]
+          }
+        ]
+      },
+      "selected_image": "assets/generated-figures/v3/alphafold3.png",
+      "selected_sha256": "969000fcd192db3773eede3700d170194f1ee926570202adbb82a79c177d773c"
+    }
+  ],
+  "initial_comparison_batch": "3 fresh calls, elapsed 123.5s concurrently; two selected, one original teal MusiCoT retained locally",
+  "requested_palette_comparison": "1 extra fresh MusiCoT call 39.6s, plus one recorded source-arrowhead correction 32.2s",
+  "content": "one actual collected content inset per final figure; source files and raw generated layouts preserved locally",
+  "validation": "All selected cases passed deterministic artifact checks at generation time; this does not certify pixel-level scientific accuracy."
+}

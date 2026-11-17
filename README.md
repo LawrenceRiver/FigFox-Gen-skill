@@ -1,6 +1,6 @@
 <div align="center">
 
-# FigFox-Gen-skill · V2
+# FigFox-Gen-skill · V3
 
 ### Source-grounded visual planning for one scientific figure.
 
@@ -10,14 +10,23 @@
 
 </div>
 
-Development trial: [rectangular layouts, connector corrections and request timings](examples/regular-layout-trial/README.md). Optional [direct visual insets](references/direct-visual-insets.md) retain selected content assets instead of redrawing them.
+V3 is the default on `main`, released as `v3.0.0`. It turns a scientific Methodology
+into one raster PNG1 through a source-grounded drawing plan. Detail follows the method's
+actual innovations; supporting stages stay at a consistent level. Cached, parallel work
+resolves the selected visual needs, scoped reference traits and palette before a Creative
+Director fixes the complete rectangular layout and exact connector geometry.
 
+V3 adds canonical model constructions at the needed granularity, bold headings on the
+ordinary background, colour emphasis on scientific content, and a coherent arrow family
+that can include broad, rounded or hand-drawn shafts. Optional licensed content insets
+retain the actual collected pixels through deterministic placement. One layout image call
+produces the figure; the generated image or inset composite is the single final PNG1.
+Authors inspect the actual pixels before accepting it. Editable SVG is not a deliverable.
 
-V2 is the default on `main`, released as `v2.0.0`. It turns a scientific Methodology into
-one labelled PNG1 through a compact, evidence-grounded drawing plan. Detail explains the
-method's actual innovations; supporting stages stay at a consistent level. The output is
-a raster figure planned with human-editable construction logic, not an editable SVG file.
-Authors must inspect the generated pixels before using the figure.
+See the [V3 examples and recorded checks](examples/v3/README.md), the earlier
+[layout and connector trial](examples/regular-layout-trial/README.md), and the
+[direct visual inset contract](references/direct-visual-insets.md). The original V2 release
+remains pinned at `v2.0.0`; V1 and V2 are explicitly callable as separate legacy skills: `$figfox-gen-v1` and `$figfox-gen-v2`.
 
 ## Installation
 
@@ -55,11 +64,11 @@ V1 skill has a separate name, `figfox-gen-v1`, and requires explicit invocation.
 ```text
 Methodology + about two inspected peer figures
   → one source-grounded visual-needs anchor
-  → parallel construction evidence / liked style traits / palette selection
+  → cached parallel construction evidence / scoped style traits / palette selection
   → need-to-drawing correspondence + scientific graph
   → Creative Director: innovation detail, whole-frame grid, notation and routes
   → deterministic V2 grid/route preflight → compact Prompt 1
-  → one image-generation call → optional direct-content inset placement → final PNG1 → author inspection
+  → one layout image call → optional deterministic content-inset placement → final PNG1 → author inspection
 ```
 
 1. **Anchor once.** Inspect about two relevant scholarly figures and retain shared visual
@@ -70,19 +79,30 @@ Methodology + about two inspected peer figures
    has a scoped role—such as typography, line character or a local construction. It does
    not license copying the whole composition, labels or colours. Each selected visual need
    gets a concrete drawing correspondence; there is no image-search quota per component.
+   Reuse source-checked caches and search again only for a named unresolved need. For a
+   standard model named in the Methodology, use its established architectural grammar at
+   the chosen detail level rather than an invented symbol or unnecessarily expanded internals.
 3. **Plan the entire frame.** The Creative Director allocates detail to the innovation and
    fixes a regular row/column layout including the output. Use concise scientific captions
    and approved notation aliases with real subscripts/superscripts; visible underscores are
-   rejected. Palette selection is per run, with no hardcoded demo hue theme.
+   rejected. Keep the output within the same rectangular footprint and align sibling
+   regions, edges and spacing. Default to bold dark or theme-coloured headings on the
+   ordinary background; use colour fill for important mechanisms and content, rather than
+   automatic painted title strips. Palette selection is per run, with no hardcoded demo hue theme.
 4. **Route before generation.** Declare exact node ports and path points. The deterministic
    V2 grid/route preflight checks the planned geometry: keep the mainline to at most one
    bend and avoid crossings. An unavoidable crossing needs an explicit continuous bridge
    or a distinct, approved ink treatment. Move components to improve routes before locking
    the packet; do not hide broken shafts behind text.
-5. **Generate once.** Compile the compact drawing packet and make one image call for PNG1.
+5. **Generate once.** Compile the compact drawing packet and make one layout image call.
    In no-reference mode the manifest has `attachments: []`; omit image-input arguments
    (`referenced_image_paths` and `num_last_images_to_include`) from the image-generation call.
-   When selected direct-content assets are used, reserve clean regions and place the collected files with the optional deterministic helper after generation; that composite is PNG1. This is no additional model call. The normal workflow ends at this single PNG1, without an automatic repair loop.
+   When suitable content assets have been inspected and licensed for use, reserve clean
+   inset slots and paste the actual collected files with the optional deterministic helper
+   after generation; that composite is PNG1. Keep source, crop, permission and placement
+   records. Illustrative material must stay illustrative and cannot replace the method's
+   evidence. Without insets, the generated image is PNG1. The normal workflow ends at this
+   single raster PNG1 for inspection, without an automatic repair loop or extra model call.
 
 File, graph, notation and geometry validation checks the declared artifacts. It does **not**
 prove that the generated pixels preserve scientific meaning, labels, arrowheads, symbols,
@@ -95,17 +115,19 @@ The original detailed workflow remains in the
 
 ## Examples
 
-### V2 previews — author inspection required
+### Latest V3 previews — author inspection required
 
-These three V2 runs are previews with known small symbol or connector issues. They are
-not high-fidelity verified finals and must be checked against their source Methodologies.
-The [complete recorded inputs](#full-methodology-inputs) remain below.
+These selected V3 outputs demonstrate the current workflow, including the indigo/violet
+and amber MusiCoT colour revision. They are previews for inspection, not a guarantee of
+pixel-level scientific or visual acceptance. See the [example report](examples/v3/README.md)
+for selected artifacts and checks. The [complete recorded inputs](#full-methodology-inputs)
+remain below.
 
-| Methodology | V2 preview |
+| Methodology | Latest V3 preview |
 |---|---|
-| **Latent Diffusion** · [Rombach et al.](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v2/latent-diffusion.png" alt="Latent Diffusion V2 preview requiring author inspection" width="620" /> |
-| **MusiCoT** · [source paper](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v2/musicot.png" alt="MusiCoT V2 preview requiring author inspection" width="620" /> |
-| **AlphaFold 3** · [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v2/alphafold3.png" alt="AlphaFold 3 V2 preview requiring author inspection" width="620" /> |
+| **Latent Diffusion** · [Rombach et al.](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3/latent-diffusion.png" alt="Latent Diffusion V3 preview requiring author inspection" width="620" /> |
+| **MusiCoT** · [source paper](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3/musicot.png" alt="MusiCoT V3 indigo violet and amber preview requiring author inspection" width="620" /> |
+| **AlphaFold 3** · [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3/alphafold3.png" alt="AlphaFold 3 V3 preview requiring author inspection" width="620" /> |
 
 ### Preserved V1 examples
 

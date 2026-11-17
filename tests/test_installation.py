@@ -47,7 +47,7 @@ class InstallationCliTests(unittest.TestCase):
             "Methodology",
             "inspected peer figures",
             "parallel",
-            "V2 grid/route preflight",
+            "grid/route preflight",
             "PNG1",
             "Creative Director",
             "exact ports/path points",

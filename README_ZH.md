@@ -1,6 +1,6 @@
 <div align="center">
 
-# FigFox-Gen-skill · V2
+# FigFox-Gen-skill · V3
 
 ### 从 Methodology 和真实证据出发，生成一张科研图。
 
@@ -10,13 +10,21 @@
 
 </div>
 
-开发对照：[规整布局、连线修正与实际请求耗时](examples/regular-layout-trial/README.md)。新增可选的[直接视觉插图](references/direct-visual-insets.md)流程，按视觉内容的作用判断是否收集并直接嵌入现成素材，不限定类别。
+`main` 默认提供 V3，发布版本为 `v3.0.0`。它从科学 Methodology 出发，形成
+有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
+一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
+创意师确定完整矩形布局和精确连线几何。
 
+V3 按所需粒度采用标准模型的经典结构画法，默认在普通背景上使用粗体标题，把
+颜色重点留给科学内容；箭头采用统一的比例与风格，可使用粗杆、圆角或手绘线条。
+按需选用且已获使用许可的内容插图，通过确定性贴入保留实际素材像素。只调用一次
+图像模型生成布局；生成图或贴入素材后的合成图就是唯一最终 PNG1，由作者检查实际
+像素后决定是否接受，不承诺可编辑 SVG。
 
-`main` 默认提供 V2，发布版本为 `v2.0.0`。它把科学 Methodology 转成紧凑、有来源
-依据的绘图计划，再生成一张带标签的 PNG1。创新机制得到必要的细节，辅助模块保持
-一致的表达层级。交付的是按人工编辑逻辑规划的栅格图，不是可编辑 SVG；正式使用前
-仍需作者检查实际像素。
+查看 [V3 案例与检查记录](examples/v3/README.md)、此前的
+[布局和连线对照](examples/regular-layout-trial/README.md)，以及
+[直接视觉插图合同](references/direct-visual-insets.md)。原始 V2 保留在 `v2.0.0`；
+V1、V2 分别保留为 `$figfox-gen-v1`、`$figfox-gen-v2` 独立入口，仅在明确调用时使用。
 
 ## 安装
 
@@ -51,11 +59,11 @@ python scripts/check_installation.py
 ```text
 Methodology + 约两张实际查看过的同类论文图
   → 一次形成有来源依据的视觉需求锚点
-  → 构件证据 / 喜欢的风格特征 / 配色选择并行
+  → 复用缓存，并行处理构件证据 / 有范围的风格特征 / 配色选择
   → 需求—画法对照表 + 科学关系图
   → 创意师：创新细节、完整画布网格、符号与走线
   → V2 确定性网格/路径预检 → 紧凑 Prompt 1
-  → 一次图像生成 → 按需嵌入已收集的内容素材 → 最终 PNG1 → 作者检查
+  → 一次布局图生成 → 按需确定性贴入内容素材 → 最终 PNG1 → 作者检查
 ```
 
 1. **先确定需求。** 查看约两个同类论文案例，只保留 Methodology 确实需要的共同
@@ -63,16 +71,25 @@ Methodology + 约两张实际查看过的同类论文图
 2. **按需并行。** 查找有效的构件画法、明确喜欢的参考图特征，并从 14 组配色中
    选取适合本次任务的一组。参考图分别承担字体、线条或局部构造等明确角色，不能
    整体照搬构图、标签和颜色。每个已选视觉需求都有对应画法，不要求每个模块都搜图。
+   复用已核实的缓存，只为明确未解决的需求补查；Methodology 中已命名的标准模型，
+   在所选粒度使用有来源依据的经典结构画法，不凭空造符号，也不展开无关内部细节。
 3. **先规划完整画布。** 创意师按创新点分配细节，在规则行列中安排所有内容与输出。
    标签使用简洁科学术语；索引采用真实上下标或经确认的符号别名，不允许可见下划线。
+   输出也在同一矩形轮廓内，平级区域、边缘与间距保持对齐。标题默认是普通背景上的
+   深色或主题色粗体字，不自动加彩色标题条；填色重点留给重要机制与科学内容。
    每次重新判断合适的配色，不把演示图的色相当成固定主题。
 4. **先走线再生成。** 声明精确节点端口和路径点，由 V2 确定性预检检查计划几何。
    主线至多一个转弯，尽量消除交叉；不可避免的交叉必须明确使用连续跨线桥，或经
    批准且可区分的线色处理。先通过移动模块改善路径，再锁定计划；不能用文字遮住
-   断裂线段。
-5. **只生成一次。** 将紧凑绘图清单交给图像模型，交付一张 PNG1。无参考图模式下，
+   断裂线段。路径点规定的是中心线，不强制使用细黑线；整图及局部模型视图采用
+   统一的箭头家族，保持杆身和箭头比例一致，并预留足够宽度。每条箭头都须从源边界
+   连续到达目标箭头端，准确落到所指的过程子区域。
+5. **只生成一次。** 将紧凑绘图清单交给图像模型，只生成一次布局图。无参考图模式下，
    清单为 `attachments: []`，图像生成调用省略 `referenced_image_paths` 和
-   `num_last_images_to_include`。若选用了直接内容素材，在生成的留白区域确定性贴入原素材，合成后为 PNG1，不增加模型调用。常规流程到 PNG1 结束，不自动进入修图循环。
+   `num_last_images_to_include`。若选用了已检查且获准使用的直接内容素材，在预留插图
+   区域确定性贴入实际文件，合成后为 PNG1；保留来源、裁剪、许可与放置记录。示意素材
+   须保持示意身份，不能替代该方法的实验或结果证据。不使用插图时，生成图本身就是
+   PNG1。常规流程交付这一张待检查的栅格 PNG1，不自动进入修图循环或增加模型调用。
 
 文件、图关系、符号与几何验证检查的是声明的产物，**不能证明最终像素正确**。
 实际输出的科学含义、符号、箭头端点、文字、布局与美观仍须逐项目检。
@@ -82,17 +99,18 @@ Methodology + 约两张实际查看过的同类论文图
 
 ## 案例
 
-### V2 预览：必须由作者检查
+### 最新 V3 预览：必须由作者检查
 
-这三个 V2 案例仍存在已知的小符号或连接问题，只是预览，不能称为已经验证的高保真
-终稿。[英文 README](README.md#full-methodology-inputs) 完整保留三个案例的原始
-Methodology，不以关键词摘要替代原文。
+这三个选定的 V3 输出展示当前流程，MusiCoT 使用靛蓝／紫色与琥珀色修订版。
+它们是待检查的预览，不保证像素层面的科学与视觉验收通过。所选产物与检查见
+[案例报告](examples/v3/README.md)。[英文 README](README.md#full-methodology-inputs)
+完整保留三个案例的原始 Methodology，不以关键词摘要替代原文。
 
-| Methodology | V2 预览 |
+| Methodology | 最新 V3 预览 |
 |---|---|
-| **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v2/latent-diffusion.png" alt="Latent Diffusion V2 预览，需作者检查" width="620" /> |
-| **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v2/musicot.png" alt="MusiCoT V2 预览，需作者检查" width="620" /> |
-| **AlphaFold 3** · [Abramson 等](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v2/alphafold3.png" alt="AlphaFold 3 V2 预览，需作者检查" width="620" /> |
+| **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3/latent-diffusion.png" alt="Latent Diffusion V3 预览，需作者检查" width="620" /> |
+| **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3/musicot.png" alt="MusiCoT V3 靛蓝紫色与琥珀色预览，需作者检查" width="620" /> |
+| **AlphaFold 3** · [Abramson 等](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3/alphafold3.png" alt="AlphaFold 3 V3 预览，需作者检查" width="620" /> |
 
 ### 原样保留的 V1 案例
 

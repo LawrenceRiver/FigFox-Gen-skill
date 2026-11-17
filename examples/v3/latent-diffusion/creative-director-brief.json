@@ -1,0 +1,26 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Titles are bold dark text directly on white or ordinary panel background: NO coloured title ribbons, tabs, header bars, white reversed headings, or whole-figure banner. Soft colour highlights only meaningful interior content and the key mechanism; avoid a repeated card-header grid. Use a clear matched family of moderately bold, slightly hand-drawn shaft arrows with solid readable triangular heads and palette-matched ink. Keep planned endpoints and exact centerlines; all shafts continuous beside text, including across model titles. Equal peer regions and clean rectangular outer silhouette remain. Use the established multiscale U-shaped encoder/decoder and horizontal paired skip links from the already inspected LDM/DDPM construction evidence. Keep it compact and readable; do not invent an hourglass or giant central attention gadget. Three scales are schematic level indicators, not a claim about exact layer counts. Show one small attention insert at the right upper scale. The K,V branch enters the top-right portion, while the Latent Denoising label sits upper-left clear of that line. Show Q from the U-Net feature, K,V from the condition encoder. Use Earth from space as condition. Keep one input photo slot at its declared location, all other Earth views explicitly Schematic. Both phase headings remain centered dark text on plain background, never coloured bands.",
+  "notation_map": {
+    "z_t": "zₜ",
+    "z_0": "z₀",
+    "epsilon_theta": "εθ",
+    "tau_theta": "τθ",
+    "x_tilde": "x̃",
+    "x_hat": "x̂",
+    "W_Q": "WQ",
+    "W_K": "WK",
+    "W_V": "WV"
+  },
+  "ideas": [
+    {
+      "id": "content-emphasis",
+      "target_component_id": "denoise",
+      "concept": "Scientific content hierarchy with recognizable model construction and a coherent arrow family.",
+      "visual_intent": "Preserve meaningful miniatures and actual content assets in a regular whole-frame layout.",
+      "construction_plan": "Use the established multiscale U-shaped encoder/decoder and horizontal paired skip links using the recognizable U-shaped grammar checked against Ronneberger et al. Figure 1, https://arxiv.org/pdf/1505.04597; borrow contraction/expansion and level-matched skip construction only, not segmentation content or exact layer counts. Keep it compact and readable; do not invent an hourglass or giant central attention gadget. Three scales are schematic level indicators, not a claim about exact layer counts. Show one small attention insert at the right upper scale. The K,V branch enters the top-right portion, while the Latent Denoising label sits upper-left clear of that line. Show Q from the U-Net feature, K,V from the condition encoder. Use Earth from space as condition. Keep one input photo slot at its declared location, all other Earth views explicitly Schematic. Both phase headings remain centered dark text on plain background, never coloured bands.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

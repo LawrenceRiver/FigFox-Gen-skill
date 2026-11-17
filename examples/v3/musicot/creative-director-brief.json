@@ -1,0 +1,30 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Titles are bold dark text directly on white or ordinary panel background: NO coloured title ribbons, tabs, header bars, white reversed headings, or whole-figure banner. Soft colour highlights only meaningful interior content and the key mechanism; avoid a repeated card-header grid. Use a clear matched family of moderately bold, slightly hand-drawn shaft arrows with solid readable triangular heads and palette-matched ink. Keep planned endpoints and exact centerlines; all shafts continuous beside text, including across model titles. Equal peer regions and clean rectangular outer silhouette remain. Retain the 3×3 balanced macro arrangement and the actual collected piano-waveform slot. Give each scientific region a free-standing bold dark heading, with no header ribbon or filled title area. Use small pale indigo cells for CLAP/token content and one amber RVQ mechanism emphasis. The semantic LM is one compact whole-model block; do not expose invented Transformer layers or duplicate oversized model blocks. Keep the actual waveform slot white and empty for post-placement. Scheme arrows are moderately bold hand-drawn dark indigo/navy strokes with identical triangular heads; text conditioning bypasses the sampling region in its exact reserved lane. Keep scientific tokens typeset, including subscripts, and schematic analysis labelled as such.",
+  "notation_map": {
+    "C_clap": "CLAP embeddings",
+    "c_clap": "CLAP token",
+    "cot_bos": "thought start",
+    "cot_eos": "thought end",
+    "T_1": "T₁",
+    "T_2": "T₂",
+    "lambda_1": "λ₁",
+    "lambda_2": "λ₂",
+    "c_mk": "cᵐₖ",
+    "M": "M",
+    "L": "L",
+    "CE": "CE",
+    "CFG": "CFG"
+  },
+  "ideas": [
+    {
+      "id": "content-emphasis",
+      "target_component_id": "rvq",
+      "concept": "Scientific content hierarchy with recognizable model construction and a coherent arrow family.",
+      "visual_intent": "Preserve meaningful miniatures and actual content assets in a regular whole-frame layout.",
+      "construction_plan": "Retain the 3×3 balanced macro arrangement and the actual collected piano-waveform slot. Give each scientific region a free-standing bold dark heading, with no header ribbon or filled title area. Use small pale indigo cells for CLAP/token content and one amber RVQ mechanism emphasis. The semantic LM is one compact whole-model block; do not expose invented Transformer layers or duplicate oversized model blocks. Keep the actual waveform slot white and empty for post-placement. Scheme arrows are moderately bold hand-drawn dark indigo/navy strokes with identical triangular heads; text conditioning bypasses the sampling region in its exact reserved lane. Keep scientific tokens typeset, including subscripts, and schematic analysis labelled as such.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

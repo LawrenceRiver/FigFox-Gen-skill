@@ -1,13 +1,13 @@
 ---
 name: FigFox-Gen-skill
-description: Use when turning a scientific Methodology, with an optional reference image, into one evidence-grounded, human-editable final PNG figure.
+description: Use when turning a scientific Methodology, with an optional reference image, into one evidence-grounded final raster PNG, optionally placing collected visual assets directly.
 metadata:
   short-description: Build evidence-guided single-pass scientific figures
 ---
 
 # FigFox-Gen-skill
 
-Turn a scientific Methodology into one source-grounded PNG1. V2 is the default workflow below. Initialize `input/style-brief.json` for every new run; if no image reference is supplied, use `model_composed`, a null main reference and empty detail/attachment lists. Never fall back to V1 because a new run lacks a file. Original V1 remains separately installable and explicitly callable as `$figfox-gen-v1`; see [versions and migration](references/versions.md).
+Turn a scientific Methodology into one source-grounded PNG1. V3 is the default workflow below. Initialize `input/style-brief.json` for every new run; if no image reference is supplied, use `model_composed`, a null main reference and empty detail/attachment lists. Never fall back to V1 because a new run lacks a file. V1 and V2 remain separately installable and explicitly callable as `$figfox-gen-v1` and `$figfox-gen-v2`; see [versions and migration](references/versions.md).
 
 ## 1. One peer-and-Methodology pass: the visual-needs anchor
 
