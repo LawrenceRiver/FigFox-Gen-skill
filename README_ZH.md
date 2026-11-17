@@ -10,6 +10,14 @@
 
 </div>
 
+## V2 architecture / V2 架构总览
+
+Current default workflow, visualized with FigFox-Gen itself. / 用 FigFox-Gen 自身绘制当前默认版本的完整流程。
+
+<img src="assets/generated-figures/figfox-gen-v2-architecture.png" alt="FigFox-Gen V2 architecture: evidence-grounded planning, single generation and author inspection / V2 架构总览" width="100%" />
+
+[Methodology & generation record / 方法正文与生成记录](examples/v2-architecture/README.md)
+
 `main` 默认提供 V2，发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
 有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
 一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
@@ -39,7 +47,9 @@ V2 按所需粒度采用标准模型的经典结构画法，默认在普通背�
 
 ## 流程概览
 
-原有流程图原样保留，V2 的细化规则见上方更新亮点。
+**V1 原版流程图**
+
+V1 原有流程图在此原样保留，当前 V2 架构图已在首页上方重点展示。
 两张总览图故意采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的
 自上而下主轴。
 

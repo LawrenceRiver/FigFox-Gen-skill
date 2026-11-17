@@ -9,9 +9,17 @@
 
 **同类图需求锚点 · 按需配图 · 有范围的风格借鉴 · 14 组配色 · 最终 PNG1**
 
-[Installation / 安装](#installation) · [Workflow / 工作流程](#workflow) · [Examples / 案例](#examples) · [Version guide / 版本说明](references/versions.md)
+[V2 architecture / V2 架构](#v2-architecture--v2-架构总览) · [Installation / 安装](#installation) · [Workflow / 工作流程](#workflow) · [Examples / 案例](#examples) · [Version guide / 版本说明](references/versions.md)
 
 </div>
+
+## V2 architecture / V2 架构总览
+
+Current default workflow, visualized with FigFox-Gen itself. / 用 FigFox-Gen 自身绘制当前默认版本的完整流程。
+
+<img src="assets/generated-figures/figfox-gen-v2-architecture.png" alt="FigFox-Gen V2 architecture: evidence-grounded planning, single generation and author inspection / V2 架构总览" width="100%" />
+
+[Methodology & generation record / 方法正文与生成记录](examples/v2-architecture/README.md)
 
 V2 is the default on `main`, released as `v2.1.0`. It turns a scientific Methodology
 into one raster PNG1 through a source-grounded drawing plan. Detail follows the method's
@@ -79,14 +87,14 @@ We have also released [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox
 
 ## Workflow overview
 
-**流程概览**
+**V1 original workflow / V1 原版流程图**
 
-The original overview figures are preserved unchanged; the V2 refinements are described above.
+The original V1 overview figures are preserved unchanged below; the current V2 architecture is featured at the top of this page.
 The two figures are intentionally different compositions: the English version
 uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
 side evidence branches.
 
-原有流程图原样保留，V2 的细化规则见上方更新亮点。两张总览图采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的自上而下主轴。
+V1 原有流程图在此原样保留，当前 V2 架构图已在首页上方重点展示。两张总览图采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的自上而下主轴。
 
 <div align="center">
   <table>
