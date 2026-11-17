@@ -8,6 +8,12 @@ This first-pass image visualizes the current generation skill itself, from Metho
 
 [English Methodology](methodology.md) · [中文 Methodology](methodology-zh.md) · [Exact generation prompt / 精确提示词](prompt.md)
 
+## Editable SVG reconstruction / 可编辑 SVG 重建
+
+A separate editable reconstruction is available through [FigFox](https://github.com/LawrenceRiver/FigFox), preserving the original PNG above.
+
+另提供 FigFox 重建的[可编辑 SVG、对照图和编辑验证](editable/README.md)，上方首次 PNG 保持不变。
+
 ## Recorded checks / 检查记录
 
 - One image call, no automatic repair; original PNG preserved unchanged.

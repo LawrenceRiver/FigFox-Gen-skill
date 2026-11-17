@@ -1,0 +1,74 @@
+{
+  "executor": "upstream figfox_plus.factual.contracts.apply_edits",
+  "transactions": 5,
+  "operations": 13,
+  "journal": [
+    {
+      "index": 0,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 1,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 2,
+      "operation": "replace_svg",
+      "executed": true
+    },
+    {
+      "index": 3,
+      "operation": "append_svg",
+      "executed": true
+    },
+    {
+      "index": 4,
+      "operation": "append_svg",
+      "executed": true
+    },
+    {
+      "index": 5,
+      "operation": "append_svg",
+      "executed": true
+    },
+    {
+      "index": 6,
+      "operation": "append_svg",
+      "executed": true
+    },
+    {
+      "index": 7,
+      "operation": "append_svg",
+      "executed": true
+    },
+    {
+      "index": 8,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 9,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 10,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 11,
+      "operation": "replace_svg",
+      "executed": true
+    },
+    {
+      "index": 12,
+      "operation": "set",
+      "executed": true
+    }
+  ],
+  "status": "applied",
+  "visual_acceptance": "separate render inspection required"
+}

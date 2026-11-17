@@ -21,6 +21,8 @@ Current default workflow, visualized with FigFox-Gen itself. / 用 FigFox-Gen �
 
 [Methodology & generation record / 方法正文与生成记录](examples/v2-architecture/README.md)
 
+[Editable SVG / 可编辑 SVG](assets/generated-figures/figfox-gen-v2-architecture-editable.svg) · [SVG preview / SVG 渲染预览](assets/generated-figures/figfox-gen-v2-architecture-editable.png) · [Source comparison & editability / 原图对照与可编辑性](examples/v2-architecture/editable/README.md)
+
 V2 is the default on `main`, released as `v2.1.0`. It turns a scientific Methodology
 into one raster PNG1 through a source-grounded drawing plan. Detail follows the method's
 actual innovations; supporting stages stay at a consistent level. Cached, parallel work

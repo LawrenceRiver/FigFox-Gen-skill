@@ -18,6 +18,8 @@ Current default workflow, visualized with FigFox-Gen itself. / 用 FigFox-Gen �
 
 [Methodology & generation record / 方法正文与生成记录](examples/v2-architecture/README.md)
 
+[Editable SVG / 可编辑 SVG](assets/generated-figures/figfox-gen-v2-architecture-editable.svg) · [SVG preview / SVG 渲染预览](assets/generated-figures/figfox-gen-v2-architecture-editable.png) · [Source comparison & editability / 原图对照与可编辑性](examples/v2-architecture/editable/README.md)
+
 `main` 默认提供 V2，发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
 有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
 一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由

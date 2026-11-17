@@ -1,0 +1,70 @@
+{
+  "reviewer": "calling assistant, sequential source/draft observation pass",
+  "regions": [
+    {
+      "id": "A",
+      "status": "differences",
+      "evidence": "Whole pair inspected, followed by actual source close-ups for preflight and inspection."
+    },
+    {
+      "id": "B",
+      "status": "differences",
+      "evidence": "Whole pair inspected, followed by actual source close-ups for preflight and inspection."
+    },
+    {
+      "id": "C",
+      "status": "differences",
+      "evidence": "Whole pair inspected, followed by actual source close-ups for preflight and inspection."
+    },
+    {
+      "id": "D",
+      "status": "differences",
+      "evidence": "Whole pair inspected, followed by actual source close-ups for preflight and inspection."
+    }
+  ],
+  "issues": [
+    {
+      "id": "title-proportion",
+      "region": "A/B",
+      "source_evidence": "Source title dark-pixel extent is x397–1509.",
+      "initial_evidence": "Initial native title extent is x333–1572.",
+      "repair": "Title remains native text and matches source horizontal extent."
+    },
+    {
+      "id": "caption-overflow",
+      "region": "B/D",
+      "source_evidence": "Optional assets fits within its rounded caption frame.",
+      "initial_evidence": "Initial text reaches beyond the right border.",
+      "repair": "Caption has visible right padding."
+    },
+    {
+      "id": "preflight-return",
+      "region": "D",
+      "source_evidence": "Source lower U connects the first and third nodes, with an upward branch into the middle node.",
+      "initial_evidence": "Initial lower path stopped at the middle node and omitted the third-node leg.",
+      "repair": "The entire U and its separate upward middle branch are visible, matching source."
+    },
+    {
+      "id": "chart-axis-heads",
+      "region": "B/C/D",
+      "source_evidence": "Source miniature chart axes have upward and rightward arrowheads.",
+      "initial_evidence": "Five reconstructed vertical axes had no upward head.",
+      "repair": "All five chart vertical axes now have native upward heads."
+    },
+    {
+      "id": "inspection-zoom-geometry",
+      "region": "C",
+      "source_evidence": "Source plan zoom has a wide smooth rectangle; generated zoom is shifted left and visibly wavy inside a wider dashed box.",
+      "initial_evidence": "Initial zoom rectangles were too narrow, and the generated zoom was too far right and incorrectly perfect.",
+      "repair": "Two wide zoom regions match the source; the generated detail retains its source distortion."
+    }
+  ],
+  "uncertain": [
+    {
+      "description": "The exact generated font family and fine anti-aliasing are not identifiable; Arial is used for native editable text."
+    }
+  ],
+  "source_defects_preserved": [
+    "Parallel Preparation right rail points left into Style & Palette, as in the source; not semantically redesigned."
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "assets": [
+    {
+      "id": "photo-reference",
+      "source_box": [
+        264,
+        254,
+        348,
+        368
+      ],
+      "target_box": [
+        264,
+        254,
+        84,
+        114
+      ],
+      "kind": "local street photograph",
+      "editable_as": "independent movable/replaceable image"
+    },
+    {
+      "id": "photo-assets",
+      "source_box": [
+        953,
+        158,
+        1046,
+        208
+      ],
+      "target_box": [
+        953,
+        158,
+        93,
+        50
+      ],
+      "kind": "local street photograph",
+      "editable_as": "independent movable/replaceable image"
+    },
+    {
+      "id": "photo-placement-source",
+      "source_box": [
+        790,
+        624,
+        882,
+        690
+      ],
+      "target_box": [
+        790,
+        624,
+        92,
+        66
+      ],
+      "kind": "local street photograph",
+      "editable_as": "independent movable/replaceable image"
+    },
+    {
+      "id": "photo-placement-inset",
+      "source_box": [
+        969,
+        698,
+        1038,
+        740
+      ],
+      "target_box": [
+        969,
+        698,
+        69,
+        42
+      ],
+      "kind": "local street photograph",
+      "editable_as": "independent movable/replaceable image"
+    }
+  ],
+  "source_canvas": [
+    1904,
+    826
+  ],
+  "total_embedded_pixel_area": 23196,
+  "whole_image_embedded": false
+}

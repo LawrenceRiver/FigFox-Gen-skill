@@ -1,0 +1,170 @@
+{
+  "planner": "same calling assistant, source reinspection plus stable SVG IDs",
+  "transactions": [
+    {
+      "id": "tx-title-proportion",
+      "issue_ids": [
+        "title-proportion"
+      ],
+      "target_ids": [
+        "figure-title"
+      ],
+      "depends_on": [],
+      "operations": [
+        {
+          "op": "set",
+          "id": "figure-title",
+          "attributes": {
+            "transform": "translate(952 0) scale(0.8975 1) translate(-952 0)"
+          }
+        }
+      ],
+      "postconditions": [
+        "Title remains native text and matches source horizontal extent."
+      ]
+    },
+    {
+      "id": "tx-caption-overflow",
+      "issue_ids": [
+        "caption-overflow"
+      ],
+      "target_ids": [
+        "optional-assets-caption"
+      ],
+      "depends_on": [],
+      "operations": [
+        {
+          "op": "set",
+          "id": "optional-assets-caption",
+          "attributes": {
+            "font-size": "20"
+          }
+        }
+      ],
+      "postconditions": [
+        "Caption has visible right padding."
+      ]
+    },
+    {
+      "id": "tx-preflight-return",
+      "issue_ids": [
+        "preflight-return"
+      ],
+      "target_ids": [
+        "preflight-source-return"
+      ],
+      "depends_on": [],
+      "operations": [
+        {
+          "op": "replace_svg",
+          "id": "preflight-source-return",
+          "svg": "<g xmlns=\"http://www.w3.org/2000/svg\" id=\"preflight-source-return\"><path id=\"preflight-native-return-body\" d=\"M1577 704 V740 H1716 V704\" fill=\"none\" stroke=\"#172335\" stroke-width=\"2\"/><path id=\"preflight-native-return-branch\" d=\"M1645 740 V712\" fill=\"none\" stroke=\"#172335\" stroke-width=\"2\"/><polygon id=\"preflight-native-return-head\" points=\"1645,704 1640,714 1650,714\" fill=\"#172335\"/></g>"
+        }
+      ],
+      "postconditions": [
+        "The entire U and its separate upward middle branch are visible, matching source."
+      ]
+    },
+    {
+      "id": "tx-chart-axis-heads",
+      "issue_ids": [
+        "chart-axis-heads"
+      ],
+      "target_ids": [
+        "arrow-group-31",
+        "arrow-group-38",
+        "arrow-group-105",
+        "arrow-group-92",
+        "arrow-group-86"
+      ],
+      "depends_on": [],
+      "operations": [
+        {
+          "op": "append_svg",
+          "parent_id": "arrow-group-31",
+          "svg": "<polygon xmlns=\"http://www.w3.org/2000/svg\" id=\"axis-up-head-0\" points=\"1325.0,254.0 1322.0,260.0 1328.0,260.0\" fill=\"#111111\"/>"
+        },
+        {
+          "op": "append_svg",
+          "parent_id": "arrow-group-38",
+          "svg": "<polygon xmlns=\"http://www.w3.org/2000/svg\" id=\"axis-up-head-1\" points=\"1544.0,230.0 1541.0,236.0 1547.0,236.0\" fill=\"#111111\"/>"
+        },
+        {
+          "op": "append_svg",
+          "parent_id": "arrow-group-105",
+          "svg": "<polygon xmlns=\"http://www.w3.org/2000/svg\" id=\"axis-up-head-2\" points=\"38.0,681.0 35.0,687.0 41.0,687.0\" fill=\"#111111\"/>"
+        },
+        {
+          "op": "append_svg",
+          "parent_id": "arrow-group-92",
+          "svg": "<polygon xmlns=\"http://www.w3.org/2000/svg\" id=\"axis-up-head-3\" points=\"1048.0,676.0 1045.0,682.0 1051.0,682.0\" fill=\"#111111\"/>"
+        },
+        {
+          "op": "append_svg",
+          "parent_id": "arrow-group-86",
+          "svg": "<polygon xmlns=\"http://www.w3.org/2000/svg\" id=\"axis-up-head-4\" points=\"1219.0,699.0 1216.0,705.0 1222.0,705.0\" fill=\"#111111\"/>"
+        }
+      ],
+      "postconditions": [
+        "All five chart vertical axes now have native upward heads."
+      ]
+    },
+    {
+      "id": "tx-inspection-zoom-geometry",
+      "issue_ids": [
+        "inspection-zoom-geometry"
+      ],
+      "target_ids": [
+        "rect-0110",
+        "rect-0111",
+        "rect-0117",
+        "rect-0118",
+        "path-0100"
+      ],
+      "depends_on": [],
+      "operations": [
+        {
+          "op": "set",
+          "id": "rect-0110",
+          "attributes": {
+            "x": "451",
+            "width": "95"
+          }
+        },
+        {
+          "op": "set",
+          "id": "rect-0111",
+          "attributes": {
+            "x": "464",
+            "y": "715",
+            "width": "65"
+          }
+        },
+        {
+          "op": "set",
+          "id": "rect-0117",
+          "attributes": {
+            "x": "603",
+            "width": "94"
+          }
+        },
+        {
+          "op": "replace_svg",
+          "id": "rect-0118",
+          "svg": "<path xmlns=\"http://www.w3.org/2000/svg\" id=\"rect-0118\" d=\"M626 714 C635 711 648 716 660 714 C671 712 683 715 682 725 L682 741 C682 751 675 752 667 750 C653 753 639 749 627 751 C618 751 618 746 618 737 L618 725 C617 718 620 714 626 714 Z\" fill=\"url(#node-fill)\" stroke=\"#433967\" stroke-width=\"2.5\"/>"
+        },
+        {
+          "op": "set",
+          "id": "path-0100",
+          "attributes": {
+            "d": "M704 658 L651 701"
+          }
+        }
+      ],
+      "postconditions": [
+        "Two wide zoom regions match the source; the generated detail retains its source distortion."
+      ]
+    }
+  ],
+  "unresolved": []
+}

@@ -1,0 +1,66 @@
+{
+  "status": "passed",
+  "executor": "FigFox factual native apply_edits",
+  "operations": [
+    {
+      "op": "text",
+      "id": "title-output",
+      "text": "PNG Export"
+    },
+    {
+      "op": "set",
+      "id": "preflight-node-0",
+      "attributes": {
+        "x": "1560",
+        "fill": "#FFE0B2"
+      }
+    },
+    {
+      "op": "set",
+      "id": "photo-reference",
+      "attributes": {
+        "x": "268"
+      }
+    }
+  ],
+  "journal": [
+    {
+      "index": 0,
+      "operation": "text",
+      "executed": true
+    },
+    {
+      "index": 1,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 2,
+      "operation": "set",
+      "executed": true
+    }
+  ],
+  "native_text_nodes": 66,
+  "photo_elements": 4,
+  "full_canvas_raster": false,
+  "source_pixel_area_embedded_percent": 1.47,
+  "final_unchanged_by_probe": true,
+  "final_sha256": "4c982a0c7ca8157114f00c7897dadaeb9d4fadfc2b0580ae4778d6a42c5a3b91",
+  "element_counts": {
+    "svg": 1,
+    "title": 1,
+    "desc": 11,
+    "defs": 1,
+    "linearGradient": 5,
+    "stop": 10,
+    "rect": 131,
+    "text": 66,
+    "g": 115,
+    "path": 120,
+    "polygon": 74,
+    "image": 4,
+    "circle": 23,
+    "ellipse": 1
+  },
+  "visual_fidelity": "Separate manual whole-image and paired-region inspection; no automatic pass score."
+}
