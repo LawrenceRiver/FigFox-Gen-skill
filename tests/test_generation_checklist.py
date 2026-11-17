@@ -35,6 +35,57 @@ class GenerationChecklistTests(unittest.TestCase):
         self.assertLess(len(prompt),12000)
         for c in self.c2['components']:self.assertIn(c['label'],prompt)
 
+    def test_approved_text_and_symbols_reach_image_packet(self):
+        from scientific_figure_workflow.prompts import _default_creative_director
+        self.save(self.plan())
+        brief = _default_creative_director(self.c2)
+        brief.update(visible_text=['Source Image', 'Editable Result', 'Source Image'],
+                     visible_word_count=6, visible_symbols=['S₀', 'S₁'])
+        prompt = build_prompt1_bundle('Input encodes Output.', self.c1, self.c2, self.c3,
+                                     None, self.root, brief)['prompt']
+        self.assertIn('Approved visible text inventory', prompt)
+        self.assertIn('["Source Image", "Editable Result", "Source Image"]', prompt)
+        self.assertIn('["S₀", "S₁"]', prompt)
+        self.assertIn('Reported English word count: 6', prompt)
+
+    def test_malformed_text_inventory_is_rejected(self):
+        from scientific_figure_workflow.prompts import _default_creative_director
+        self.save(self.plan())
+        brief = _default_creative_director(self.c2)
+        brief.update(visible_text='Source Image', visible_word_count=2, visible_symbols=[])
+        with self.assertRaisesRegex(ValueError, 'visible_text'):
+            build_prompt1_bundle('Input encodes Output.', self.c1, self.c2, self.c3,
+                                 None, self.root, brief)
+
+    def test_text_budget_requires_necessity_and_respects_absolute_maximum(self):
+        from scientific_figure_workflow.prompts import _default_creative_director
+        self.save(self.plan())
+        brief = _default_creative_director(self.c2)
+        brief.update(visible_text=['word ' * 101], visible_word_count=101, visible_symbols=[])
+        def compile_brief():
+            return build_prompt1_bundle('Input encodes Output.', self.c1, self.c2, self.c3,
+                                        None, self.root, brief)
+        with self.assertRaisesRegex(ValueError, 'text_budget_reason'):
+            compile_brief()
+        brief['text_budget_reason'] = 'Essential source-defined branches need distinct labels.'
+        self.assertIn('Reported English word count: 101', compile_brief()['prompt'])
+        brief.update(visible_text=['word ' * 161], visible_word_count=161)
+        with self.assertRaisesRegex(ValueError, '160-word maximum'):
+            compile_brief()
+
+    def test_text_count_cannot_hide_repeated_or_hyphenated_labels(self):
+        from scientific_figure_workflow.prompts import _default_creative_director
+        self.save(self.plan())
+        brief = _default_creative_director(self.c2)
+        brief.update(visible_text=['Source-Guided Model', 'Source-Guided Model'],
+                     visible_word_count=2, visible_symbols=[])
+        with self.assertRaisesRegex(ValueError, 'must match'):
+            build_prompt1_bundle('Input encodes Output.', self.c1, self.c2, self.c3,
+                                 None, self.root, brief)
+        brief['visible_word_count'] = 4
+        self.assertIn('Reported English word count: 4', build_prompt1_bundle(
+            'Input encodes Output.', self.c1, self.c2, self.c3, None, self.root, brief)['prompt'])
+
     def test_missing_edge_route_is_rejected(self):
         plan=self.plan();plan['routes']=[];self.save(plan)
         with self.assertRaisesRegex(ValueError,'every scientific relationship'):self.bundle()

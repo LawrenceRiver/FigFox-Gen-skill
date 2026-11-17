@@ -344,6 +344,7 @@ def build_creative_director_prompt(
         *(checklist_lines(generation_plan, methodology, normalized1, normalized2, normalized3) if generation_plan else _evidence_blocks(methodology, normalized1, normalized2, normalized3)),
         "Return a `creative-director-brief-v1` JSON with `brief` and an `ideas` list. Each idea must include `id`, `target_component_id`, `concept`, `visual_intent`, `construction_plan`, `requires_svg_evidence`, and `svg_crops`.",
         *(["Check the complete visible-text inventory, including IDs and illustrative code. Return notation_map with original-to-typeset aliases for every underscore form that could appear in the figure. Display values contain no underscore. Raw forms are planning-only; there is no code/ID exception."] if generation_plan else []),
+        *(["Return visible_text as the exact intended prose strings in drawing order, including repeated occurrences; visible_word_count as their English word count; and visible_symbols as the separate mathematical-symbol strings. Aim for 100 words or fewer; maximum 160. Above 100 include text_budget_reason explaining necessary scientific distinctions. Do not use extra words if 100 suffices. Hyphenated words count as one; numbers and stage markers count. These fields are planning metadata, never image lettering."] if generation_plan else []),
     ])
     return {
         "format": "creative-director-prompt-bundle-v1",
@@ -397,6 +398,15 @@ def _creative_director_lines(creative_director: Mapping[str, Any]) -> list[str]:
                 f"(paper {crop['source_url']}). Borrow: {'; '.join(crop['borrow'])}. "
                 f"Must change: {'; '.join(crop['must_change'])}. {crop['human_editable_reason']}"
             )
+    if "visible_text" in creative_director:
+        lines.extend([
+            "Approved visible text inventory (only these prose strings may be drawn; repeats are intentional):",
+            json.dumps(creative_director["visible_text"], ensure_ascii=False),
+            "Reported English word count: " + str(creative_director["visible_word_count"]),
+            "Approved mathematical symbol inventory:",
+            json.dumps(creative_director["visible_symbols"], ensure_ascii=False),
+            "All remaining construction descriptions and route meanings are instructions, not additional lettering.",
+        ])
     return lines
 
 

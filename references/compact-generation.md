@@ -118,6 +118,8 @@ Use a fast contribution test: (1) what new mechanism does the source actually cl
 
 ## Reader-facing labels, notation and alignment
 
+Before compiling, apply [text and symbol economy](text-and-symbol-economy.md). Framework/harness figures aim for about 100 English words or fewer and never exceed 160, including headings and every repeated prose label; essential mathematical symbols are inventoried separately. If 100 communicates the science, do not use 160. The Director brief records `visible_text`, `visible_word_count` and `visible_symbols` as additional fields, plus `text_budget_reason` for scientifically necessary text above 100. Name objects with precise two- or three-word phrases, explain each idea once beyond its heading, and remove arrow narration or granular category lists already covered by a short stage summary. Prioritize the framework innovation. Remove generic checks/exclamation/status badges unless each has a necessary scientific meaning. Reference typography and construction do not require copying reference verbosity or decoration. Planning counts and file validation do not guarantee pixel compliance.
+
 `display_labels` optionally maps existing component IDs to concise scientific captions. Internal IDs and original Context2 labels remain intact for provenance; both Creative Director and the generator receive the display captions. Unknown targets and empty captions are errors. Example for FigFox:
 
 ```json

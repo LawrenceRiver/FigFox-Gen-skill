@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+import re
 from collections.abc import Collection, Mapping
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -391,6 +392,21 @@ def validate_creative_director(
         raise ValueError(f"creative director brief format must be {CREATIVE_DIRECTOR_FORMAT}")
     normalized = copy.deepcopy(dict(source))
     normalized["brief"] = _required_string(source, "brief", "creative director brief")
+    if "visible_text" in source:
+        text = source["visible_text"]
+        if not isinstance(text, list) or not text or any(not isinstance(v, str) or not v.strip() for v in text):
+            raise ValueError("visible_text must be a nonempty list of strings; repeated occurrences are allowed")
+        count = sum(len(re.findall(r"[A-Za-z0-9]+(?:[-’'][A-Za-z0-9]+)*", item)) for item in text)
+        reported = source.get("visible_word_count")
+        if type(reported) is not int or reported != count:
+            raise ValueError("visible_word_count must match the visible_text inventory")
+        if count > 160:
+            raise ValueError("visible_text exceeds the 160-word maximum")
+        if count > 100:
+            _required_string(source, "text_budget_reason", "text above 100 words")
+        symbols = source.get("visible_symbols")
+        if not isinstance(symbols, list) or any(not isinstance(v, str) or not v.strip() for v in symbols):
+            raise ValueError("visible_symbols must be a list of nonempty strings; an empty list is allowed")
     if "notation_map" in source:
         from .generation_checklist import validate_notation_map
         normalized["notation_map"] = validate_notation_map(source["notation_map"])

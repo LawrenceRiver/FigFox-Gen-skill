@@ -21,12 +21,17 @@ ROUTING_GRAMMAR = (
 )
 
 LABEL_GRAMMAR = (
-    'Use concise unnumbered scientific headings from this Methodology only; no stage titles from other cases '
-    'or orchestration codes. Default to bold dark or deliberate theme-coloured text on the normal background, '
-    'not automatic coloured title strips or white-on-colour tabs. Fill emphasizes scientific content/mechanisms. '
-    'Text is labels, essential terms and equations. Typeset true subscripts/superscripts; NO visible underscore '
-    'in identifiers or illustrative code. Use approved aliases; raw IDs stay internal. '
-    'Optically align baselines, edges and centers with consistent padding; shorten/reflow before shrinking fonts.'
+    'Use short Methodology-derived headings, no workflow aliases or added counters. Dark titles on white, no filled tabs. '
+    'Align baselines, edges and spacing. No visible underscores, including code/IDs: typeset indices or use approved aliases. '
+    'Keep raw IDs internal; reflow before shrinking fonts.'
+)
+
+ECONOMY_GRAMMAR = (
+    'Emphasize framework innovation. Aim ≤100 English words; never pad. Only scientific necessity permits 101–160; maximum 160. '
+    'Count repeats; hyphenated words count once. Prefer precise 2–3-word object names. Beyond headings, explain each idea once. '
+    'Delete clear-arrow narration and fine lists covered by a summary. Remove generic ticks/warning/status badges unless scientifically needed. '
+    'Borrow warranted architectural chains/stacks, not foreign topology or reference verbosity. '
+    'Render only approved prose/symbol inventories, never instructions; inspect actual pixels.'
 )
 
 GRID_GRAMMAR = (
@@ -245,6 +250,7 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
         'and do not expand supporting internals beyond the innovation-led hierarchy. Reuse already inspected construction evidence.',
         'These are intentional visual content, not ornamental stickers. Keep them small, readable and coherent with the main reference. No invented observations, numerical results or unlabelled decorative particles.',
         '## Typography reference', plan['typography'], LABEL_GRAMMAR,
+        '## Text and symbol economy', ECONOMY_GRAMMAR,
     ]
 
 

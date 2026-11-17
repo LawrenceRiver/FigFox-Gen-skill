@@ -1,5 +1,5 @@
 interface:
-  display_name: "FigFox-Gen-skill V3"
+  display_name: "FigFox-Gen-skill V2"
   short_description: "Plan regular scientific figures with scoped visual evidence"
   default_prompt: "Use $FigFox-Gen-skill to anchor a Methodology in about two inspected peer figures, reuse checked caches and develop need-driven canonical constructions, scoped style traits and a per-run palette in parallel, have Creative Director plan innovation-focused detail, complete rectangular layouts before direction preferences, pale targeted fills, black labels and unpainted bold headings and coherent arrows with notation aliases and exact ports/path points, pass the grid/route preflight, then make one layout image call with optional licensed content inset placement to deliver one final raster PNG1 for author inspection."
 policy:

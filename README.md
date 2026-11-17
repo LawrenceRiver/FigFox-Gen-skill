@@ -1,6 +1,6 @@
 <div align="center">
 
-# FigFox-Gen-skill · V3
+# FigFox-Gen-skill · V2
 
 ### Source-grounded visual planning for one scientific figure.
 
@@ -10,7 +10,7 @@
 
 </div>
 
-V3 is the default on `main`, released as `v3.0.1`. It turns a scientific Methodology
+V2 is the default on `main`, released as `v2.1.0`. It turns a scientific Methodology
 into one raster PNG1 through a source-grounded drawing plan. Detail follows the method's
 actual innovations; supporting stages stay at a consistent level. Cached, parallel work
 resolves the selected visual needs, scoped reference traits and palette before a Creative
@@ -18,17 +18,42 @@ Director fixes the complete rectangular layout and exact connector geometry.
 
 Default visual priority: complete rectangular composition, regular partitions, then directional simplicity within that frame. White space and black text dominate; very pale fills identify important content, while supporting regions remain mostly unfilled.
 
-V3 adds canonical model constructions at the needed granularity, bold headings on the
+V2 includes canonical model constructions at the needed granularity, bold headings on the
 ordinary background, colour emphasis on scientific content, and a coherent arrow family
 that can include broad, rounded or hand-drawn shafts. Optional licensed content insets
 retain the actual collected pixels through deterministic placement. One layout image call
 produces the figure; the generated image or inset composite is the single final PNG1.
 Authors inspect the actual pixels before accepting it. Editable SVG is not a deliverable.
 
-See the [V3 examples and recorded checks](examples/v3-0-1/README.md), the earlier
+See the [earlier preview examples and recorded checks](examples/v3-0-1/README.md), the earlier
 [layout and connector trial](examples/regular-layout-trial/README.md), and the
-[direct visual inset contract](references/direct-visual-insets.md). The original V2 release
-remains pinned at `v2.0.0`; V1 and V2 are explicitly callable as separate legacy skills: `$figfox-gen-v1` and `$figfox-gen-v2`.
+[direct visual inset contract](references/direct-visual-insets.md). The former standalone V2 entry has been retired; the current workflow is the default V2. V1 remains available through the explicit `$figfox-gen-v1` entry.
+
+## What is new in V2
+
+1. **No more overcolored Mermaid-style topology diagrams.** Use a primary visual reference to unify constructions, arrows and typography into a coherent scientific figure.
+2. **Truly simpler logical layouts.** Explore reverse-C, S-shaped and circular arrangements while preserving alignment, clear directional flow and individually checked connections.
+3. **Counterintuitive spatial color rules.** Use related pale colors for neighboring modules, stronger differences across separated regions and usually one accent for the key mechanism.
+4. **Power up with image insets.** Directly incorporate relevant visuals, such as audio waveforms and street views, into the scientific framework.
+5. **Expert-level compression.** Aim for about 100 words, remove repetition and gray microcopy, and use comparable papers’ contribution-level detail to guide how deeply each innovation is explained, with user-adjustable constraints.
+
+We have also released [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill) for turning scientific papers into research poster images.
+
+## Workflow overview
+
+The original overview figures are preserved unchanged; the V2 refinements are described above.
+The two figures are intentionally different compositions: the English version
+uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
+side evidence branches.
+
+<div align="center">
+  <table>
+    <tr>
+      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="English FigFox-Gen workflow" width="100%" /></td>
+      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="Chinese FigFox-Gen vertical workflow" width="100%" /></td>
+    </tr>
+  </table>
+</div>
 
 ## Installation
 
@@ -117,15 +142,15 @@ The original detailed workflow remains in the
 
 ## Examples
 
-### Latest V3 previews — author inspection required
+### Preserved previews — author inspection required
 
-These selected V3 outputs demonstrate the current workflow, including the indigo/violet
+These selected outputs were generated before the V2 naming consolidation and illustrate the workflow, including the indigo/violet
 and amber MusiCoT colour revision. They are previews for inspection, not a guarantee of
 pixel-level scientific or visual acceptance. See the [example report](examples/v3-0-1/README.md)
 for selected artifacts and checks. The [complete recorded inputs](#full-methodology-inputs)
 remain below.
 
-| Methodology | Latest V3 preview |
+| Methodology | Preserved preview |
 |---|---|
 | **Latent Diffusion** · [Rombach et al.](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion V3 preview requiring author inspection" width="620" /> |
 | **MusiCoT** · [source paper](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT V3 indigo violet and amber preview requiring author inspection" width="620" /> |

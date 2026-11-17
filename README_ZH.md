@@ -1,6 +1,6 @@
 <div align="center">
 
-# FigFox-Gen-skill · V3
+# FigFox-Gen-skill · V2
 
 ### 从 Methodology 和真实证据出发，生成一张科研图。
 
@@ -10,23 +10,47 @@
 
 </div>
 
-`main` 默认提供 V3，发布版本为 `v3.0.1`。它从科学 Methodology 出发，形成
+`main` 默认提供 V2，发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
 有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
 一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
 创意师确定完整矩形布局和精确连线几何。
 
 默认视觉优先级为：完整矩形整体、规整分区、在框内尽可能单向传导。以白底、黑字和浅色为主；只对重要内容定向着色，普通支撑区域尽量留白。
 
-V3 按所需粒度采用标准模型的经典结构画法，默认在普通背景上使用粗体标题，把
+V2 按所需粒度采用标准模型的经典结构画法，默认在普通背景上使用粗体标题，把
 颜色重点留给科学内容；箭头采用统一的比例与风格，可使用粗杆、圆角或手绘线条。
 按需选用且已获使用许可的内容插图，通过确定性贴入保留实际素材像素。只调用一次
 图像模型生成布局；生成图或贴入素材后的合成图就是唯一最终 PNG1，由作者检查实际
 像素后决定是否接受，不承诺可编辑 SVG。
 
-查看 [V3 案例与检查记录](examples/v3-0-1/README.md)、此前的
+查看 [此前的预览案例与检查记录](examples/v3-0-1/README.md)、此前的
 [布局和连线对照](examples/regular-layout-trial/README.md)，以及
-[直接视觉插图合同](references/direct-visual-insets.md)。原始 V2 保留在 `v2.0.0`；
-V1、V2 分别保留为 `$figfox-gen-v1`、`$figfox-gen-v2` 独立入口，仅在明确调用时使用。
+[直接视觉插图合同](references/direct-visual-insets.md)。旧的独立 V2 入口已移除，当前流程统一为默认 V2；V1 仍可通过 `$figfox-gen-v1` 明确调用。
+
+## V2 更新亮点
+
+1. **不再出现过度配色的 Mermaid 式拓扑图。** 用主视觉参考统一图形、箭头和字体，让生成结果具有真正科研架构图的构造感。
+2. **真正从简的逻辑布局。** 支持反 C、S 型和环形等排布，整体规整、饱满、对齐，尽可能单向传导，并逐条复查实际箭头的逻辑走向。
+3. **反直觉的空间配色要求。** 相邻模块用相近浅色过渡，远处才拉开色彩差异，关键机制通常只保留一种强调色。
+4. **图片插入开挂。** 音频波形、街景等外部图片可以按科学需要直接嵌入框架图，让具体内容进入方法表达。
+5. **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
+
+我们也已发布 [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill)，用于将科学论文生成为科研海报图片。
+
+## 流程概览
+
+原有流程图原样保留，V2 的细化规则见上方更新亮点。
+两张总览图故意采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的
+自上而下主轴。
+
+<div align="center">
+  <table>
+    <tr>
+      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen English workflow" width="100%" /></td>
+      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文竖向流程图" width="100%" /></td>
+    </tr>
+  </table>
+</div>
 
 ## 安装
 
@@ -101,14 +125,14 @@ Methodology + 约两张实际查看过的同类论文图
 
 ## 案例
 
-### 最新 V3 预览：必须由作者检查
+### 保留的预览：必须由作者检查
 
-这三个选定的 V3 输出展示当前流程，MusiCoT 使用靛蓝／紫色与琥珀色修订版。
+这三个选定输出生成于本次 V2 命名统一之前，展示相关流程，MusiCoT 使用靛蓝／紫色与琥珀色修订版。
 它们是待检查的预览，不保证像素层面的科学与视觉验收通过。所选产物与检查见
 [案例报告](examples/v3-0-1/README.md)。[英文 README](README.md#full-methodology-inputs)
 完整保留三个案例的原始 Methodology，不以关键词摘要替代原文。
 
-| Methodology | 最新 V3 预览 |
+| Methodology | 保留的预览 |
 |---|---|
 | **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion V3 预览，需作者检查" width="620" /> |
 | **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT V3 靛蓝紫色与琥珀色预览，需作者检查" width="620" /> |
