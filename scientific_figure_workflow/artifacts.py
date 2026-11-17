@@ -391,6 +391,9 @@ def validate_creative_director(
         raise ValueError(f"creative director brief format must be {CREATIVE_DIRECTOR_FORMAT}")
     normalized = copy.deepcopy(dict(source))
     normalized["brief"] = _required_string(source, "brief", "creative director brief")
+    if "notation_map" in source:
+        from .generation_checklist import validate_notation_map
+        normalized["notation_map"] = validate_notation_map(source["notation_map"])
     ideas = _records(source.get("ideas"), "creative director ideas")
     known_components = set(component_ids)
     if not known_components:

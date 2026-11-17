@@ -3,6 +3,7 @@ from collections import Counter
 import copy
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROUTING_GRAMMAR = (
@@ -18,13 +19,54 @@ ROUTING_GRAMMAR = (
 )
 
 LABEL_GRAMMAR = (
-    'Use short scientific headings: SVG Reconstruction, Visual Inspection, Native Editing. '
+    'Use short unnumbered scientific headings: SVG Reconstruction, Visual Inspection, Native Editing. '
     'Internal phase codes such as G1/G2 stay in planning, not reader-facing headings. '
     'Keep image text to labels, essential terms and equations. Typeset mathematical indices '
-    'as real subscripts/superscripts, not literal underscores or raw TeX; preserve literal code '
-    'and SVG IDs in monospace. Optically align text baselines, object edges and centers with '
+    'as real subscripts/superscripts. NO visible underscore anywhere, including identifiers '
+    'and illustrative code. Use approved typeset aliases; raw IDs/source code stay in internal records. '
+    'Optically align text baselines, object edges and centers with '
     'consistent spacing/padding. Shorten text or rearrange crowded groups before shrinking fonts.'
 )
+
+GRID_GRAMMAR = (
+    'Fix the canvas and row/column grid first; reserve the final-output cell before drawing. '
+    'Align sibling block edges/baselines; innovation panels may span cells. Fit Visual Check and '
+    'Editable SVG inside that same footprint. If crowded, simplify or reflow upstream content '
+    'rather than extending a dangling last block. Keep flow simple; no added step numbers.'
+)
+
+
+def validate_notation_map(value):
+    if not isinstance(value, dict) or any(
+        not isinstance(source, str) or not source.strip() or
+        not isinstance(display, str) or not display.strip() or '_' in display
+        for source, display in value.items()
+    ):
+        raise ValueError('notation map needs nonempty source/display strings; no underscore in display')
+    return dict(value)
+
+
+def typeset_notation(text, mapping):
+    if not mapping:
+        return text
+    # Preserve actual paths and avoid partial-ID replacements. Change image-facing text only.
+    pattern = r'(?<![\w/])(' + '|'.join(re.escape(k) for k in sorted(mapping, key=len, reverse=True)) + r')(?![\w/])'
+    return re.sub(pattern, lambda match: mapping[match[0]], text)
+
+
+def check_image_notation(prompt, metadata_prefixes=(), attachment_paths=()):
+    text = prompt
+    for path in attachment_paths:
+        text = text.replace(path, '')
+    for prefix in metadata_prefixes:
+        # Exclude only the actual structured occurrence, never that token elsewhere in prose/code.
+        for path in attachment_paths:
+            prefix = prefix.replace(path, '')
+        text = re.sub(r'(?m)^' + re.escape(prefix), '', text)
+    tokens = set(re.findall(r'\b\w+_(?:\{[^}\s]+\}|\([^\)\s]+\)|\w+)|\b\w*_\w*\b', text))
+    missing = tokens
+    if missing:
+        raise ValueError('unmapped underscore notation in image packet: ' + ', '.join(sorted(missing)) + '; add Creative Director notation_map aliases')
 
 
 def _text(record, key, location):
@@ -67,6 +109,10 @@ def validate_generation_plan(plan, context2):
         for key, value in display_labels.items()
     ):
         raise ValueError('display labels must map existing components to nonempty scientific captions')
+    if any('_' in label for label in display_labels.values()):
+        raise ValueError('visible display labels cannot contain an underscore; use typeset notation')
+    if 'notation_map' in plan:
+        validate_notation_map(plan['notation_map'])
     placements = plan.get('placements')
     if not isinstance(placements, list) or any(not isinstance(p, dict) for p in placements):
         raise ValueError('generation plan needs component placements')
@@ -133,12 +179,16 @@ def validate_generation_plan(plan, context2):
     return plan
 
 
-def checklist_lines(plan, methodology, context1, context2, context3):
+def checklist_lines(plan, methodology, context1, context2, context3, *, for_image=False):
     # A digest binds omitted research to replay without putting search transcripts into the image prompt.
     digest = hashlib.sha256(json.dumps([methodology, context1, context2, context3, plan],
         sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     placements = {p['component_id']: p['placement'] for p in plan['placements']}
     display_labels = plan.get('display_labels', {})
+    notation = plan.get('notation_map', {})
+    labels = {c['id']: typeset_notation(display_labels.get(c['id'], c['label']), notation) for c in context2['components']}
+    if for_image and any('_' in label for label in labels.values()):
+        raise ValueError('visible label has an unmapped underscore; add display_labels or notation_map')
     return [
         'Create one complete scientific figure from this locked generation checklist.',
         'Evidence SHA256: ' + digest,
@@ -153,10 +203,11 @@ def checklist_lines(plan, methodology, context1, context2, context3):
            'Keep whole (no invented model internals): ' + ', '.join(plan['detail_hierarchy'].get('keep_whole', [])),
            'Allocate detail to the actual contributions; do not expand standard components just because they are familiar. Match supporting regions at the shared level.'] if 'detail_hierarchy' in plan else []),
         '## Locked overall framework', plan['layout'],
+        GRID_GRAMMAR,
         '## Connector construction (Creative Director and generator)', ROUTING_GRAMMAR,
         'Draw every named component once. A container may be the component itself; do not add duplicate stand-ins. Repeated snapshots inside a component are insets, not extra pipeline nodes.',
         '## Exact components and placement',
-        *[f"- {c['id']} = `{display_labels.get(c['id'], c['label'])}` | {placements[c['id']]} | {c['visual_treatment']}" for c in context2['components']],
+        *[f"- {c['id']} = `{labels[c['id']]}` | {placements[c['id']]} | {c['visual_treatment']}" for c in context2['components']],
         '## Exact directed connections (one arrowhead per relationship)',
         'These relationship labels specify meaning. Show only short relation captions where needed; not every arrow needs visible explanatory text. Preserve essential scientific notation and conditions.',
         *[f"- {r['source_id']}.{r['source_port']} -> {r['target_id']}.{r['target_port']} | `{r['label']}` | {r['via']}" for r in plan['routes']],

@@ -141,3 +141,65 @@ class GenerationChecklistTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'display label'):self.bundle()
         plan['display_labels']={'input':'  '};self.save(plan)
         with self.assertRaisesRegex(ValueError,'display label'):self.bundle()
+
+    def test_visible_identifier_caption_rejects_literal_underscore(self):
+        plan=self.plan();plan['display_labels']={'input':'SVG object p_324'};self.save(plan)
+        with self.assertRaisesRegex(ValueError,'underscore'):self.bundle()
+
+    def test_notation_map_typesets_labels_and_code_without_changing_source(self):
+        self.c2['components'][0]['label']='H_t'
+        self.c2['components'][0]['visual_treatment']='Code example: set p_324 endpoint.'
+        plan=self.plan();plan['notation_map']={'H_t':'Hₜ','p_324':'p₃₂₄'};self.save(plan)
+        p=self.bundle()['prompt']
+        self.assertIn('Hₜ',p);self.assertIn('set p₃₂₄ endpoint',p)
+        self.assertNotIn('H_t',p);self.assertNotIn('p_324',p)
+        self.assertEqual(self.c2['components'][0]['label'],'H_t')
+
+    def test_unmapped_underscore_in_visible_label_stops_generation_packet(self):
+        self.c2['components'][0]['label']='H_t';self.save(self.plan())
+        with self.assertRaisesRegex(ValueError,'underscore'):self.bundle()
+
+    def test_notation_display_cannot_reintroduce_underscore(self):
+        plan=self.plan();plan['notation_map']={'p_324':'p_324'};self.save(plan)
+        with self.assertRaisesRegex(ValueError,'underscore'):self.bundle()
+
+    def test_director_can_supply_identifier_display_notation(self):
+        plan=self.plan();self.save(plan)
+        creative={'format':'creative-director-brief-v1','brief':'no_external_svg_needed','notation_map':{'p_324':'p₃₂₄'},'ideas':[{'id':'local','target_component_id':'input','concept':'native edit','visual_intent':'clear target','construction_plan':'Code example: set p_324 endpoint.','requires_svg_evidence':False,'svg_crops':[]}]}
+        b=build_prompt1_bundle('Input encodes Output.',self.c1,self.c2,self.c3,None,self.root,creative)
+        self.assertIn('set p₃₂₄ endpoint',b['prompt']);self.assertNotIn('p_324',b['prompt'])
+
+    def test_unmapped_identifier_in_creative_code_stops_packet(self):
+        self.save(self.plan())
+        creative={'format':'creative-director-brief-v1','brief':'no_external_svg_needed','ideas':[{'id':'local','target_component_id':'input','concept':'native edit','visual_intent':'clear target','construction_plan':'Code example: set p_324 endpoint.','requires_svg_evidence':False,'svg_crops':[]}]}
+        with self.assertRaisesRegex(ValueError,'underscore'):
+            build_prompt1_bundle('Input encodes Output.',self.c1,self.c2,self.c3,None,self.root,creative)
+
+    def test_notation_conversion_keeps_real_attachment_path_intact(self):
+        from PIL import Image
+        Image.new('RGB',(20,10),'white').save(self.root/'input/H_t.png')
+        self.style['main_reference']['path']='input/H_t.png'
+        (self.root/'input/style-brief.json').write_text(json.dumps(self.style))
+        plan=self.plan();plan['notation_map']={'H_t':'Hₜ'};self.save(plan)
+        b=self.bundle();self.assertIn('input/H_t.png',b['prompt'])
+        self.assertIn('input/H_t.png',[a['path'] for a in b['attachments']])
+
+    def test_bare_underscore_placeholder_is_not_visible_text(self):
+        plan=self.plan();plan['local_visuals'][0]['construction']='Illustrative code: _';self.save(plan)
+        with self.assertRaisesRegex(ValueError,'underscore'):self.bundle()
+
+    def test_plan_and_director_cannot_disagree_on_notation(self):
+        plan=self.plan();plan['notation_map']={'p_324':'p₃₂₄'};self.save(plan)
+        creative={'format':'creative-director-brief-v1','brief':'no_external_svg_needed','notation_map':{'p_324':'p₉'},'ideas':[{'id':'local','target_component_id':'input','concept':'native edit','visual_intent':'clear target','construction_plan':'set p_324 endpoint','requires_svg_evidence':False,'svg_crops':[]}]}
+        with self.assertRaisesRegex(ValueError,'conflicting'):
+            build_prompt1_bundle('Input encodes Output.',self.c1,self.c2,self.c3,None,self.root,creative)
+
+    def test_notation_before_sentence_period_is_converted(self):
+        plan=self.plan();plan['scientific_summary']='The pipeline uses H_t.';plan['notation_map']={'H_t':'Hₜ'};self.save(plan)
+        self.assertIn('uses Hₜ.',self.bundle()['prompt'])
+
+    def test_internal_idea_id_does_not_exempt_same_token_in_visible_code(self):
+        self.save(self.plan())
+        creative={'format':'creative-director-brief-v1','brief':'no_external_svg_needed','ideas':[{'id':'p_324','target_component_id':'input','concept':'native edit','visual_intent':'clear target','construction_plan':'Code example: set p_324 endpoint.','requires_svg_evidence':False,'svg_crops':[]}]}
+        with self.assertRaisesRegex(ValueError,'underscore'):
+            build_prompt1_bundle('Input encodes Output.',self.c1,self.c2,self.c3,None,self.root,creative)

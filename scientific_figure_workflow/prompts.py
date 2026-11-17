@@ -12,7 +12,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 from .style_direction import STYLE_CONTRACT, load_style_brief, style_attachments, style_lines, validate_style_palette
-from .generation_checklist import load_generation_plan, validate_generation_plan, checklist_lines
+from .generation_checklist import load_generation_plan, validate_generation_plan, checklist_lines, validate_notation_map, typeset_notation, check_image_notation
 
 from .artifacts import (
     CREATIVE_DIRECTOR_FORMAT,
@@ -343,6 +343,7 @@ def build_creative_director_prompt(
         ("Respect the global style brief and selected palette. Meaningful label dividers and hand-drawn semantic icons are allowed; do not paste raster stickers or decorative chrome." if style_brief else "Respect the selected multi-colour palette-group lineage and the absolute PNG1 bans on upper title-bands and pasted raster stickers. The creative brief is evidence for Prompt 1, not a licence to override those constraints."),
         *(checklist_lines(generation_plan, methodology, normalized1, normalized2, normalized3) if generation_plan else _evidence_blocks(methodology, normalized1, normalized2, normalized3)),
         "Return a `creative-director-brief-v1` JSON with `brief` and an `ideas` list. Each idea must include `id`, `target_component_id`, `concept`, `visual_intent`, `construction_plan`, `requires_svg_evidence`, and `svg_crops`.",
+        *(["Check the complete visible-text inventory, including IDs and illustrative code. Return notation_map with original-to-typeset aliases for every underscore form that could appear in the figure. Display values contain no underscore. Raw forms are planning-only; there is no code/ID exception."] if generation_plan else []),
     ])
     return {
         "format": "creative-director-prompt-bundle-v1",
@@ -430,6 +431,12 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
     if generation_plan is not None:
         if style is None:
             raise ValueError("generation checklist requires a style brief")
+        notation = dict(generation_plan.get('notation_map', {}))
+        for source, display in normalized_creative.get('notation_map', {}).items():
+            if source in notation and notation[source] != display:
+                raise ValueError('conflicting notation_map aliases for ' + source)
+            notation[source] = display
+        generation_plan = dict(generation_plan, notation_map=validate_notation_map(notation))
         selected = generation_plan.get('attached_reference_paths')
         if selected is not None:
             if not isinstance(selected, list) or any(not isinstance(p, str) for p in selected) or len(selected) != len(set(selected)):
@@ -449,7 +456,7 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
             scope = 'WHOLE FIGURE' if item['role'] == 'style_anchor' else item.get('target_component_id', 'global')
             reference_lines.append(f"- {item['path']} [{size}] | {item['role']} -> {scope} | borrow: {'; '.join(item.get('borrow', [])) or item.get('contract', '')} | change: {'; '.join(item.get('must_change', [])) or 'all source scientific content'}")
         prompt = '\n'.join([
-            *checklist_lines(generation_plan, methodology, normalized1, normalized2, normalized3),
+            *checklist_lines(generation_plan, methodology, normalized1, normalized2, normalized3, for_image=True),
             *style_lines(style),
             '## Scoped image references (attached in manifest order)', *reference_lines,
             'Respect each crop aspect ratio when reading its construction; do not stretch a complete reference onto this new layout. Borrow only the declared grammar, never unrelated source nodes, labels or colours.',
@@ -460,6 +467,18 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
             'Verify every listed arrow endpoint, concise label and semantic inset before finishing. No gray microcopy, pseudo-text, gratuitous gradients, glow, pasted clip-art or decorative badge. Purposeful dividers and hand-drawn semantic icons are allowed. Keep exact repeated geometry regular.',
             'Generate one PNG1. Do not copy planning prose or evidence hashes into the image.',
         ])
+        prompt = typeset_notation(prompt, notation)
+        metadata = [f"- {c['id']} = " for c in normalized2['components']]
+        metadata += [f"- {r['source_id']}.{r['source_port']} -> {r['target_id']}.{r['target_port']} | " for r in generation_plan['routes']]
+        metadata += [f"- `{i['id']}` -> `{i['target_component_id']}`: " for i in normalized_creative['ideas']]
+        metadata += [f"| {v.get('need_id', v['meaning'])} / {v['target_component_id']} | " for v in generation_plan.get('local_visuals', [])]
+        metadata += [f"- {n['id']}: " for n in generation_plan.get('visual_needs', [])]
+        metadata += [line.split(' | borrow: ', 1)[0] + ' | borrow: ' for line in reference_lines]
+        metadata += [line for line in style_lines(style) if line.startswith(('Family:', 'Declared proximity groups:', 'Reading path:'))]
+        metadata += [c['role'] + ': ' for c in normalized3['palette']['colours']]
+        if normalized_creative['brief'] == 'no_external_svg_needed':
+            metadata.append('- no_external_svg_needed')
+        check_image_notation(prompt, [typeset_notation(m, notation) for m in metadata], [a['path'] for a in attachments])
         if len(prompt) > 24000:
             raise ValueError('generation checklist exceeds 24000 characters; shorten planning prose without removing scientific components, routes or invariants')
         return {"format": _FORMAT, "phase": "prompt1", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}
