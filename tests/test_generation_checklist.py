@@ -203,3 +203,9 @@ class GenerationChecklistTests(unittest.TestCase):
         creative={'format':'creative-director-brief-v1','brief':'no_external_svg_needed','ideas':[{'id':'p_324','target_component_id':'input','concept':'native edit','visual_intent':'clear target','construction_plan':'Code example: set p_324 endpoint.','requires_svg_evidence':False,'svg_crops':[]}]}
         with self.assertRaisesRegex(ValueError,'underscore'):
             build_prompt1_bundle('Input encodes Output.',self.c1,self.c2,self.c3,None,self.root,creative)
+
+    def test_generic_guidance_does_not_inject_other_case_stage_names(self):
+        self.c1['domain']='latent image generation';self.save(self.plan())
+        prompt=self.bundle()['prompt']
+        for unrelated in ['SVG Reconstruction', 'Visual Inspection', 'Native Editing', 'Visual Check', 'Editable SVG']:
+            self.assertNotIn(unrelated,prompt)

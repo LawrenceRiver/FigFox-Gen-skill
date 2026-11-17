@@ -19,8 +19,9 @@ ROUTING_GRAMMAR = (
 )
 
 LABEL_GRAMMAR = (
-    'Use short unnumbered scientific headings: SVG Reconstruction, Visual Inspection, Native Editing. '
-    'Internal phase codes such as G1/G2 stay in planning, not reader-facing headings. '
+    'Use short unnumbered scientific headings derived only from this Methodology. '
+    'Never copy stage titles from workflow instructions or other cases. '
+    'Internal orchestration codes stay in planning, not reader-facing headings. '
     'Keep image text to labels, essential terms and equations. Typeset mathematical indices '
     'as real subscripts/superscripts. NO visible underscore anywhere, including identifiers '
     'and illustrative code. Use approved typeset aliases; raw IDs/source code stay in internal records. '
@@ -30,8 +31,8 @@ LABEL_GRAMMAR = (
 
 GRID_GRAMMAR = (
     'Fix the canvas and row/column grid first; reserve the final-output cell before drawing. '
-    'Align sibling block edges/baselines; innovation panels may span cells. Fit Visual Check and '
-    'Editable SVG inside that same footprint. If crowded, simplify or reflow upstream content '
+    'Align sibling block edges/baselines; innovation panels may span cells. Keep every planned block and '
+    'the final output inside that same footprint. If crowded, simplify or reflow upstream content '
     'rather than extending a dangling last block. Keep flow simple; no added step numbers.'
 )
 
