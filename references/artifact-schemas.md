@@ -212,3 +212,8 @@ role contract and a safe run-relative path. PNG1 is the only generated image pat
 ```
 
 A valid run contains exactly one image artifact, png1.png, and stops there.
+
+
+## Experimental optional input/style-brief.json
+
+The full schema, intake CLI and parallel schedule are in [style-first.md](style-first.md). Main-reference metadata names a local input path, source, AI-reference permission and evidence. The style file chooses family, image/traits-only/model-composed mode, borrow/avoid traits, palette_id/dominant_roles/palette_reason, accent_target/contrast_foci/proximity_groups, reading_path/mainline IDs and per-component detail_references. It is compiled into both Creative Director and Prompt1 with a deterministic pixel/brief fingerprint. Creative Director attachments are persisted to creative-director/attachments.json and checked on replay. This optional route changes no existing canonical artifact names for old runs.

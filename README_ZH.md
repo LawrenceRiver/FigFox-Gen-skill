@@ -183,3 +183,13 @@ Skill 随安装包提供恰好 30 张完整、已索引且有署名信息的 Fig
 ```bash
 python scripts/check_installation.py
 ```
+
+
+## Experimental: main style anchor / 主风格参考分支
+
+The `codex/style-anchor` branch adds opt-in Methodology + main-reference intake, separate component references, six style families, compatible palette selection and proximity-aware contrast. Read [the style-first guide and parallel circuit](references/style-first.md). FigureBench and FigFoxBench remain distinct optional sources; see the [source research catalog](references/style-source-notes.md). No user screenshots are bundled; unverified images remain local. Tests validate compilation and permissions, not aesthetic output quality. Main and the installed Skill are unchanged.
+
+```sh
+python scripts/figure_workflow.py init-style --run local/trial --family handdrawn
+python -m unittest discover -s tests -v
+```

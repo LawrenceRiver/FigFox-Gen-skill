@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from .style_direction import load_style_brief, validate_style_palette, validate_creative_style_attachments
+
 import copy
 import json
 import os
@@ -218,7 +220,10 @@ def validate_complete_run(
     component_ids = [component["id"] for component in context2["components"]]
     context3 = validate_context3(load_json_object(root / artifacts["context3"]), component_ids)
     validate_palette(context3["palette"], load_palette_library(palette_library_path))
-    if len(context3["palette"]["dominant_colour_roles"]) != context1["dominant_colour_count"]:
+    style = load_style_brief(root, component_ids)
+    validate_style_palette(style, context3["palette"])
+    expected_count = len(style["dominant_roles"]) if style else context1["dominant_colour_count"]
+    if len(context3["palette"]["dominant_colour_roles"]) != expected_count:
         raise ValueError(
             "Context 1 dominant_colour_count must match Context 3 dominant_colour_roles"
         )
@@ -232,9 +237,11 @@ def validate_complete_run(
 
     methodology = (root / artifacts["methodology"]).read_text(encoding="utf-8")
     creative_prompt = (root / artifacts["creative_director_prompt"]).read_text(encoding="utf-8")
-    expected_creative_prompt = build_creative_director_prompt(
-        methodology, context1, context2, context3
-    )["prompt"]
+    expected_creative_bundle = build_creative_director_prompt(
+        methodology, context1, context2, context3, style
+    )
+    validate_creative_style_attachments(root, expected_creative_bundle["attachments"])
+    expected_creative_prompt = expected_creative_bundle["prompt"]
     if creative_prompt != expected_creative_prompt:
         raise ValueError("Creative Director prompt does not match deterministic compilation")
     creative = validate_creative_director(

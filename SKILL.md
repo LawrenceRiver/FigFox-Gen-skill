@@ -7,6 +7,16 @@ metadata:
 
 # FigFox-Gen-skill
 
+## Experimental style-first route
+
+On `codex/style-anchor`, new style-first tasks use [style-first.md](references/style-first.md). Begin with real Methodology plus an optional main reference (`init-style`); the guide defines six style families, separate global/detail references, FigureBench and FigFoxBench intake, reference-rights handling, typography, proximity-aware colour and explicit arrow/stage rules.
+
+When `input/style-brief.json` exists, that route supersedes the legacy rules below about the first paper deciding colour count, random palette-group selection, matching the entire reference composition, and absolute title-divider bans. The approved global style governs aesthetics; scientific content/provenance remain authoritative. A real scientific header divider or hand-drawn semantic icon can be appropriate. Respect requested `Stage 1/2/3` or `(a)/(b)/(c)` labels; no gray microcopy or default Times New Roman. Necessary italic notes use Arial Italic. Keep all fonts/frames/arrows coherent with the main reference.
+
+At the start, parse a minimal scientific graph, then batch independent domain-paper searches, main-reference inspection/candidate search and local FigureBench/FigFoxBench retrieval **in parallel**. Join and correct Context2 once; palette matching and crop preparation can then run concurrently. Creative Director → Prompt1 → single PNG1 remain dependent. See the guide's circuit for exact boundaries. Do not add extra image calls or redundant full-review rounds.
+
+Without the opt-in style brief, existing runs retain the original contract below. This experimental branch does not replace the installed production skill automatically.
+
 ## Core workflow
 
 Run exactly one image-generation pass and stop at PNG1:

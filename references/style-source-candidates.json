@@ -1,0 +1,235 @@
+{
+  "format": "figfox-style-source-candidates-v1",
+  "researched_on": "2026-11-17",
+  "policy": "Metadata and links only. No downloaded third-party bitmaps added. Aesthetic fit and source identity are separate from redistribution permission. Candidate does not mean approved or beautiful.",
+  "supplied_sources": [
+    {
+      "id": "supplied-01-rnasmol",
+      "title": "RNAsmol — Overview of the RNAsmol framework",
+      "source_url": "https://www.nature.com/articles/s43588-025-00820-x/figures/1",
+      "figure": "Figure 1, panels a–c",
+      "match_status": "exact_visual_match",
+      "visual_evidence": "Compared publisher full-resolution Fig1 with supplied screenshot: augmentation axes, multi-view CNN, graph diffusion and curved evaluation arrow match.",
+      "styles": [
+        "2d_architecture",
+        "concept_led",
+        "evaluation_journey"
+      ],
+      "license": "Exclusive rights; no open image license established",
+      "license_evidence_url": "https://www.nature.com/articles/s43588-025-00820-x#rightslink",
+      "license_evidence": "Publisher Rights and permissions says Springer Nature or licensor holds exclusive rights under publishing agreement.",
+      "redistribution_verified": false
+    },
+    {
+      "id": "supplied-02a-rural",
+      "title": "Digital platform, state, and the reinvention of rurality: A neo-endogenous analysis of China’s “CunBA” phenomenon",
+      "source_url": "https://doi.org/10.1016/j.habitatint.2026.103841",
+      "figure": "Reported Fig.1: An integrated model of platform-mediated neo-endogenous development",
+      "match_status": "screenshot_citation_only",
+      "visual_evidence": "Screenshot inspected; publisher source figure could not be retrieved. Jina DOI access blocked; search did not establish exact figure.",
+      "styles": [
+        "concept_led",
+        "three_column_framework"
+      ],
+      "license": "Unknown",
+      "license_evidence_url": null,
+      "redistribution_verified": false
+    },
+    {
+      "id": "supplied-02b-pbf",
+      "title": "Reconciling national grain security with rural realities: A multi-layered compensation framework for farmland protection in China",
+      "source_url": "https://doi.org/10.1016/j.habitatint.2026.103813",
+      "figure": "Reported Fig.1: The Multi-layered compensation theoretical framework for PBF",
+      "match_status": "screenshot_citation_only",
+      "visual_evidence": "Screenshot inspected; actual publisher figure unavailable in bounded search.",
+      "styles": [
+        "concept_led",
+        "layered_illustration"
+      ],
+      "license": "Unknown",
+      "license_evidence_url": null,
+      "redistribution_verified": false
+    },
+    {
+      "id": "supplied-03-utcs",
+      "title": "UTCS: Effective Unsupervised Temporal Community Search with Pre-training of Temporal Dynamics and Subgraph Knowledge",
+      "source_url": "https://arxiv.org/abs/2506.02784",
+      "figure": "Figure 1, PDF page 2",
+      "match_status": "exact_visual_match",
+      "visual_evidence": "Rendered source PDF p2 and compared: same 0.Preliminaries / 1.0 Feature Initialization / 2.Online Search top row and lower three pretraining modules.",
+      "styles": [
+        "instruction_manual",
+        "staged_pipeline",
+        "parallel_modules"
+      ],
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2506.02784",
+      "license_evidence": "arXiv abstract HTML explicitly links Rights to this article to http://creativecommons.org/licenses/by/4.0/. Diagram has no observed third-party photo credit; ACM footer retains author copyright.",
+      "redistribution_verified": true,
+      "redistribution_conditions": "Attribute authors, paper and source; name CC-BY-4.0 and indicate modifications. Applies to inspected diagram, not arbitrary related assets."
+    },
+    {
+      "id": "supplied-04-lens",
+      "title": "LENS: Multi-level Evaluation of Multimodal Reasoning with Large Language Models",
+      "source_url": "https://github.com/Lens4MLLMs/LENS/blob/main/assets/figs/Brief_illustrations_of_LENS.png",
+      "figure": "Official project asset Brief_illustrations_of_LENS.png; not paper Fig1",
+      "match_status": "exact_visual_match_project_asset",
+      "visual_evidence": "Downloaded official README-linked project image and visually matched the screenshot top figure exactly: three radial sectors, eight tasks, central logo and street photo. Both arXiv v1 and latest Fig1 instead show a tree; do not misattribute screenshot as paper Fig1.",
+      "styles": [
+        "handdrawn",
+        "concept_led",
+        "radial_taxonomy"
+      ],
+      "license": "Figure-specific redistribution not established",
+      "license_evidence_url": "https://arxiv.org/abs/2505.15616v1",
+      "license_evidence": "arXiv v1 links to nonexclusive-distrib/1.0, not CC reuse. Repository license does not establish rights to photo/icons in this exact bitmap.",
+      "redistribution_verified": false
+    },
+    {
+      "id": "supplied-05-nowait",
+      "title": "Wait, Do We Really Need to Wait? Efficient Reasoning via Non-Waiting Inference",
+      "source_url": "https://arxiv.org/abs/2506.08343",
+      "figure": "Figure 1, PDF page 2",
+      "match_status": "exact_visual_match",
+      "visual_evidence": "Rendered arXiv PDF p2: same Textual/Visual/Video QA left column, suppressed Wait/Hmm central tokens and right 31/51/27% results.",
+      "styles": [
+        "instruction_manual",
+        "handdrawn_accents",
+        "parallel_lanes"
+      ],
+      "license": "Article CC-BY-4.0; embedded photograph/icon scope unresolved",
+      "license_evidence_url": "https://arxiv.org/abs/2506.08343",
+      "license_evidence": "arXiv Rights to this article explicitly links CC-BY-4.0. Figure contains QA benchmark photos and clipart; exact constituent rights not checked.",
+      "redistribution_verified": false,
+      "redistribution_conditions": "Do not bundle entire bitmap until benchmark photo/icon scope is resolved; article license alone is insufficient for those components."
+    },
+    {
+      "id": "supplied-06-deepseek",
+      "title": "DeepSeek-R1 / R1-Zero illustrated training explainer",
+      "source_url": null,
+      "figure": "Unknown author/source",
+      "match_status": "unresolved",
+      "visual_evidence": "Supplied robot/GRPO/Training Template two-row diagram inspected. Fareed Khan project overview images were inspected and are DIFFERENT diagrams, so they are only alternatives, not source matches.",
+      "styles": [
+        "handdrawn",
+        "instruction_manual",
+        "training_stages"
+      ],
+      "license": "Unknown",
+      "license_evidence_url": null,
+      "redistribution_verified": false
+    }
+  ],
+  "additional_candidates": [
+    {
+      "id": "candidate-reference-001",
+      "title": "Rapid Model Architecture Adaption for Meta-Learning",
+      "source_url": "https://arxiv.org/abs/2109.04925",
+      "local_reference": "assets/figurebench-references/reference-001.png",
+      "visual_status": "inspected_existing_reference_pixels",
+      "style_family": "three_phase_horizontal_flow",
+      "visual_reason": "Clear three-phase page rhythm; repeated network and deployment groups make stages readable.",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2109.04925",
+      "license_evidence_status": "Inherited from existing local index; not independently reverified in this bounded pass",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-reference-006",
+      "title": "Unsupervised Cross-Task Generalization via Retrieval Augmentation",
+      "source_url": "https://arxiv.org/abs/2204.07937",
+      "local_reference": "assets/figurebench-references/reference-006.png",
+      "visual_status": "inspected_existing_reference_pixels",
+      "style_family": "retrieval_augmented_multistage",
+      "visual_reason": "Compact retrieval instruction diagram with chunky labeled modules; useful for module identity, but dense text needs editing.",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2204.07937",
+      "license_evidence_status": "Inherited from existing local index; not independently reverified in this bounded pass",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-reference-007",
+      "title": "PyramidCLIP: Hierarchical Feature Alignment for Vision-language Model Pretraining",
+      "source_url": "https://arxiv.org/abs/2204.14095",
+      "local_reference": "assets/figurebench-references/reference-007.png",
+      "visual_status": "inspected_existing_reference_pixels",
+      "style_family": "three_column_multimodal_flow",
+      "visual_reason": "Symmetric visual/text branches with an explicit central correspondence zone; useful for parallel architecture.",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2204.14095",
+      "license_evidence_status": "Inherited from existing local index; not independently reverified in this bounded pass",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-reference-013",
+      "title": "Transcormer: Transformer for Sentence Scoring with Sliding Language Modeling",
+      "source_url": "https://arxiv.org/abs/2205.12986",
+      "local_reference": "assets/figurebench-references/reference-013.png",
+      "visual_status": "inspected_existing_reference_pixels",
+      "style_family": "three_lane_attention",
+      "visual_reason": "Three repeated attention lanes: clean parallel alignment and restrained module geometry.",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2205.12986",
+      "license_evidence_status": "Inherited from existing local index; not independently reverified in this bounded pass",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-reference-017",
+      "title": "EfficientFormer: Vision Transformers at MobileNet Speed",
+      "source_url": "https://arxiv.org/abs/2206.01191",
+      "local_reference": "assets/figurebench-references/reference-017.png",
+      "visual_status": "inspected_existing_reference_pixels",
+      "style_family": "staged_backbone_sequence",
+      "visual_reason": "Stage sequence plus two enlarged callouts; good overview/detail hierarchy with little ornament.",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2206.01191",
+      "license_evidence_status": "Inherited from existing local index; not independently reverified in this bounded pass",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-reference-019",
+      "title": "Neuro-Symbolic Procedural Planning with Commonsense Prompting",
+      "source_url": "https://arxiv.org/abs/2206.02928",
+      "local_reference": "assets/figurebench-references/reference-019.png",
+      "visual_status": "inspected_existing_reference_pixels",
+      "style_family": "neuro_symbolic_planning_flow",
+      "visual_reason": "Goal-to-rule-to-plan narrative with a distinct knowledge graph; useful for concept-led planning.",
+      "license": "CC-BY-4.0",
+      "license_evidence_url": "https://arxiv.org/abs/2206.02928",
+      "license_evidence_status": "Inherited from existing local index; not independently reverified in this bounded pass",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-fareed-overview",
+      "title": "DeepSeek R1 Architecture and Training Process from Scratch",
+      "source_url": "https://github.com/FareedKhan-dev/DeepSeek-R1-from-scratch",
+      "figure_url": "https://cdn-images-1.medium.com/max/4150/1*1bPXG0PSGDWdjUxAALbg6Q.png",
+      "visual_status": "inspected_official_readme_linked_asset",
+      "style_family": "handdrawn_instruction_manual",
+      "visual_reason": "Large rough boxes, hand-lettered transition labels, simple branching narrative. Visually inspected; different from supplied DeepSeek screenshot.",
+      "license": "Exact figure rights unresolved; GitHub project license must not be substituted",
+      "license_evidence_url": "https://github.com/FareedKhan-dev/DeepSeek-R1-from-scratch",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    },
+    {
+      "id": "candidate-fareed-train",
+      "title": "Train DeepSeek R1 from Scratch",
+      "source_url": "https://github.com/FareedKhan-dev/train-deepseek-r1",
+      "figure_url": "https://cdn-images-1.medium.com/max/5872/1*XhE5MVuPfOrrbBxgYtHMsg.png",
+      "visual_status": "inspected_official_readme_linked_asset",
+      "style_family": "handdrawn_instruction_manual",
+      "visual_reason": "Sparse staged flow and two outcome branches; handdrawn primitive geometry easy to reconstruct. Visually inspected; different from supplied screenshot.",
+      "license": "Exact figure rights unresolved; GitHub project license must not be substituted",
+      "license_evidence_url": "https://github.com/FareedKhan-dev/train-deepseek-r1",
+      "redistribution_verified": false,
+      "selection_status": "candidate_not_approved"
+    }
+  ]
+}

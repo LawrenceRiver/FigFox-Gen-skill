@@ -18,3 +18,6 @@ Only when the chosen group is insufficient, make targeted web colour-relationshi
 research a deliberate step. Add a related extension only with an allowed relationship,
 an HTTPS evidence URL, and an exact evidence summary recorded in the palette. Never
 invent extension colours without that web colour-relationship research and evidence.
+
+
+For an opt-in style brief, [style-first.md](style-first.md) replaces the paper-colour-count/random-selection rules above: choose a compatible group deliberately, use1-3 dominant roles and a justified proximity plan, and preserve main-reference typography/frames/arrows. Abstract style relationships may guide choice; active swatches remain from the chosen library group. Domain construction evidence does not override the user's global aesthetic.

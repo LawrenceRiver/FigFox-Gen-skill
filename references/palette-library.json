@@ -162,6 +162,63 @@
         {"role": "muted", "hex": "#BEBDDA", "rgb": [190, 189, 218]},
         {"role": "secondary", "hex": "#DAD7E8", "rgb": [218, 215, 232]}
       ]
+    },
+    {
+      "id": "style-blue-violet-amber-01",
+      "name": "Authored analogous blue-violet with one amber focus",
+      "tags": [
+        "style-anchor",
+        "analogous",
+        "handdrawn",
+        "one-accent"
+      ],
+      "colours": [
+        {
+          "role": "primary",
+          "hex": "#5265A5",
+          "rgb": [
+            82,
+            101,
+            165
+          ]
+        },
+        {
+          "role": "secondary",
+          "hex": "#7861A8",
+          "rgb": [
+            120,
+            97,
+            168
+          ]
+        },
+        {
+          "role": "accent",
+          "hex": "#D98A37",
+          "rgb": [
+            217,
+            138,
+            55
+          ]
+        },
+        {
+          "role": "ink",
+          "hex": "#243047",
+          "rgb": [
+            36,
+            48,
+            71
+          ]
+        },
+        {
+          "role": "surface",
+          "hex": "#EEF0F8",
+          "rgb": [
+            238,
+            240,
+            248
+          ]
+        }
+      ]
     }
   ]
 }

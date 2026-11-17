@@ -15,6 +15,7 @@ sys.path.insert(0, str(REPOSITORY_ROOT))
 
 _BOOTSTRAP_ERROR: ImportError | None = None
 try:
+    from scientific_figure_workflow.style_direction import load_style_brief, style_palette, validate_style_palette, init_style_run, validate_creative_style_attachments
     from check_installation import validate_installation  # noqa: E402
     from scientific_figure_workflow import (  # noqa: E402
         build_prompt1_bundle,
@@ -128,7 +129,9 @@ def _cmd_validate_reference_coverage(arguments: argparse.Namespace) -> dict[str,
 def _cmd_validate_palette(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
     context3 = load_json_object(root / _CONTEXT_PATHS[3])
-    return validate_palette(context3.get("palette"), _palette_library())
+    palette = validate_palette(context3.get("palette"), _palette_library())
+    validate_style_palette(load_style_brief(root), palette)
+    return palette
 
 
 def _cmd_select_palette(arguments: argparse.Namespace) -> dict[str, Any]:
@@ -137,7 +140,8 @@ def _cmd_select_palette(arguments: argparse.Namespace) -> dict[str, Any]:
     context2 = validate_context2(load_json_object(root / _CONTEXT_PATHS[2]))
     context3 = load_json_object(root / _CONTEXT_PATHS[3])
     validate_context3(context3, _component_ids(context2))
-    selected = select_palette_group(
+    style = load_style_brief(root, _component_ids(context2))
+    selected = style_palette(style, _palette_library()) if style else select_palette_group(
         _palette_library(),
         context1["dominant_colour_count"],
         seed=arguments.seed,
@@ -158,11 +162,12 @@ def _cmd_build_creative_director_prompt(arguments: argparse.Namespace) -> dict[s
     root = _run_root(arguments.run)
     context1, context2, context3 = _contexts(root)
     methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
-    bundle = build_creative_director_prompt(methodology, context1, context2, context3)
+    bundle = build_creative_director_prompt(methodology, context1, context2, context3, load_style_brief(root, _component_ids(context2)))
     destination = root / "creative-director"
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "prompt.md").write_text(bundle["prompt"], encoding="utf-8")
-    return {"phase": "creative_director", "path": "creative-director/prompt.md"}
+    write_json_atomic(destination / "attachments.json", bundle["attachments"])
+    return {"phase": "creative_director", "path": "creative-director/prompt.md", "attachments": "creative-director/attachments.json"}
 
 
 def _cmd_validate_creative_director(arguments: argparse.Namespace) -> dict[str, Any]:
@@ -188,9 +193,11 @@ def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
     creative_brief_path = root / _RUN_ARTIFACTS["creative_director_brief"]
     if not creative_prompt_path.is_file() or not creative_brief_path.is_file():
         raise ValueError("build-prompt1 requires the Creative Director prompt and brief")
-    expected_creative_prompt = build_creative_director_prompt(
-        methodology, context1, context2, context3
-    )["prompt"]
+    expected_creative_bundle = build_creative_director_prompt(
+        methodology, context1, context2, context3, load_style_brief(root, _component_ids(context2))
+    )
+    validate_creative_style_attachments(root, expected_creative_bundle["attachments"])
+    expected_creative_prompt = expected_creative_bundle["prompt"]
     if creative_prompt_path.read_text(encoding="utf-8") != expected_creative_prompt:
         raise ValueError("Creative Director prompt does not match deterministic compilation")
     creative = validate_creative_director(
@@ -217,6 +224,14 @@ def _cmd_validate_run(arguments: argparse.Namespace) -> dict[str, Any]:
 def _parser() -> _Parser:
     parser = _Parser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
+    start = commands.add_parser("init-style")
+    start.add_argument("--run",required=True)
+    start.add_argument("--family",choices=("instruction_manual","architecture_2d","concept_led","handdrawn","volumetric_chromatic","story_schematic"),default="handdrawn")
+    start.add_argument("--methodology")
+    start.add_argument("--reference")
+    start.add_argument("--source-kind",choices=("user_provided","figurebench","figfoxbench","web"),default="user_provided")
+    start.add_argument("--source",default="user provided; original source unresolved")
+    start.set_defaults(handler=lambda a:init_style_run(a.run,a.family,methodology=a.methodology,reference=a.reference,source_kind=a.source_kind,source=a.source))
     installation = commands.add_parser("check-installation")
     installation.add_argument("--root", default=REPOSITORY_ROOT)
     installation.set_defaults(handler=_cmd_check_installation)
