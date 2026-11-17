@@ -61,24 +61,25 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 4. **图片插入开挂。** 音频波形、街景等外部图片可以按科学需要直接嵌入框架图，让具体内容进入方法表达。
 5. **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
 
+## 案例
+
+### Latent Diffusion
+
+<img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion generated figure / 科研图生成案例" width="100%" />
+
+### MusiCoT
+
+<img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT generated figure / 科研图生成案例" width="100%" />
+
+### AlphaFold 3
+
+<img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 generated figure / 科研图生成案例" width="100%" />
+
+[Source papers, Methodology and recorded checks / 原论文、方法正文与检查记录](examples/v3-0-1/README.md) · [Complete Methodology inputs / 完整方法输入](README.md#full-methodology-inputs)
+
+These are preserved generated previews for author inspection. / 以上为保留的生成预览，需作者检查。
+
 我们也已发布 [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill)，用于将科学论文生成为科研海报图片。
-
-## 流程概览
-
-**V1 原版流程图**
-
-V1 原有流程图在此原样保留，当前 V2 架构图已在首页上方重点展示。
-两张总览图故意采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的
-自上而下主轴。
-
-<div align="center">
-  <table>
-    <tr>
-      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="FigFox-Gen English workflow" width="100%" /></td>
-      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="FigFox-Gen 中文竖向流程图" width="100%" /></td>
-    </tr>
-  </table>
-</div>
 
 ## 安装
 
@@ -151,22 +152,7 @@ Methodology + 约两张实际查看过的同类论文图
 [紧凑生成合同](references/compact-generation.md)。旧版详细工作流保留在
 [V1 标签文档](https://github.com/LawrenceRiver/FigFox-Gen-skill/blob/v1.0.0/README_ZH.md)。
 
-## 案例
-
-### 保留的预览：必须由作者检查
-
-这三个选定输出生成于本次 V2 命名统一之前，展示相关流程，MusiCoT 使用靛蓝／紫色与琥珀色修订版。
-它们是待检查的预览，不保证像素层面的科学与视觉验收通过。所选产物与检查见
-[案例报告](examples/v3-0-1/README.md)。[英文 README](README.md#full-methodology-inputs)
-完整保留三个案例的原始 Methodology，不以关键词摘要替代原文。
-
-| Methodology | 保留的预览 |
-|---|---|
-| **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion V3 预览，需作者检查" width="620" /> |
-| **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT V3 靛蓝紫色与琥珀色预览，需作者检查" width="620" /> |
-| **AlphaFold 3** · [Abramson 等](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 V3 预览，需作者检查" width="620" /> |
-
-### 原样保留的 V1 案例
+## 历史 V1 案例
 
 旧图与原路径保持不变，作为 V1 案例；历史配色预览展示的是旧版颜色库。
 
@@ -176,8 +162,6 @@ Methodology + 约两张实际查看过的同类论文图
 | MusiCoT | <img src="assets/generated-figures/03-musicot.png" alt="保留的 V1 MusiCoT 案例" width="620" /> |
 | AlphaFold 3 | <img src="assets/generated-figures/04-alphafold3.png" alt="保留的 V1 AlphaFold 3 案例" width="620" /> |
 
-[V1 英文流程图](assets/generated-figures/01-figfox-gen-workflow.png) ·
-[V1 中文流程图](assets/generated-figures/01-figfox-gen-workflow-zh.png) ·
 [V1 FigureBench/配色预览](assets/figurebench-palette-preview.png)
 
 ## 内置参考包

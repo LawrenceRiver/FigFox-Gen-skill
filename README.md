@@ -99,29 +99,29 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
    **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
 
+## Examples
+
+**案例展示**
+
+### Latent Diffusion
+
+<img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion generated figure / 科研图生成案例" width="100%" />
+
+### MusiCoT
+
+<img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT generated figure / 科研图生成案例" width="100%" />
+
+### AlphaFold 3
+
+<img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 generated figure / 科研图生成案例" width="100%" />
+
+[Source papers, Methodology and recorded checks / 原论文、方法正文与检查记录](examples/v3-0-1/README.md) · [Complete Methodology inputs / 完整方法输入](README.md#full-methodology-inputs)
+
+These are preserved generated previews for author inspection. / 以上为保留的生成预览，需作者检查。
+
 We have also released [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill) for turning scientific papers into research poster images.
 
 我们也已发布 [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill)，用于将科学论文生成为科研海报图片。
-
-## Workflow overview
-
-**V1 original workflow / V1 原版流程图**
-
-The original V1 overview figures are preserved unchanged below; the current V2 architecture is featured at the top of this page.
-The two figures are intentionally different compositions: the English version
-uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
-side evidence branches.
-
-V1 原有流程图在此原样保留，当前 V2 架构图已在首页上方重点展示。两张总览图采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的自上而下主轴。
-
-<div align="center">
-  <table>
-    <tr>
-      <td width="72%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow.png" alt="English FigFox-Gen workflow" width="100%" /></td>
-      <td width="28%" valign="top"><img src="assets/generated-figures/01-figfox-gen-workflow-zh.png" alt="Chinese FigFox-Gen vertical workflow" width="100%" /></td>
-    </tr>
-  </table>
-</div>
 
 ## Installation
 
@@ -208,23 +208,7 @@ See [SKILL.md](SKILL.md) for execution instructions and
 The original detailed workflow remains in the
 [V1 tagged documentation](https://github.com/LawrenceRiver/FigFox-Gen-skill/blob/v1.0.0/README.md).
 
-## Examples
-
-### Preserved previews — author inspection required
-
-These selected outputs were generated before the V2 naming consolidation and illustrate the workflow, including the indigo/violet
-and amber MusiCoT colour revision. They are previews for inspection, not a guarantee of
-pixel-level scientific or visual acceptance. See the [example report](examples/v3-0-1/README.md)
-for selected artifacts and checks. The [complete recorded inputs](#full-methodology-inputs)
-remain below.
-
-| Methodology | Preserved preview |
-|---|---|
-| **Latent Diffusion** · [Rombach et al.](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion V3 preview requiring author inspection" width="620" /> |
-| **MusiCoT** · [source paper](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT V3 indigo violet and amber preview requiring author inspection" width="620" /> |
-| **AlphaFold 3** · [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 V3 preview requiring author inspection" width="620" /> |
-
-### Preserved V1 examples
+## Historical V1 examples
 
 These original assets remain unchanged as V1 examples, including both workflow overviews
 and the historical palette preview (which depicts the older library).
@@ -235,8 +219,6 @@ and the historical palette preview (which depicts the older library).
 | MusiCoT | <img src="assets/generated-figures/03-musicot.png" alt="Preserved V1 MusiCoT example" width="620" /> |
 | AlphaFold 3 | <img src="assets/generated-figures/04-alphafold3.png" alt="Preserved V1 AlphaFold 3 example" width="620" /> |
 
-[V1 English workflow](assets/generated-figures/01-figfox-gen-workflow.png) ·
-[V1 Chinese workflow](assets/generated-figures/01-figfox-gen-workflow-zh.png) ·
 [V1 FigureBench/palette preview](assets/figurebench-palette-preview.png)
 
 ## Full Methodology inputs
