@@ -123,3 +123,21 @@ class GenerationChecklistTests(unittest.TestCase):
         manifest={'format':'scholarly-domain-figure-manifest-v1','sources':sources}
         with self.assertRaisesRegex(ValueError,'3 or 4'):validate_web_manifest(manifest,self.root,self.c1)
         self.assertEqual(len(validate_web_manifest(manifest,self.root,self.c1,minimum_sources=2)['sources']),2)
+
+    def test_display_labels_shorten_internal_stage_names_without_changing_source(self):
+        self.c2['components'][0]['label']='G1: internal paired inspection stage'
+        plan=self.plan();plan['display_labels']={'input':'Visual Inspection'};self.save(plan)
+        prompt=self.bundle()['prompt']
+        self.assertIn('Visual Inspection',prompt)
+        self.assertNotIn('G1: internal paired inspection stage',prompt)
+        self.assertEqual(self.c2['components'][0]['label'],'G1: internal paired inspection stage')
+        from scientific_figure_workflow.generation_checklist import load_generation_plan
+        director=build_creative_director_prompt('Source method',self.c1,self.c2,self.c3,load_style_brief(self.root),load_generation_plan(self.root,self.c2))
+        self.assertIn('Visual Inspection',director['prompt'])
+        self.assertNotIn('G1: internal paired inspection stage',director['prompt'])
+
+    def test_display_labels_reject_unknown_targets_and_empty_captions(self):
+        plan=self.plan();plan['display_labels']={'absent':'Inspect'};self.save(plan)
+        with self.assertRaisesRegex(ValueError,'display label'):self.bundle()
+        plan['display_labels']={'input':'  '};self.save(plan)
+        with self.assertRaisesRegex(ValueError,'display label'):self.bundle()

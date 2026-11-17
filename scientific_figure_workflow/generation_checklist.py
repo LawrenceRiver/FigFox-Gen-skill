@@ -17,6 +17,15 @@ ROUTING_GRAMMAR = (
     'Mainline arrows should read immediately; return loops use a separate perimeter lane.'
 )
 
+LABEL_GRAMMAR = (
+    'Use short scientific headings: SVG Reconstruction, Visual Inspection, Native Editing. '
+    'Internal phase codes such as G1/G2 stay in planning, not reader-facing headings. '
+    'Keep image text to labels, essential terms and equations. Typeset mathematical indices '
+    'as real subscripts/superscripts, not literal underscores or raw TeX; preserve literal code '
+    'and SVG IDs in monospace. Optically align text baselines, object edges and centers with '
+    'consistent spacing/padding. Shorten text or rearrange crowded groups before shrinking fonts.'
+)
+
 
 def _text(record, key, location):
     value = record.get(key)
@@ -52,6 +61,12 @@ def validate_generation_plan(plan, context2):
     if not isinstance(invariants, list) or not invariants or any(not isinstance(v, str) or not v.strip() for v in invariants):
         raise ValueError('generation plan needs explicit scientific invariants')
     ids = {c['id'] for c in context2['components']}
+    display_labels = plan.get('display_labels', {})
+    if not isinstance(display_labels, dict) or any(
+        key not in ids or not isinstance(value, str) or not value.strip()
+        for key, value in display_labels.items()
+    ):
+        raise ValueError('display labels must map existing components to nonempty scientific captions')
     placements = plan.get('placements')
     if not isinstance(placements, list) or any(not isinstance(p, dict) for p in placements):
         raise ValueError('generation plan needs component placements')
@@ -123,6 +138,7 @@ def checklist_lines(plan, methodology, context1, context2, context3):
     digest = hashlib.sha256(json.dumps([methodology, context1, context2, context3, plan],
         sort_keys=True, ensure_ascii=False).encode()).hexdigest()
     placements = {p['component_id']: p['placement'] for p in plan['placements']}
+    display_labels = plan.get('display_labels', {})
     return [
         'Create one complete scientific figure from this locked generation checklist.',
         'Evidence SHA256: ' + digest,
@@ -140,8 +156,9 @@ def checklist_lines(plan, methodology, context1, context2, context3):
         '## Connector construction (Creative Director and generator)', ROUTING_GRAMMAR,
         'Draw every named component once. A container may be the component itself; do not add duplicate stand-ins. Repeated snapshots inside a component are insets, not extra pipeline nodes.',
         '## Exact components and placement',
-        *[f"- {c['id']} = `{c['label']}` | {placements[c['id']]} | {c['visual_treatment']}" for c in context2['components']],
+        *[f"- {c['id']} = `{display_labels.get(c['id'], c['label'])}` | {placements[c['id']]} | {c['visual_treatment']}" for c in context2['components']],
         '## Exact directed connections (one arrowhead per relationship)',
+        'These relationship labels specify meaning. Show only short relation captions where needed; not every arrow needs visible explanatory text. Preserve essential scientific notation and conditions.',
         *[f"- {r['source_id']}.{r['source_port']} -> {r['target_id']}.{r['target_port']} | `{r['label']}` | {r['via']}" for r in plan['routes']],
         'Ports name the actual object/frame boundary. Never stop at an empty margin, nearby input, or unrelated enclosing stage. Independent evidence edges have distinct landing ports and arrowheads; crossings are not junctions. Do not merge unrelated evidence into one long bus.',
         '## One-to-one drawing correspondence',
@@ -149,5 +166,5 @@ def checklist_lines(plan, methodology, context1, context2, context3):
         '| --- | --- | --- |',
         *[f"| {v.get('need_id', v['meaning'])} / {v['target_component_id']} | {v['basis']} | {v['construction']} |" for v in plan.get('local_visuals', [])],
         'These are intentional visual content, not ornamental stickers. Keep them small, readable and coherent with the main reference. No invented observations, numerical results or unlabelled decorative particles.',
-        '## Typography reference', plan['typography'],
+        '## Typography reference', plan['typography'], LABEL_GRAMMAR,
     ]

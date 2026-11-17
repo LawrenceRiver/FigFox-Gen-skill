@@ -80,3 +80,12 @@ class IntakeSourceTests(unittest.TestCase):
    root=Path(t);m=root/'m.md';m.write_text('True methodology.');image=root/'bench.png';Image.new('RGB',(20,10),'white').save(image)
    run=root/'run';init_style_run(run,'architecture_2d',methodology=m,reference=image,source_kind='figfoxbench',source='sample-0001;original rights unresolved')
    b=json.loads((run/'input/style-brief.json').read_text());self.assertEqual(b['main_reference']['source_kind'],'figfoxbench');self.assertFalse(b['main_reference']['ai_reference_permitted']);self.assertEqual((run/'input/methodology.md').read_text(),m.read_text())
+
+class PaletteIntakeTests(unittest.TestCase):
+ def test_new_intake_requires_reference_matched_palette_instead_of_fixed_example(self):
+  from scientific_figure_workflow.style_direction import init_style_run
+  with tempfile.TemporaryDirectory() as directory:
+   root=Path(directory)/'run';init_style_run(root,'handdrawn')
+   brief=json.loads((root/'input/style-brief.json').read_text())
+   library=json.loads((Path(__file__).resolve().parents[1]/'references/palette-library.json').read_text())['palettes']
+   self.assertNotIn(brief['palette_id'],{p['id'] for p in library})

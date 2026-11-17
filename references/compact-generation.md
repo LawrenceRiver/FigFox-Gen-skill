@@ -107,3 +107,29 @@ Do one peer/Methodology synthesis before borrowing: about two actually inspected
 Defined visual-need IDs must each have a drawing correspondence; unknown or uncovered IDs fail compilation. This is coverage of needed visual concepts, not an image-search obligation per component. The generated packet contains one compact correspondence table. `detail_hierarchy` sends innovation focus, finest visible unit and common supporting depth to both Creative Director and image model; known component IDs are checked. Older archived plans without these fields remain readable.
 
 Use a fast contribution test: (1) what new mechanism does the source actually claim? (2) what is the finest visible unit in the inspected peers? (3) at that unit, what must be drawn to explain our contribution? (4) which supporting parts should stay at a common coarser level? Usually one or two contribution themes, but do not manufacture or suppress claims to hit a count. A familiar model is a whole block unless model internals are the innovation. At the same supporting level, avoid arbitrary uneven expansion. Scientific relationships remain complete even when internal detail is collapsed. The compiler validates IDs and coverage, not whether an innovation claim is true; verify claims against Methodology.
+
+
+## Reader-facing labels, notation and alignment
+
+`display_labels` optionally maps existing component IDs to concise scientific captions. Internal IDs and original Context2 labels remain intact for provenance; both Creative Director and the generator receive the display captions. Unknown targets and empty captions are errors. Example for FigFox:
+
+```json
+{
+  "display_labels": {
+    "draft": "SVG Draft S₀",
+    "inspect": "Visual Inspection",
+    "plan": "Repair Planning",
+    "execute": "Native Editing",
+    "verify": "Visual Check",
+    "output": "Editable SVG S₁"
+  }
+}
+```
+
+Use “SVG Reconstruction” as a stage heading when it describes the actual operation. Do not turn these examples into a fixed taxonomy. G1/G2 are internal phase aliases in this workflow; use ordinary scientific terms on the image. Preserve genuine scientific model names if a term is actually a named contribution. A short caption must preserve meaning, not rename the method arbitrarily.
+
+Typeset H with a true subscript t, and J with a subscript train; H_t/J_train are input notation, not literal image lettering. Never blindly replace underscores in actual code, filenames or stable SVG IDs such as p_324: those remain exact in code/monospace. Put short necessary mathematical conditions in readable type. Avoid prose-heavy explanations and routine captions on every connector. Optical alignment includes baselines, repeated-element centers, shared edges, margins and spacing; do not use tiny gray notes to make an overcrowded layout fit.
+
+## Colour examples are not a default theme
+
+Purple/blue/orange in previous examples illustrates analogous bases and a controlled emphasis. It does not require those hues on later figures. New intake leaves `palette_id` to be selected from the approved library after matching the actual reference. Do not carry the previous run's palette merely because it compiled. Evaluate each figure independently; similar colours may still be appropriate, and forced variety is unnecessary. Only explicit user colour constraints lock exact hues. Once chosen, palette validation continues to keep that run coherent.

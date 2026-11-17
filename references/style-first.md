@@ -44,6 +44,8 @@ AI-reference permission and public redistribution are different scopes. This bra
 
 ## Colour, typography and routing
 
+Previous purple/blue/orange examples demonstrate relationships only, not a permanent theme. Match a palette independently per task; reuse is allowed when it fits. Exact hues require an explicit user constraint.
+
 Select one approved palette group deliberately for the main style's cool/warm balance, saturation and contrast relationships; `select-palette` is deterministic with a style brief. `palette_reason` explains the match. Do not randomly pick a different group after the style is fixed. Domain-paper colour counts remain observations, not a style mandate.
 
 Normally use one base colour family with a second accent family; retain1-3 `dominant_roles`, and justify a third. Neutrals/tints and nearby blue-violet shades are not independent decorative themes. Neighboring base frames use analogous light fills, with at most one strong local contrast focus. `contrast_foci` contains the `accent_target`; at most two foci are allowed, and two require a distant-layout reason plus `proximity_groups` showing they are not adjacent. This checks the declared plan, not eventual image pixels. Use deeper colour for meaningful main marks and lighter supporting views (or a deliberate reference-supported inverse). Keep dark/black type readable and coherent. Do not automatically paint all shapes or labels pastel.
