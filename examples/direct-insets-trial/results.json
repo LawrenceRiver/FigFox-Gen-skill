@@ -1,0 +1,90 @@
+{
+  "image_generation_calls": 3,
+  "image_edit_calls": 0,
+  "style_reference_attachments": 0,
+  "direct_content_assets_per_case": 1,
+  "retrieval": "Cached scientific peers plus targeted real-asset retrieval; not a cold end-to-end benchmark.",
+  "cases": [
+    {
+      "case": "latent-diffusion",
+      "seconds": 35.908,
+      "prompt_sha256": "cf7c32ad904c592f8a051e1dd07eb93a179cd1f1f390c58e35f2e6f91bba8c4c",
+      "composition_replay_seconds": null,
+      "full_run_validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "composition_verified": {
+        "decoded_pixels_identical_after_archive_relocation": true,
+        "source_file_sha256": "fbbd8a21806fe627349aad11b2c0157779f12dac2118a37b7f7fd58d8f2c52ca",
+        "output_sha256": "7423401e046e524724e9c57c144447d9064e23053301cd745fe91dc548abc472",
+        "actual_box": [
+          54,
+          159,
+          185,
+          185
+        ]
+      },
+      "pixels": [
+        1616,
+        973
+      ],
+      "final": "assets/generated-figures/direct-insets-trial/latent-diffusion.png"
+    },
+    {
+      "case": "musicot",
+      "seconds": 42.234,
+      "prompt_sha256": "ad56df66ca19890767ca66c20ddd12051c98fbdfb9402b5008a1a8d03a7227a4",
+      "composition_replay_seconds": 0.253,
+      "full_run_validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "composition_verified": {
+        "decoded_pixels_identical_after_archive_relocation": true,
+        "source_file_sha256": "c53202e42f47e6f35a22bc682765292591c493190179abb81962a95e18f7cf4c",
+        "output_sha256": "8f8e5fc483ea883fc89b3ed4382618f15059a8049802d26321386af920203c5d",
+        "actual_box": [
+          58,
+          187,
+          374,
+          135
+        ]
+      },
+      "pixels": [
+        1606,
+        979
+      ],
+      "final": "assets/generated-figures/direct-insets-trial/musicot.png"
+    },
+    {
+      "case": "alphafold3",
+      "seconds": 83.499,
+      "prompt_sha256": "75e4df842616b6e218df861043753a1fb073c61a3776fe9984d53c037a87dcbe",
+      "composition_replay_seconds": 0.259,
+      "full_run_validation": {
+        "returncode": 2,
+        "stdout": "",
+        "stderr": "Context 3 coverage_matrix does not match preserved FigureBench request\n"
+      },
+      "composition_verified": {
+        "decoded_pixels_identical_after_archive_relocation": true,
+        "source_file_sha256": "737d1e84c7eb023840da66c4d918e9fa38f96bd6ca12e3bab511325a087d81c3",
+        "output_sha256": "e062870dbdc747263d1f5ae64c61be8b81b168f493ff092df14fe60e5996bc8c",
+        "actual_box": [
+          119,
+          160,
+          247,
+          250
+        ]
+      },
+      "pixels": [
+        1587,
+        991
+      ],
+      "final": "assets/generated-figures/direct-insets-trial/alphafold3.png"
+    }
+  ]
+}

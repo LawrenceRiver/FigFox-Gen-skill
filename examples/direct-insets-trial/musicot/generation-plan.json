@@ -1,0 +1,444 @@
+{
+  "format": "figfox-generation-plan-v2",
+  "scientific_summary": "MusiCoT trains a single text-conditioned semantic LM on coarse-first CLAP RVQ thought tokens followed by audio tokens. CLAP embeddings of 10-second clips yield analyzable intermediate musical thoughts.",
+  "invariants": [
+    "Thoughts are continuous CLAP embeddings represented by RVQ tokens, not natural-language reasoning.",
+    "For M clips and L codebooks, flatten all M tokens of level 1, then level 2, through level L; do not flatten clip by clip.",
+    "LM predicts thought tokens before audio tokens; training uses CE for both token domains.",
+    "Dual temperatures T₁/T₂ and CFG scales λ₁/λ₂ belong to thought/audio domains, respectively.",
+    "CLAP internals and fixed/trainable flags are not specified in the supplied excerpt; do not invent them. RVQ is trained by reconstruction quantization loss.",
+    "Analysis reconstructs quantized CLAP vectors and compares cosine similarity to relevant text anchors; heatmap is schematic, not experiment data.",
+    "Diagram output stops at audio tokens, as supplied Methodology; do not invent a direct CLAP audio decoder."
+  ],
+  "layout": "A complete rectangular equal-division 3×3 matrix within one landscape frame. All nine component panels are identical 440×260 rectangles. Top row left-to-right: Music Audio, CLAP Embeddings, Coarse-to-Fine RVQ. Middle row: Text Tokens, Dual Sampling, Semantic LM. Bottom row: Structural Analysis, Audio Tokens, Musical Thoughts. The semantic chain turns downward at the right edge; predicted thoughts feed audio tokens leftward. Analysis and control are fully reserved equal cells, never dangling footers. Read the actual arrow directions, without invented row-wide buses. Use one white outer frame x40–1640/y50–1120, title above. Two inter-row gutters and one bottom analysis lane contain only specified arrows and concise captions. Native scientific microviews differentiate content inside the shared rectangular framework. DIRECT-CONTENT INSET: In Music Audio panel, reserve one pure white axis-aligned empty rectangle x90,y155,width380,height137. It is the only intentional blank region. Draw no waveform, signal, tick marks, placeholder icon, hatch, frame or text inside it. The actual measured waveform is composited there after generation. Outside that rectangle draw the Music Audio heading on the common top baseline and Input example at y130, in readable dark text. Do not add a fictitious input specimen elsewhere. The panel and its east outgoing arrow remain intact; other eight panels retain native symbolic scientific content.",
+  "typography": "Arial, dark near-black text; 28–30 px unnumbered panel headings, 21–24 px essential labels, consistent baselines. Real subscripts and superscripts. No tiny gray notes. Keep schematic marker readable and dark.",
+  "placements": [
+    {
+      "component_id": "audio",
+      "placement": "top left"
+    },
+    {
+      "component_id": "clap",
+      "placement": "top center"
+    },
+    {
+      "component_id": "rvq",
+      "placement": "top right"
+    },
+    {
+      "component_id": "text",
+      "placement": "middle left"
+    },
+    {
+      "component_id": "sampling",
+      "placement": "middle center; complete reserved cell"
+    },
+    {
+      "component_id": "lm",
+      "placement": "middle right"
+    },
+    {
+      "component_id": "analysis",
+      "placement": "bottom left"
+    },
+    {
+      "component_id": "sound",
+      "placement": "bottom center"
+    },
+    {
+      "component_id": "thought",
+      "placement": "bottom right"
+    }
+  ],
+  "routes": [
+    {
+      "source_id": "audio",
+      "target_id": "clap",
+      "label": "10 s clips",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          500,
+          200
+        ],
+        [
+          620,
+          200
+        ]
+      ]
+    },
+    {
+      "source_id": "clap",
+      "target_id": "rvq",
+      "label": "quantize",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1060,
+          200
+        ],
+        [
+          1180,
+          200
+        ]
+      ]
+    },
+    {
+      "source_id": "rvq",
+      "target_id": "lm",
+      "label": "training targets",
+      "source_port": "south",
+      "target_port": "north",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "reference",
+      "points": [
+        [
+          1450,
+          330
+        ],
+        [
+          1450,
+          430
+        ]
+      ],
+      "caption": "Training",
+      "caption_box": [
+        1470,
+        361,
+        130,
+        28
+      ]
+    },
+    {
+      "source_id": "text",
+      "target_id": "lm",
+      "label": "condition",
+      "source_port": "north",
+      "target_port": "north",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "branch",
+      "points": [
+        [
+          280,
+          430
+        ],
+        [
+          280,
+          380
+        ],
+        [
+          1250,
+          380
+        ],
+        [
+          1250,
+          430
+        ]
+      ]
+    },
+    {
+      "source_id": "lm",
+      "target_id": "thought",
+      "label": "predict first",
+      "source_port": "south",
+      "target_port": "north",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1400,
+          690
+        ],
+        [
+          1400,
+          790
+        ]
+      ]
+    },
+    {
+      "source_id": "thought",
+      "target_id": "sound",
+      "label": "then predict",
+      "source_port": "west",
+      "target_port": "east",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1180,
+          920
+        ],
+        [
+          1060,
+          920
+        ]
+      ]
+    },
+    {
+      "source_id": "thought",
+      "target_id": "analysis",
+      "label": "reconstruct embeddings",
+      "source_port": "south",
+      "target_port": "south",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "branch",
+      "points": [
+        [
+          1400,
+          1050
+        ],
+        [
+          1400,
+          1100
+        ],
+        [
+          280,
+          1100
+        ],
+        [
+          280,
+          1050
+        ]
+      ],
+      "caption": "Reconstruct embeddings",
+      "caption_box": [
+        650,
+        1060,
+        340,
+        28
+      ]
+    },
+    {
+      "source_id": "sampling",
+      "target_id": "lm",
+      "label": "sampling controls",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "One continuous orthogonal path following the exact points; no crossing or gap.",
+      "route_kind": "branch",
+      "points": [
+        [
+          1060,
+          560
+        ],
+        [
+          1180,
+          560
+        ]
+      ]
+    }
+  ],
+  "local_visuals": [
+    {
+      "need_id": "tokens",
+      "target_component_id": "rvq",
+      "meaning": "coarse-first thought order",
+      "construction": "Within the equal-size RVQ panel draw 3 symbolic rows labeled Codebook 1, Codebook 2, Codebook L with the same 4 symbolic time columns 1, 2, …, M. A flattened strip below contains the complete row 1 followed by the complete row 2 then … row L. Pale vermilion cells with stronger coarse-row emphasis; avoid clip-major order and do not fabricate data.",
+      "basis": "MusicGen Fig1 token lattice; own CLAP content and own layout."
+    },
+    {
+      "need_id": "wave",
+      "target_component_id": "audio",
+      "meaning": "actual illustrative 20-second music input, split into 10-second clips",
+      "construction": "DIRECT INSET, not construction-only. Leave only the white x90,y155,width380,height137 audio region clean for deterministic later placement of the collected real-sample waveform. Put Input example above the slot at y130. No model redraw, icon substitute, tick marks or decoration inside slot. Contain the 1140×411 source raster without changing aspect. Keep current arrows outside it.",
+      "basis": "Direct-content waveform derived from first 20 seconds of Aya Higuchi performance of Chopin Waltz in A minor B.150; specific Commons file page confirms performance CC0 1.0. Original OGG and sample-level derivation receipt are local. Existing MusicLM/MusicGen conventions remain cached research, not attached style images."
+    }
+  ],
+  "visual_needs": [
+    {
+      "id": "tokens",
+      "need": "Aligned temporal/codebook grid with explicit flatten order",
+      "methodology_evidence": "L codebooks flattened coarse-to-fine, all M time positions at each level",
+      "peer_evidence": "MusicLM Fig2 uses semantic/acoustic token strips; MusicGen Fig1 shows codebook-time grids and explicit ordering."
+    },
+    {
+      "id": "wave",
+      "need": "Actual audio representation and readable model boundaries",
+      "methodology_evidence": "CLAP processes 10-second audio segments; one semantic LM",
+      "peer_evidence": "MusicLM Fig2 shows waveform specimens and whole encoding/decoding modules; MusicGen token grid abstracts the representation outside model internals."
+    }
+  ],
+  "detail_hierarchy": {
+    "peer_depth_observation": "MusicGen Fig1 resolves tokens within codebook/time grid, while MusicLM Fig2 keeps encoders and generative stages as whole modules.",
+    "innovation_focuses": [
+      {
+        "claim": "Analyzable coarse-to-fine musical thought sequence",
+        "component_ids": [
+          "rvq",
+          "thought",
+          "analysis"
+        ],
+        "draw_to": "Individual cells, level-major ordering and cosine-similarity analysis branch."
+      },
+      {
+        "claim": "Dual-domain sampling",
+        "component_ids": [
+          "sampling"
+        ],
+        "draw_to": "Two parameter rows, paired temperature and CFG scale per domain."
+      }
+    ],
+    "common_depth": "Supporting CLAP and LM stay whole-model; audio/text stay input strips.",
+    "keep_whole": [
+      "clap",
+      "lm"
+    ]
+  },
+  "display_labels": {
+    "audio": "Music Audio",
+    "clap": "CLAP Embeddings",
+    "rvq": "Coarse-to-Fine RVQ",
+    "text": "Text Tokens",
+    "lm": "Semantic LM",
+    "thought": "Musical Thoughts",
+    "sound": "Audio Tokens",
+    "analysis": "Structural Analysis",
+    "sampling": "Dual Sampling"
+  },
+  "notation_map": {
+    "C_clap": "CLAP embeddings",
+    "c_clap": "CLAP token",
+    "cot_bos": "thought start",
+    "cot_eos": "thought end",
+    "T_1": "T₁",
+    "T_2": "T₂",
+    "lambda_1": "λ₁",
+    "lambda_2": "λ₂",
+    "c_mk": "cᵐₖ",
+    "M": "M",
+    "L": "L",
+    "CE": "CE",
+    "CFG": "CFG"
+  },
+  "attached_reference_paths": [],
+  "routing_geometry": {
+    "canvas": [
+      1680,
+      1160
+    ],
+    "margin": 20,
+    "clearance": 10,
+    "columns": [
+      [
+        60,
+        500
+      ],
+      [
+        620,
+        1060
+      ],
+      [
+        1180,
+        1620
+      ]
+    ],
+    "rows": [
+      [
+        70,
+        330
+      ],
+      [
+        430,
+        690
+      ],
+      [
+        790,
+        1050
+      ]
+    ],
+    "slots": {
+      "audio": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "clap": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "rvq": [
+        0,
+        2,
+        1,
+        1
+      ],
+      "text": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "sampling": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "lm": [
+        1,
+        2,
+        1,
+        1
+      ],
+      "analysis": [
+        2,
+        0,
+        1,
+        1
+      ],
+      "sound": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "thought": [
+        2,
+        2,
+        1,
+        1
+      ]
+    },
+    "crossings": []
+  },
+  "direct_content_insets": [
+    {
+      "role": "direct-content inset: measured waveform of actual illustrative audio input",
+      "target_component_id": "audio",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Chopin_-_Waltz_in_A_minor,_B_150.ogg",
+      "original_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Chopin_-_Waltz_in_A_minor%2C_B_150.ogg",
+      "composer": "Frédéric Chopin",
+      "performer": "Aya Higuchi",
+      "performance_year": 2014,
+      "license": "CC0 1.0 Universal Public Domain Dedication (performance); public-domain composition",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "permission_evidence": "Specific Commons file page labels the performance CC0 1.0 and names Aya Higuchi; cached source-page.md contains the inspected attribution and licensing section. Original file metadata independently identifies artist Aya Higuchi.",
+      "attribution": "Input example: Chopin, Waltz in A minor B.150; performed by Aya Higuchi (2014), via Musopen/Wikimedia Commons; CC0 1.0. Waveform derived from first 20 seconds, not a generated result.",
+      "original_path": "input/raster/chopin-waltz-b150-aya-higuchi.ogg",
+      "derived_path": "input/raster/input-example-waveform.png",
+      "shape": [
+        1140,
+        411
+      ],
+      "aspect_ratio": 2.7737226277372264,
+      "fit": "contain",
+      "planned_slot": [
+        90,
+        155,
+        380,
+        137
+      ],
+      "actual_slot_status": "PENDING: inspect generated-layout.png actual pixels before writing executable raster-inserts.json; do not scale plan blindly.",
+      "sample_status": "Source is an illustrative input example, not a study dataset item or MusiCoT result. Thought tokens/audio tokens/heatmap remain schematic."
+    }
+  ]
+}

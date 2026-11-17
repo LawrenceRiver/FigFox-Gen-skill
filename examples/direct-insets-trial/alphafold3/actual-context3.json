@@ -1,0 +1,143 @@
+{
+  "selected_references": [
+    {
+      "crop_id": "matrix-grammar",
+      "reference_id": "reference-003",
+      "crop_path": "references/figurebench/crops/matrix-grammar.png",
+      "target_component_id": "pairformer",
+      "crop_contract": {
+        "borrow": [
+          "matrix cells and token strips as representations"
+        ],
+        "must_change": [
+          "labels",
+          "scientific relationships",
+          "palette",
+          "whole arrangement"
+        ],
+        "human_editable_reason": "Grids, strips and frames are native geometric objects."
+      }
+    },
+    {
+      "crop_id": "aligned-module-grammar",
+      "reference_id": "reference-001",
+      "crop_path": "references/figurebench/crops/aligned-module-grammar.png",
+      "target_component_id": "msa",
+      "crop_contract": {
+        "borrow": [
+          "flat supporting region and aligned title baseline"
+        ],
+        "must_change": [
+          "neural graph",
+          "phase numbering",
+          "source labels",
+          "palette"
+        ],
+        "human_editable_reason": "Flat aligned frames can be constructed with rectangles and text."
+      }
+    }
+  ],
+  "coverage_matrix": [
+    {
+      "component_id": "input",
+      "basic_geometry_justification": "Native rectangles and token grids communicate input feature representation. One separately sourced direct-content protein image occupies the approved specimen inset; its public-domain source and original dimensions are recorded in input/raster/assets.json. It is not a style reference."
+    },
+    {
+      "component_id": "msa",
+      "crop_ids": [
+        "aligned-module-grammar"
+      ]
+    },
+    {
+      "component_id": "pairformer",
+      "crop_ids": [
+        "matrix-grammar"
+      ]
+    },
+    {
+      "component_id": "reps",
+      "basic_geometry_justification": "Primitive: rectangles, circles, grid cells and polylines. Construction steps: One matrix and one strip, consistent with the Pairformer internal views; labelled pair and single.. Human-editable rationale: Simple editable paths and shapes suffice; no borrowed bitmap."
+    },
+    {
+      "component_id": "noise",
+      "basic_geometry_justification": "Primitive: rectangles, circles, grid cells and polylines. Construction steps: A sparse raw atom-coordinate cloud with no bonds.. Human-editable rationale: Simple editable paths and shapes suffice; no borrowed bitmap."
+    },
+    {
+      "component_id": "diffusion",
+      "basic_geometry_justification": "Primitive: rectangles, circles, grid cells and polylines. Construction steps: Large coral-accented frame: raw coordinate cloud passes through a coarse token strip to a cleaner bonded molecular coordinate view. Small separate inset labelled Training shows noised coordinates → true coordinates. Main inference view labelled Inference shows recurrent denoising, not training updates.. Human-editable rationale: Simple editable paths and shapes suffice; no borrowed bitmap."
+    },
+    {
+      "component_id": "output",
+      "basic_geometry_justification": "Primitive: rectangles, circles, grid cells and polylines. Construction steps: A coherent small folded molecular backbone with atoms and local bonds; conceptual schematic, no claimed experimental result.. Human-editable rationale: Simple editable paths and shapes suffice; no borrowed bitmap."
+    }
+  ],
+  "palette": {
+    "base_palette_id": "earth-data-01",
+    "dominant_colour_roles": [
+      "primary",
+      "accent"
+    ],
+    "colours": [
+      {
+        "role": "muted",
+        "hex": "#B7B49F",
+        "rgb": [
+          183,
+          180,
+          159
+        ]
+      },
+      {
+        "role": "primary",
+        "hex": "#44757B",
+        "rgb": [
+          68,
+          117,
+          123
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#452A3D",
+        "rgb": [
+          69,
+          42,
+          61
+        ]
+      },
+      {
+        "role": "accent",
+        "hex": "#D34D3A",
+        "rgb": [
+          211,
+          77,
+          58
+        ]
+      },
+      {
+        "role": "comparison",
+        "hex": "#DC6C4C",
+        "rgb": [
+          220,
+          108,
+          76
+        ]
+      },
+      {
+        "role": "surface",
+        "hex": "#EFD5B7",
+        "rgb": [
+          239,
+          213,
+          183
+        ]
+      }
+    ],
+    "extensions": []
+  },
+  "taste_constraints": [
+    "Keep all modules and final output within one rectangular bounded grid.",
+    "Dark Arial labels, no stage numbering or underscores.",
+    "No style/reference bitmap attachments; the approved direct-content raster is retained locally for post-generation paste only."
+  ]
+}

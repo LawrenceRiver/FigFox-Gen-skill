@@ -164,3 +164,12 @@ Avoid crossings by moving modules. A scientifically unavoidable crossing require
 An optional visible `caption` requires `caption_box: [x,y,width,height]`, clear of every node, other caption and shaft. The long scientific route `label` is meaning for the model, not a demand to print an explanation on each arrow. Geometry is macro-layout planning; do not fabricate numerical values or expand ordinary model internals to populate it.
 
 The validated packet includes exact canvas, boxes, points and crossing treatments. It is a planning check, not a pixel guarantee or automatic router. Inspect PNG1 at full size: continuous shafts, attached arrowheads, consistent frame alignment and readable notation must still hold. Preserve an imperfect result as a preview rather than marking it accepted.
+
+
+## Fill hierarchy, canonical model drawings and arrow style
+
+Resolve these choices within the existing parallel construction/style work and the same Creative Director pass. They do not justify a separate survey, style-sheet image or extra model call. Reuse inspected/cached source figures; retrieve again only for an explicitly missing relevant construction.
+
+- Fill highlights important scientific content, representations or mechanisms. Titles default to bold black/dark or theme-coloured text on the normal background, with no automatic coloured header bar or white-on-colour tab. Explicit author/reference exceptions must be deliberate.
+- When the Methodology actually names an established model, borrow its source-checked recognizable architectural grammar at the correct detail level. A compact familiar model glyph can sit inside a larger mechanism. Do not substitute arbitrary mirrored polygons or expose every unchanged layer just to fill a panel.
+- Arrow style is a reference trait: shaft character, width, head/body proportion, corners and palette role. Coherent heavy hand-drawn shafts or filled/rounded arrows can suit the design. Exact route points constrain centerlines and scientific endpoints; they do not prescribe thin black ink. Reserve clearance for the selected width and keep proportions consistent within each role and scale.

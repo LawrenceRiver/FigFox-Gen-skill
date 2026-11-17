@@ -8,44 +8,34 @@ from pathlib import Path
 from .routing_geometry import compile_routing_geometry
 
 ROUTING_GRAMMAR = (
-    'Plan module placement and connector clearance together, before locking the composition. '
-    'Prefer straight source-to-target arrows. Reposition nearby modules to eliminate crossings '
-    'and unnecessary bends rather than drawing a detour around a poor layout. '
-    'Use only a few consistent right-angle bends; geometry-locked routes follow their exact path points. '
-    'Every arrow is one continuous, human-reproducible path from the actual source border to the '
-    'target arrowhead: no disappearing shafts, isolated arrowheads, empty-space starts or unexplained gaps. '
-    'Keep labels beside the shaft, never erase the shaft to fit text. Avoid intersections; if a crossing '
-    'is scientifically unavoidable, use a clear continuous bridge and distinguish it from a junction. '
-    'Align source and target ports on one shared horizontal or vertical axis wherever possible. '
-    'Use a single consistent arrowhead size and stroke weight; local microview arrows follow the same grammar. '
-    'Mainline arrows should read immediately; return loops use a separate perimeter lane. '
-    'When a frame contains different processes, a loop lands in its actual process subregion, '
-    'never in a nearby training/evaluation inset merely because it shares the outer frame. '
-    'Reserve section-heading bands separately from connector corridors. Background fills and title bands never erase shafts. '
-    'After placing labels and icons, trace each complete shaft again; revise crowded placement instead of extending routes.'
+    'Plan placement and connector clearance together. Prefer straight, axis-aligned ports; move modules '
+    'to remove crossings and detours before locking exact route points. Use few consistent right-angle bends. '
+    'Every arrow is one continuous human-reproducible source-border to target-arrowhead path: '
+    'no empty-space starts, isolated heads, disappearing shafts or unexplained gaps. '
+    'Keep text and heading areas clear of shafts; fills never erase lines. '
+    'An unavoidable crossing needs a continuous bridge or declared distinguishing ink; it is not a junction. '
+    'Return loops use a perimeter lane and land in their actual process subregion, not an adjacent training/evaluation inset. '
+    'Choose a coherent reference-matched arrow family, including bold hand-drawn shafts or filled/rounded bodies when appropriate. '
+    'Keep head/body proportions and weight consistent within each role and scale. Points specify centerlines, '
+    'not mandatory thin-black ink; reserve clearance for the chosen width. After text/icons, trace every shaft again.'
 )
 
 LABEL_GRAMMAR = (
-    'Use short unnumbered scientific headings derived only from this Methodology. '
-    'Never copy stage titles from workflow instructions or other cases. '
-    'Internal orchestration codes stay in planning, not reader-facing headings. '
-    'Keep image text to labels, essential terms and equations. Typeset mathematical indices '
-    'as real subscripts/superscripts. NO visible underscore anywhere, including identifiers '
-    'and illustrative code. Use approved typeset aliases; raw IDs/source code stay in internal records. '
-    'Optically align text baselines, object edges and centers with '
-    'consistent spacing/padding. Shorten text or rearrange crowded groups before shrinking fonts.'
+    'Use concise unnumbered scientific headings from this Methodology only; no stage titles from other cases '
+    'or orchestration codes. Default to bold dark or deliberate theme-coloured text on the normal background, '
+    'not automatic coloured title strips or white-on-colour tabs. Fill emphasizes scientific content/mechanisms. '
+    'Text is labels, essential terms and equations. Typeset true subscripts/superscripts; NO visible underscore '
+    'in identifiers or illustrative code. Use approved aliases; raw IDs stay internal. '
+    'Optically align baselines, edges and centers with consistent padding; shorten/reflow before shrinking fonts.'
 )
 
 GRID_GRAMMAR = (
-    'Imagine the whole structural overview as one clean, complete rectangular silhouette before details. '
-    'Choose an explicit organizing rule: equal-width stage columns, equal-height parallel bands, or '
-    'a balanced bilateral arrangement, according to the scientific graph. State which rule is used. '
-    'Equalize peer regions, margins and gutters; innovation may span integer cells without protruding. '
-    'Visual balance never invents a second branch, reverses an edge, or turns unrelated edges into a bus. '
-    'Fix the canvas and row/column grid first; reserve the final-output cell before drawing. '
-    'Align sibling block edges/baselines; innovation panels may span cells. Keep every planned block and '
-    'the final output inside that same footprint. If crowded, simplify or reflow upstream content '
-    'rather than extending a dangling last block. Keep flow simple; no added step numbers.'
+    'Imagine a complete rectangular overview first. State its organizing rule: equal-width columns, '
+    'equal-height parallel bands or balanced bilateral groups, according to the scientific graph. '
+    'Equalize peer regions, margins and gutters; innovations may span integer cells. '
+    'Reserve output inside the fixed canvas/grid; align sibling edges/baselines. '
+    'Reflow upstream content instead of appending a dangling final block. Visual symmetry never invents '
+    'branches, reverses edges or merges unrelated paths into a bus. Keep flow simple; no added step numbers.'
 )
 
 
@@ -248,6 +238,9 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
         'Those insets are composited after generation; leave only those declared slots clean and preserve their aspect ratios. '
         'This choice is open-ended across domains, not limited to any media category. '
         'Source material used illustratively must not masquerade as this method’s measured result.',
+        'For standard models actually named in this Methodology, use a source-checked recognizable architectural silhouette '
+        'at the scoped detail level. An unchanged model may remain a compact canonical inset; invent no arbitrary replacement geometry '
+        'and do not expand supporting internals beyond the innovation-led hierarchy. Reuse already inspected construction evidence.',
         'These are intentional visual content, not ornamental stickers. Keep them small, readable and coherent with the main reference. No invented observations, numerical results or unlabelled decorative particles.',
         '## Typography reference', plan['typography'], LABEL_GRAMMAR,
     ]

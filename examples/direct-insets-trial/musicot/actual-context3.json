@@ -1,0 +1,147 @@
+{
+  "selected_references": [
+    {
+      "crop_id": "cosine-symbol",
+      "reference_id": "reference-016",
+      "crop_path": "references/figurebench/crops/cosine-symbol.png",
+      "target_component_id": "analysis",
+      "crop_contract": {
+        "borrow": [
+          "plain circle-cross cosine-comparison symbol, audit only"
+        ],
+        "human_editable_reason": "Circle and crossing line paths.",
+        "must_change": [
+          "all content",
+          "all colour",
+          "original layout"
+        ]
+      }
+    },
+    {
+      "crop_id": "discrete-grid",
+      "reference_id": "reference-023",
+      "crop_path": "references/figurebench/crops/discrete-grid.png",
+      "target_component_id": "rvq",
+      "crop_contract": {
+        "borrow": [
+          "regular cell grid with discrete entries, audit only"
+        ],
+        "human_editable_reason": "Own flat matrix of rectangles.",
+        "must_change": [
+          "all values",
+          "3D shape",
+          "source science"
+        ]
+      }
+    }
+  ],
+  "coverage_matrix": [
+    {
+      "component_id": "audio",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Segmented waveform, 0–10 s, 10–20 s, …. Human-editable rationale: Native grouped geometry and short labels."
+    },
+    {
+      "component_id": "clap",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Whole CLAP encoder and aligned continuous embedding bars; 10 s per embedding. Human-editable rationale: Native grouped geometry and short labels."
+    },
+    {
+      "component_id": "rvq",
+      "crop_ids": [
+        "discrete-grid"
+      ]
+    },
+    {
+      "component_id": "text",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Compact token strip; illustrative prompt: piano and drums. Human-editable rationale: Native grouped geometry and short labels."
+    },
+    {
+      "component_id": "lm",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Single whole semantic LM spanning aligned thought and audio prediction zones; CE targets in training. Human-editable rationale: Native grouped geometry and short labels."
+    },
+    {
+      "component_id": "thought",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Predicted CLAP RVQ token strip, coarse before fine; start/end markers. Human-editable rationale: Native grouped geometry and short labels."
+    },
+    {
+      "component_id": "sound",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Audio token strip follows thought end in same autoregressive sequence. Human-editable rationale: Native grouped geometry and short labels."
+    },
+    {
+      "component_id": "analysis",
+      "crop_ids": [
+        "cosine-symbol"
+      ]
+    },
+    {
+      "component_id": "sampling",
+      "basic_geometry_justification": "Primitive: rectangles and paths. Construction steps: Two neat aligned rows: Thoughts: T₁, λ₁; Audio: T₂, λ₂; temperatures and CFG scales. Human-editable rationale: Native grouped geometry and short labels."
+    }
+  ],
+  "palette": {
+    "base_palette_id": "earth-data-01",
+    "dominant_colour_roles": [
+      "primary",
+      "accent"
+    ],
+    "colours": [
+      {
+        "role": "muted",
+        "hex": "#B7B49F",
+        "rgb": [
+          183,
+          180,
+          159
+        ]
+      },
+      {
+        "role": "primary",
+        "hex": "#44757B",
+        "rgb": [
+          68,
+          117,
+          123
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#452A3D",
+        "rgb": [
+          69,
+          42,
+          61
+        ]
+      },
+      {
+        "role": "accent",
+        "hex": "#D34D3A",
+        "rgb": [
+          211,
+          77,
+          58
+        ]
+      },
+      {
+        "role": "comparison",
+        "hex": "#DC6C4C",
+        "rgb": [
+          220,
+          108,
+          76
+        ]
+      },
+      {
+        "role": "surface",
+        "hex": "#EFD5B7",
+        "rgb": [
+          239,
+          213,
+          183
+        ]
+      }
+    ],
+    "extensions": []
+  },
+  "taste_constraints": [
+    "Airy publication diagram; dark Arial labels; no decorative icons; restrained teal with one vermilion RVQ focus."
+  ]
+}

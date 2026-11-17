@@ -16,7 +16,7 @@ In the existing need-to-drawing correspondence, state **direct inset / crop / co
 
 Creative Director reserves a readable, axis-aligned area inside the complete rectangular framework. Match inset sizes for comparable views, preserve source aspect, choose a justified crop or contain fit, and align borders/baselines with adjacent native elements. Keep arrows, labels and frame strokes outside the inset. The asset supplies visual content; it does not impose the whole figure’s palette or style.
 
-For pixel-preserving use, generate the layout with the declared inset regions left clean. Keep that image as `generated-layout.png`; do not ask the image model to redraw the selected asset. Then inspect the actual generated image and record the observed inset boxes in its pixel coordinates. Do not blindly scale planned coordinates when the model changes the canvas ratio or local placement.
+For pixel-preserving use, generate the layout with the declared inset regions left clean. Keep that image as `input/generated-layout.png`; do not ask the image model to redraw the selected asset. Then inspect the actual generated image and record the observed inset boxes in its pixel coordinates. Do not blindly scale planned coordinates when the model changes the canvas ratio or local placement.
 
 ## Optional deterministic placement
 
@@ -27,7 +27,7 @@ Example manifest `input/raster-inserts.json` (replace all example values with in
 ```json
 {
   "canvas": [1600, 1000],
-  "background": "generated-layout.png",
+  "background": "input/generated-layout.png",
   "output": "png1.png",
   "insets": [
     {

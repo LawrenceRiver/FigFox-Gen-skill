@@ -1,0 +1,161 @@
+{
+  "selected_references": [
+    {
+      "crop_id": "spatial-stack",
+      "reference_id": "reference-002",
+      "crop_path": "references/figurebench/crops/spatial-stack.png",
+      "target_component_id": "latent",
+      "crop_contract": {
+        "borrow": [
+          "Stacked spatial feature planes, clean enclosing geometry."
+        ],
+        "human_editable_reason": "Polygon planes and outlines can be drawn as native geometry.",
+        "must_change": [
+          "All scientific labels, image content, layout and colours."
+        ]
+      }
+    },
+    {
+      "crop_id": "attention-ports",
+      "reference_id": "reference-005",
+      "crop_path": "references/figurebench/crops/attention-ports.png",
+      "target_component_id": "denoise",
+      "crop_contract": {
+        "borrow": [
+          "Q/K/V role labels and continuous simple input paths."
+        ],
+        "human_editable_reason": "Rectangles and line paths; redraw as cross-attention with Q from latent features and K,V from condition.",
+        "must_change": [
+          "Source self-attention topology, labels, dimensions and arrangement."
+        ]
+      }
+    }
+  ],
+  "coverage_matrix": [
+    {
+      "component_id": "image",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Framed original schematic landscape thumbnail.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "encoder",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Simple tapering block, whole model.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "latent",
+      "crop_ids": [
+        "spatial-stack"
+      ]
+    },
+    {
+      "component_id": "reconstruct",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Framed matching landscape thumbnail.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "noise",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Square fine noise grid, visibly smaller spatial representation than RGB thumbnail.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "condition",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Short text token strip, e.g. a mountain lake.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "condencoder",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Small whole-model rectangle, trainable with denoiser.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "denoise",
+      "crop_ids": [
+        "attention-ports"
+      ]
+    },
+    {
+      "component_id": "sample",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Small spatial grid with emerging landscape structure.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "decoder",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Whole decoder block shared by reconstruction and generation.. Human-editable rationale: Original semantic geometry without pasted source content."
+    },
+    {
+      "component_id": "output",
+      "basic_geometry_justification": "Primitive: rectangle / path / grid. Construction steps: Original illustrative landscape thumbnail, schematic sample, not an empirical result.. Human-editable rationale: Original semantic geometry without pasted source content."
+    }
+  ],
+  "palette": {
+    "base_palette_id": "biomedical-contrast-01",
+    "dominant_colour_roles": [
+      "primary",
+      "accent"
+    ],
+    "colours": [
+      {
+        "role": "ink",
+        "hex": "#14517C",
+        "rgb": [
+          20,
+          81,
+          124
+        ]
+      },
+      {
+        "role": "primary",
+        "hex": "#2F7FC1",
+        "rgb": [
+          47,
+          127,
+          193
+        ]
+      },
+      {
+        "role": "surface",
+        "hex": "#E7EFFA",
+        "rgb": [
+          231,
+          239,
+          250
+        ]
+      },
+      {
+        "role": "secondary",
+        "hex": "#96C37D",
+        "rgb": [
+          150,
+          195,
+          125
+        ]
+      },
+      {
+        "role": "comparison",
+        "hex": "#F3D266",
+        "rgb": [
+          243,
+          210,
+          102
+        ]
+      },
+      {
+        "role": "accent",
+        "hex": "#D8383A",
+        "rgb": [
+          216,
+          56,
+          58
+        ]
+      },
+      {
+        "role": "muted",
+        "hex": "#A9B8C6",
+        "rgb": [
+          169,
+          184,
+          198
+        ]
+      }
+    ],
+    "extensions": []
+  },
+  "taste_constraints": [
+    "Precise architecture geometry with white space and dark labels.",
+    "Pale blue related regions; red limited to cross-attention emphasis."
+  ]
+}
