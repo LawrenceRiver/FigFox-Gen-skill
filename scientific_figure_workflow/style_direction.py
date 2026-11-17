@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 from PIL import Image
 
-STYLE_CONTRACT = ('Global style anchor: hold typography, linework, spacing, visual density and colour relationships coherent across the whole figure. Adapt layout to the Methodology; do not copy source labels, characters or scientific claims. Component references affect only their named target. Active colours come from the selected compatible palette group. Semantic hand-drawn icons, clear curved arrows and purposeful panel dividers are allowed; no pasted stickers or meaningless ornaments.')
+STYLE_CONTRACT = ('Global style anchor: apply the explicitly liked reference traits, such as typography, linework, spacing or colour relationships, coherently across the figure. State what is borrowed; do not claim to copy the whole reference or its composition. Layout and detail hierarchy come from this Methodology and its innovations. Do not copy source labels, characters or scientific claims. Component references affect only their named target. Active colours come from the selected compatible palette group. Semantic hand-drawn icons and purposeful dividers are allowed; no pasted stickers or meaningless ornaments.')
 FAMILIES={'instruction_manual','architecture_2d','concept_led','handdrawn','volumetric_chromatic','story_schematic'}
 PATHS={'linear','stages','parallel_merge','s_curve','reverse_s','arc','horizontal','vertical','c_curve','reverse_c','clockwise_spiral','counterclockwise_spiral','main_side_chain','serpentine'}
 

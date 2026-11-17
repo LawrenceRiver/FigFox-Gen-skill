@@ -10,6 +10,9 @@
 
 </div>
 
+**实验分支 `codex/style-anchor-fast`**：当前流程为“同类图＋Methodology 一次形成视觉需求锚点 → 配图／喜欢的风格特征／配色并行 → 逐项画法对照表 → 创意师按创新点分配细节并检查走线 → 紧凑生成清单”。见 [当前 Skill](SKILL.md) 和 [清单格式](references/compact-generation.md)。下方保留原始工作流说明；本分支不自动替换已安装版本。
+
+
 FigFox-Gen-skill 将 Methodology 和可选参考图转成一张带完整标签、符合人工编辑
 逻辑的科研架构图。它先把视觉决策写清楚，再进行唯一一次图像生成，交付 PNG1
 供作者检查。

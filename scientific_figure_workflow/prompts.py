@@ -12,6 +12,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 from .style_direction import STYLE_CONTRACT, load_style_brief, style_attachments, style_lines, validate_style_palette
+from .generation_checklist import load_generation_plan, validate_generation_plan, checklist_lines
 
 from .artifacts import (
     CREATIVE_DIRECTOR_FORMAT,
@@ -320,12 +321,17 @@ def build_creative_director_prompt(
     context2: Mapping[str, Any],
     context3: Mapping[str, Any],
     style_brief: Mapping[str, Any] | None = None,
+    generation_plan: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Compile the pre-PNG1 creative-director instruction."""
 
     methodology = _string(methodology, "methodology")
     normalized1, normalized2, normalized3 = _validated_contexts(context1, context2, context3)
     validate_style_palette(style_brief, normalized3["palette"])
+    if generation_plan is not None:
+        if style_brief is None:
+            raise ValueError("generation checklist requires a style brief")
+        generation_plan = validate_generation_plan(generation_plan, normalized2)
     prompt = "\n".join([
         *style_lines(style_brief),
         "Act as the Creative Director before PNG1 generation.",
@@ -335,7 +341,7 @@ def build_creative_director_prompt(
         "Before proposing a visual treatment, simulate human editor construction in this order:",
         *[f"- {line}" for line in _HUMAN_CONSTRUCTION_ORDER],
         ("Respect the global style brief and selected palette. Meaningful label dividers and hand-drawn semantic icons are allowed; do not paste raster stickers or decorative chrome." if style_brief else "Respect the selected multi-colour palette-group lineage and the absolute PNG1 bans on upper title-bands and pasted raster stickers. The creative brief is evidence for Prompt 1, not a licence to override those constraints."),
-        *_evidence_blocks(methodology, normalized1, normalized2, normalized3),
+        *(checklist_lines(generation_plan, methodology, normalized1, normalized2, normalized3) if generation_plan else _evidence_blocks(methodology, normalized1, normalized2, normalized3)),
         "Return a `creative-director-brief-v1` JSON with `brief` and an `ideas` list. Each idea must include `id`, `target_component_id`, `concept`, `visual_intent`, `construction_plan`, `requires_svg_evidence`, and `svg_crops`.",
     ])
     return {
@@ -420,6 +426,43 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
     attachments.extend(domain_crops)
     attachments.extend(figurebench_crops)
     attachments.extend(creative_crops)
+    generation_plan = load_generation_plan(run_root, normalized2)
+    if generation_plan is not None:
+        if style is None:
+            raise ValueError("generation checklist requires a style brief")
+        selected = generation_plan.get('attached_reference_paths')
+        if selected is not None:
+            if not isinstance(selected, list) or any(not isinstance(p, str) for p in selected) or len(selected) != len(set(selected)):
+                raise ValueError('attached_reference_paths needs distinct reference paths')
+            if not set(selected) <= {item['path'] for item in attachments}:
+                raise ValueError('generation plan names an unknown reference')
+            if not {item['path'] for item in style_attachments(style)} <= set(selected):
+                raise ValueError('generation plan cannot omit an approved style reference')
+            if not {item['path'] for item in creative_crops} <= set(selected):
+                raise ValueError('generation plan cannot omit required Creative Director construction evidence')
+            attachments = [item for item in attachments if item['path'] in selected]
+        from PIL import Image
+        reference_lines = []
+        for item in sorted(attachments, key=lambda item: (item['path'], item['role'])):
+            with Image.open(run_root / item['path']) as source_image:
+                size = f"{source_image.width}x{source_image.height}"
+            scope = 'WHOLE FIGURE' if item['role'] == 'style_anchor' else item.get('target_component_id', 'global')
+            reference_lines.append(f"- {item['path']} [{size}] | {item['role']} -> {scope} | borrow: {'; '.join(item.get('borrow', [])) or item.get('contract', '')} | change: {'; '.join(item.get('must_change', [])) or 'all source scientific content'}")
+        prompt = '\n'.join([
+            *checklist_lines(generation_plan, methodology, normalized1, normalized2, normalized3),
+            *style_lines(style),
+            '## Scoped image references (attached in manifest order)', *reference_lines,
+            'Respect each crop aspect ratio when reading its construction; do not stretch a complete reference onto this new layout. Borrow only the declared grammar, never unrelated source nodes, labels or colours.',
+            '## Palette', *_style_palette_lines(normalized3, style),
+            '## Final creative construction decisions', *_creative_director_lines(normalized_creative),
+            '## Final drawing checks',
+            *normalized3['taste_constraints'],
+            'Verify every listed arrow endpoint, concise label and semantic inset before finishing. No gray microcopy, pseudo-text, gratuitous gradients, glow, pasted clip-art or decorative badge. Purposeful dividers and hand-drawn semantic icons are allowed. Keep exact repeated geometry regular.',
+            'Generate one PNG1. Do not copy planning prose or evidence hashes into the image.',
+        ])
+        if len(prompt) > 24000:
+            raise ValueError('generation checklist exceeds 24000 characters; shorten planning prose without removing scientific components, routes or invariants')
+        return {"format": _FORMAT, "phase": "prompt1", "prompt": prompt, "component_ids": sorted(component_ids), "attachments": attachments}
     crop_lines = [f"- `{item['path']}` -> Target: {item['target_component_id']}. Borrow: {'; '.join(item['borrow'])}. Must change: {'; '.join(item['must_change'])}." for item in [*domain_crops, *figurebench_crops, *creative_crops]]
     user_contract = ["User-reference attachment contract:", f"- {_USER_REFERENCE_CONTRACT}"] if user_reference is not None and style is None else []
     prompt = "\n".join([

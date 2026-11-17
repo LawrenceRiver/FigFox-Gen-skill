@@ -27,6 +27,8 @@ _REQUIRED_FILES = (
     "scientific_figure_workflow/reference_pack.py",
     "scientific_figure_workflow/palette.py",
     "scientific_figure_workflow/prompts.py",
+    "scientific_figure_workflow/style_direction.py",
+    "scientific_figure_workflow/generation_checklist.py",
     "scientific_figure_workflow/run_validation.py",
     "scripts/check_installation.py",
     "scripts/figure_workflow.py",

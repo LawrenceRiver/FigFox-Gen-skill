@@ -189,7 +189,7 @@ def _context1_mapped_crop_paths(context1: Mapping[str, Any]) -> set[str]:
 
 
 def validate_web_manifest(
-    value: Mapping[str, Any], root: Path, context1: Mapping[str, Any]
+    value: Mapping[str, Any], root: Path, context1: Mapping[str, Any], *, minimum_sources: int = 3
 ) -> dict[str, Any]:
     """Validate 3–4 scholarly paper sources and their retained visual evidence."""
 
@@ -224,8 +224,10 @@ def validate_web_manifest(
                 "inspection": _required_string(record, "inspection", location),
             }
         )
-    if not 3 <= len(set(paper_urls)) <= 4:
-        raise ValueError("web manifest requires 3 or 4 distinct scholarly papers")
+    if minimum_sources not in (2, 3):
+        raise ValueError("minimum_sources must be 2 or 3")
+    if not minimum_sources <= len(set(paper_urls)) <= 4:
+        raise ValueError("web manifest requires " + ("2 to 4" if minimum_sources == 2 else "3 or 4") + " distinct scholarly papers")
     if len(ids) != len(set(ids)):
         raise ValueError("web manifest source ids must be unique")
     if len(crop_paths) != len(set(crop_paths)):

@@ -1,6 +1,8 @@
-# Style-anchor experiment (`codex/style-anchor`)
+# Style-anchor experiment
 
 This branch adds an opt-in style-first circuit. The original workflow remains available when `input/style-brief.json` is absent. No production skill is reinstalled automatically; no merge into main is implied.
+
+For the compact model handoff and cached retrieval circuit on `codex/style-anchor-fast`, use [compact-generation.md](compact-generation.md).
 
 ## Start a new task
 
@@ -52,30 +54,9 @@ Stage labels are `Stage 1/2/3` or panel letters `(a)/(b)/(c)` only; `stage_label
 
 Typography follows the main reference consistently. Do not default to Times New Roman for diagram text; formulas may use appropriate mathematical notation. No invented gray microcopy. Necessary short italic explanations use readable **Arial Italic**, in black or a compatible dark ink. Frames and arrows use the same planned visual grammar. A real template/table header divider may be appropriate; generic dashboard cards are not. Icons may be human-drawn semantic constructions, not pasted stickers.
 
-## Parallel circuit: orchestration belongs to the Harness
+## Current compact circuit
 
-```mermaid
-flowchart TD
-  I[Methodology + optional style reference] --> P[Minimal scientific mainline and component needs]
-  P --> A[Batch 3-4 domain-paper searches and figure inspection]
-  P --> B[Inspect user main reference or rank style candidates]
-  P --> C[FigureBench / FigFoxBench local construction shortlist]
-  A --> J[Resolve Context1/2 and main style brief]
-  B --> J
-  C --> J
-  J --> D[Compatible palette-group selection]
-  J --> E[Component crop extraction + source verification]
-  D --> K[Complete Context3 visual kit]
-  E --> K
-  K --> CD[One Creative Director pass + main/detail attachments]
-  CD --> Q[Deterministic Prompt1 compilation]
-  Q --> G[One complete PNG1 generation]
-  G --> V[File/provenance validation and delivery]
-```
-
-Batch independent searches in one tool call when possible. Inspect independent returned sources, the supplied reference, local dataset candidates and cached palette metadata concurrently. Reuse the same snapshots/results; do not repeat whole searches at every context. A preliminary component list is enough for candidate retrieval, but final crop-to-component binding waits for Context2.
-
-Do not parallelize a task with its missing input: no palette commitment before style direction, no final crop selection before component needs, no Creative Director before the kit, and no PNG1 before the compiled prompt. This is a dependency schedule for the calling Harness, **not a Python search runner or a guarantee that tools were executed concurrently**. Use compact source findings rather than three redundant paper summaries or mandatory extra review agents. Log actual start/end of batches, joins and model stages; a parallel phase's elapsed time is its wall time, not a sum or invented speedup.
+Follow the concise [SKILL entrypoint](../SKILL.md) and [compact-generation.md](compact-generation.md): one peer/Methodology needs anchor first, then concurrent need-driven construction lookup, liked-style traits and palette matching, one correspondence table, Creative Director, one drawing packet and PNG1. Do not run a separate search for every component or ordinary C/reverse-C layout. Keep valid caches and explicit source/permission records. No synthetic speedup claim.
 
 ## Compiling, replay and testing
 

@@ -15,6 +15,7 @@ sys.path.insert(0, str(REPOSITORY_ROOT))
 
 _BOOTSTRAP_ERROR: ImportError | None = None
 try:
+    from scientific_figure_workflow.generation_checklist import load_generation_plan
     from scientific_figure_workflow.style_direction import load_style_brief, style_palette, validate_style_palette, init_style_run, validate_creative_style_attachments
     from check_installation import validate_installation  # noqa: E402
     from scientific_figure_workflow import (  # noqa: E402
@@ -162,7 +163,7 @@ def _cmd_build_creative_director_prompt(arguments: argparse.Namespace) -> dict[s
     root = _run_root(arguments.run)
     context1, context2, context3 = _contexts(root)
     methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
-    bundle = build_creative_director_prompt(methodology, context1, context2, context3, load_style_brief(root, _component_ids(context2)))
+    bundle = build_creative_director_prompt(methodology, context1, context2, context3, load_style_brief(root, _component_ids(context2)), load_generation_plan(root, context2))
     destination = root / "creative-director"
     destination.mkdir(parents=True, exist_ok=True)
     (destination / "prompt.md").write_text(bundle["prompt"], encoding="utf-8")
@@ -186,7 +187,8 @@ def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
     context1, context2, context3 = _contexts(root)
     validate_web_manifest(
-        load_json_object(root / _RUN_ARTIFACTS["web_manifest"]), root, context1
+        load_json_object(root / _RUN_ARTIFACTS["web_manifest"]), root, context1,
+        minimum_sources=2 if load_generation_plan(root, context2) else 3,
     )
     methodology = (root / _RUN_ARTIFACTS["methodology"]).read_text(encoding="utf-8")
     creative_prompt_path = root / _RUN_ARTIFACTS["creative_director_prompt"]
@@ -194,7 +196,7 @@ def _cmd_build_prompt1(arguments: argparse.Namespace) -> dict[str, Any]:
     if not creative_prompt_path.is_file() or not creative_brief_path.is_file():
         raise ValueError("build-prompt1 requires the Creative Director prompt and brief")
     expected_creative_bundle = build_creative_director_prompt(
-        methodology, context1, context2, context3, load_style_brief(root, _component_ids(context2))
+        methodology, context1, context2, context3, load_style_brief(root, _component_ids(context2)), load_generation_plan(root, context2)
     )
     validate_creative_style_attachments(root, expected_creative_bundle["attachments"])
     expected_creative_prompt = expected_creative_bundle["prompt"]

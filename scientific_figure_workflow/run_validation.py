@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from .style_direction import load_style_brief, validate_style_palette, validate_creative_style_attachments
+from .generation_checklist import load_generation_plan
 
 import copy
 import json
@@ -227,7 +228,8 @@ def validate_complete_run(
         raise ValueError(
             "Context 1 dominant_colour_count must match Context 3 dominant_colour_roles"
         )
-    validate_web_manifest(load_json_object(root / artifacts["web_manifest"]), root, context1)
+    validate_web_manifest(load_json_object(root / artifacts["web_manifest"]), root, context1,
+                          minimum_sources=2 if load_generation_plan(root, context2) else 3)
 
     candidates = load_json_object(root / artifacts["figurebench_candidates"])
     expected_candidates = rank_candidates(context2, load_reference_index(references))
@@ -238,7 +240,7 @@ def validate_complete_run(
     methodology = (root / artifacts["methodology"]).read_text(encoding="utf-8")
     creative_prompt = (root / artifacts["creative_director_prompt"]).read_text(encoding="utf-8")
     expected_creative_bundle = build_creative_director_prompt(
-        methodology, context1, context2, context3, style
+        methodology, context1, context2, context3, style, load_generation_plan(root, context2)
     )
     validate_creative_style_attachments(root, expected_creative_bundle["attachments"])
     expected_creative_prompt = expected_creative_bundle["prompt"]

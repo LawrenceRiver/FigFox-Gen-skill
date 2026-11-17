@@ -10,6 +10,9 @@
 
 </div>
 
+**Experimental `codex/style-anchor-fast`:** one peer-and-Methodology needs anchor → parallel need-driven construction references, liked style traits and palette → drawing correspondence table → innovation-led Creative Director and clear routing → compact generation packet. See [current Skill](SKILL.md) and [schema](references/compact-generation.md). Original workflow documentation remains below; this branch does not reinstall production automatically.
+
+
 FigFox-Gen-skill starts from a scientific Methodology, identifies its related field, and
 studies how that field's papers repeatedly draw their methods. It extracts targeted crops
 from standard scholarly SVG/HTML figures and learns their visual conventions as
