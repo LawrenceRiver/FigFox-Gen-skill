@@ -3,10 +3,13 @@
 # FigFox-Gen-skill · V2
 
 ### Source-grounded visual planning for one scientific figure.
+### 从 Methodology 和真实证据出发，生成一张科研图。
 
 **Methodology + peer evidence · need-driven construction · scoped style traits · 14 palette groups · final PNG1**
 
-[中文说明](./README_ZH.md) · [Installation](#installation) · [Workflow](#workflow) · [Examples](#examples) · [Version guide](references/versions.md)
+**同类图需求锚点 · 按需配图 · 有范围的风格借鉴 · 14 组配色 · 最终 PNG1**
+
+[Installation / 安装](#installation) · [Workflow / 工作流程](#workflow) · [Examples / 案例](#examples) · [Version guide / 版本说明](references/versions.md)
 
 </div>
 
@@ -16,7 +19,14 @@ actual innovations; supporting stages stay at a consistent level. Cached, parall
 resolves the selected visual needs, scoped reference traits and palette before a Creative
 Director fixes the complete rectangular layout and exact connector geometry.
 
+`main` 默认提供 V2，发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
+有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
+一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
+创意师确定完整矩形布局和精确连线几何。
+
 Default visual priority: complete rectangular composition, regular partitions, then directional simplicity within that frame. White space and black text dominate; very pale fills identify important content, while supporting regions remain mostly unfilled.
+
+默认视觉优先级为：完整矩形整体、规整分区、在框内尽可能单向传导。以白底、黑字和浅色为主；只对重要内容定向着色，普通支撑区域尽量留白。
 
 V2 includes canonical model constructions at the needed granularity, bold headings on the
 ordinary background, colour emphasis on scientific content, and a coherent arrow family
@@ -25,26 +35,58 @@ retain the actual collected pixels through deterministic placement. One layout i
 produces the figure; the generated image or inset composite is the single final PNG1.
 Authors inspect the actual pixels before accepting it. Editable SVG is not a deliverable.
 
+V2 按所需粒度采用标准模型的经典结构画法，默认在普通背景上使用粗体标题，把
+颜色重点留给科学内容；箭头采用统一的比例与风格，可使用粗杆、圆角或手绘线条。
+按需选用且已获使用许可的内容插图，通过确定性贴入保留实际素材像素。只调用一次
+图像模型生成布局；生成图或贴入素材后的合成图就是唯一最终 PNG1，由作者检查实际
+像素后决定是否接受，不承诺可编辑 SVG。
+
 See the [earlier preview examples and recorded checks](examples/v3-0-1/README.md), the earlier
 [layout and connector trial](examples/regular-layout-trial/README.md), and the
 [direct visual inset contract](references/direct-visual-insets.md). The former standalone V2 entry has been retired; the current workflow is the default V2. V1 remains available through the explicit `$figfox-gen-v1` entry.
 
+查看 [此前的预览案例与检查记录](examples/v3-0-1/README.md)、此前的
+[布局和连线对照](examples/regular-layout-trial/README.md)，以及
+[直接视觉插图合同](references/direct-visual-insets.md)。旧的独立 V2 入口已移除，当前流程统一为默认 V2；V1 仍可通过 `$figfox-gen-v1` 明确调用。
+
 ## What is new in V2
 
+**V2 更新亮点**
+
 1. **No more overcolored Mermaid-style topology diagrams.** Use a primary visual reference to unify constructions, arrows and typography into a coherent scientific figure.
+
+   **不再出现过度配色的 Mermaid 式拓扑图。** 用主视觉参考统一图形、箭头和字体，让生成结果具有真正科研架构图的构造感。
+
 2. **Truly simpler logical layouts.** Explore reverse-C, S-shaped and circular arrangements while preserving alignment, clear directional flow and individually checked connections.
+
+   **真正从简的逻辑布局。** 支持反 C、S 型和环形等排布，整体规整、饱满、对齐，尽可能单向传导，并逐条复查实际箭头的逻辑走向。
+
 3. **Counterintuitive spatial color rules.** Use related pale colors for neighboring modules, stronger differences across separated regions and usually one accent for the key mechanism.
+
+   **反直觉的空间配色要求。** 相邻模块用相近浅色过渡，远处才拉开色彩差异，关键机制通常只保留一种强调色。
+
 4. **Power up with image insets.** Directly incorporate relevant visuals, such as audio waveforms and street views, into the scientific framework.
+
+   **图片插入开挂。** 音频波形、街景等外部图片可以按科学需要直接嵌入框架图，让具体内容进入方法表达。
+
 5. **Expert-level compression.** Aim for about 100 words, remove repetition and gray microcopy, and use comparable papers’ contribution-level detail to guide how deeply each innovation is explained, with user-adjustable constraints.
+
+   **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
 
 We have also released [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill) for turning scientific papers into research poster images.
 
+我们也已发布 [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill)，用于将科学论文生成为科研海报图片。
+
 ## Workflow overview
+
+**流程概览**
 
 The original overview figures are preserved unchanged; the V2 refinements are described above.
 The two figures are intentionally different compositions: the English version
 uses a horizontal evidence chain, while the Chinese version uses a vertical spine with
 side evidence branches.
+
+原有流程图原样保留，V2 的细化规则见上方更新亮点。两张总览图采用不同构图：英文版是横向证据链，中文版是带两侧证据分支的自上而下主轴。
 
 <div align="center">
   <table>
