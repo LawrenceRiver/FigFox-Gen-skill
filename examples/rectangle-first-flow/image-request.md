@@ -1,0 +1,98 @@
+Create one complete scientific figure from this locked generation checklist.
+Evidence SHA256: 2c00209e4c1fbfb9cc28ca55fdaf008ef0a2b8fc0048b06c85a0fa1a627c2bb7
+## Scientific meaning
+MusiCoT trains a single text-conditioned semantic LM on coarse-first CLAP RVQ thought tokens followed by audio tokens. CLAP embeddings of 10-second clips yield analyzable intermediate musical thoughts.
+- Thoughts are continuous CLAP embeddings represented by RVQ tokens, not natural-language reasoning.
+- For M clips and L codebooks, flatten all M tokens of level 1, then level 2, through level L; do not flatten clip by clip.
+- LM predicts thought tokens before audio tokens; training uses CE for both token domains.
+- Dual temperatures T₁/T₂ and CFG scales λ₁/λ₂ belong to thought/audio domains, respectively.
+- CLAP internals and fixed/trainable flags are not specified in the supplied excerpt; do not invent them. RVQ is trained by reconstruction quantization loss.
+- Analysis reconstructs quantized CLAP vectors and compares cosine similarity to relevant text anchors; heatmap is schematic, not experiment data.
+- Diagram output stops at audio tokens, as supplied Methodology; do not invent a direct CLAP audio decoder.
+## Visual-needs anchor (Methodology intersected with inspected peer conventions)
+- tokens: Aligned temporal/codebook grid with explicit flatten order | Methodology: L codebooks flattened coarse-to-fine, all M time positions at each level | Peers: MusicLM Fig2 uses semantic/acoustic token strips; MusicGen Fig1 shows codebook-time grids and explicit ordering.
+- wave: Actual audio representation and readable model boundaries | Methodology: CLAP processes 10-second audio segments; one semantic LM | Peers: MusicLM Fig2 shows waveform specimens and whole encoding/decoding modules; MusicGen token grid abstracts the representation outside model internals.
+## Innovation-led detail hierarchy
+Peer depth observation: MusicGen Fig1 resolves tokens within codebook/time grid, while MusicLM Fig2 keeps encoders and generative stages as whole modules.
+- Innovation: Analyzable coarse-to-fine musical thought sequence | Focus: rvq, thought, analysis | Finest visible unit: Individual cells, level-major ordering and cosine-similarity analysis branch.
+- Innovation: Dual-domain sampling | Focus: sampling | Finest visible unit: Two parameter rows, paired temperature and CFG scale per domain.
+Shared non-innovation depth: Supporting CLAP and LM stay whole-model; audio/text stay input strips.
+Keep whole (no invented model internals): clap, lm
+Allocate detail to the actual contributions; do not expand standard components just because they are familiar. Match supporting regions at the shared level.
+## Locked overall framework
+RECTANGLE FIRST, MOSTLY ONE-WAY SECOND. Landscape 1800×1150 white canvas. Exactly four aligned bands fill one complete rectangular footprint x50..1750: band 1 Music Audio, CLAP, RVQ (RVQ spans two columns); band 2 Text Tokens, Dual Sampling, Semantic LM (LM spans two columns); band 3 Musical Thoughts spans the whole width as one shallow token sequence; band 4 two equal-width outputs Audio Tokens and Structural Analysis. Thus no empty cells, protruding cards, diagonal staircase or unbalanced blank half. Macro flow follows rightward training then downward generation: Audio→CLAP→RVQ, RVQ↓LM↓Thoughts↓the two outputs. Text and Sampling use short distinct overhead feeder lanes into LM. Every scientific arrowhead points right or down, none left or up. Vertical movement within short local feeder lanes is acceptable to keep the rectangular composition. No outer return bus. Never force all heads right at the expense of the silhouette. Dark bold plain headings, pale violet content surfaces, amber only for RVQ. No filled title strips. Preserve actual waveform as a direct-content inset: leave [75,188,300,108] clean white inside Music Audio, no text/marks drawn inside.
+Imagine a complete rectangular overview first. State its organizing rule: equal-width columns, equal-height parallel bands or balanced bilateral groups, according to the scientific graph. Equalize peer regions, margins and gutters; innovations may span integer cells. Reserve output inside the fixed canvas/grid; align sibling edges/baselines. Reflow upstream content instead of appending a dangling final block. Visual symmetry never invents branches, reverses edges or merges unrelated paths into a bus. Keep flow simple; no added step numbers.
+Canvas pixels: [1800, 1150]; preserve the exact boxes and path points below. Scale the entire composition uniformly.
+Grid rows: [[120, 300], [380, 560], [640, 820], [900, 1080]]; columns: [[50, 400], [500, 850], [950, 1300], [1400, 1750]]
+Clearance: 12 pixels. Captions must stay in their reserved boxes; never cut shafts.
+## Connector construction (Creative Director and generator)
+Plan placement and connector clearance together. Prefer straight, axis-aligned ports; move modules to remove crossings and detours before locking exact route points. Use few consistent right-angle bends. Every arrow is one continuous human-reproducible source-border to target-arrowhead path: no empty-space starts, isolated heads, disappearing shafts or unexplained gaps. Keep text and heading areas clear of shafts; fills never erase lines. An unavoidable crossing needs a continuous bridge or declared distinguishing ink; it is not a junction. Return loops use a perimeter lane and land in their actual process subregion, not an adjacent training/evaluation inset. Choose a coherent reference-matched arrow family, including bold hand-drawn shafts or filled/rounded bodies when appropriate. Keep head/body proportions and weight consistent within each role and scale. Points specify centerlines, not mandatory thin-black ink; reserve clearance for the chosen width. After text/icons, trace every shaft again.
+Draw every named component once. A container may be the component itself; do not add duplicate stand-ins. Repeated snapshots inside a component are insets, not extra pipeline nodes.
+## Exact components and placement
+- audio = `Music Audio` | box [50, 120, 350, 180] | Actual-data waveform goes in clean [75,188,300,108] white slot under dark Music Audio / Input example label. No generated waveform.
+- clap = `CLAP Embeddings` | box [500, 120, 350, 180] | Whole CLAP encoder and aligned continuous embedding bars; 10 s per embedding
+- rvq = `Coarse-to-Fine RVQ` | box [950, 120, 800, 180] | L codebook rows by M time positions, using readable row labels Codebook 1, Codebook 2, …, Codebook L and column labels 1, 2, …, M; flatten complete rows in that order. Symbolic schematic, not numerical results.
+- text = `Text Tokens` | box [50, 380, 350, 180] | Compact token strip; illustrative prompt: piano and drums
+- lm = `Semantic LM` | box [950, 380, 800, 180] | Single whole semantic LM spanning aligned thought and audio prediction zones; CE targets in training
+- thought = `Musical Thoughts` | box [50, 640, 1700, 180] | One full-width shallow row of ordered coarse-to-fine thought tokens, not multiple repeated pipeline nodes; outputs descend below it.
+- sound = `Audio Tokens` | box [50, 900, 800, 180] | Audio token strip follows thought end in same autoregressive sequence
+- analysis = `Structural Analysis` | box [950, 900, 800, 180] | Quantized CLAP embeddings versus text anchors piano/drums; cosine similarity heatmap with time columns; schematic, no invented numerical results
+- sampling = `Dual Sampling` | box [500, 380, 350, 180] | Two neat aligned rows: Thoughts: T₁, λ₁; Audio: T₂, λ₂; temperatures and CFG scales
+## Exact directed connections (one arrowhead per relationship)
+These relationship labels specify meaning. Show only short relation captions where needed; not every arrow needs visible explanatory text. Preserve essential scientific notation and conditions.
+- audio.east -> clap.west | `10 s clips` | mainline points [[400, 210], [500, 210]]
+- clap.east -> rvq.west | `quantize` | mainline points [[850, 210], [950, 210]]
+- rvq.south -> lm.north | `training targets` | mainline points [[1500, 300], [1500, 380]]
+- text.north -> lm.north | `condition` | branch points [[225, 380], [225, 335], [1250, 335], [1250, 380]]
+- lm.south -> thought.north | `predict first` | mainline points [[1500, 560], [1500, 640]]
+- thought.south -> sound.north | `then predict` | mainline points [[500, 820], [500, 900]]
+- thought.south -> analysis.north | `reconstruct embeddings` | mainline points [[1400, 820], [1400, 900]]
+- sampling.north -> lm.north | `sampling controls` | branch points [[675, 380], [675, 350], [1100, 350], [1100, 380]]
+Ports name the actual object/frame boundary. Never stop at an empty margin, nearby input, or unrelated enclosing stage. Independent evidence edges have distinct landing ports and arrowheads; crossings are not junctions. Do not merge unrelated evidence into one long bus.
+## One-to-one drawing correspondence
+| Need / location | Reference construction or source basis | Our adapted drawing |
+| --- | --- | --- |
+| tokens / rvq | MusicGen Fig1 token lattice; own CLAP content and own layout. | Within the equal-size RVQ panel draw 3 symbolic rows labeled Codebook 1, Codebook 2, Codebook L with the same 4 symbolic time columns 1, 2, …, M. A flattened strip below contains the complete row 1 followed by the complete row 2 then … row L. Pale vermilion cells with stronger coarse-row emphasis; avoid clip-major order and do not fabricate data. |
+| wave / audio | Direct-content waveform derived from first 20 seconds of Aya Higuchi performance of Chopin Waltz in A minor B.150; specific Commons file page confirms performance CC0 1.0. Original OGG and sample-level derivation receipt are local. Existing MusicLM/MusicGen conventions remain cached research, not attached style images. | Direct source waveform is pasted afterward in a white [75,188,300,108] inset; model must leave the slot clean. |
+For every visual need, choose direct use of a suitable collected asset, a source crop, or borrowed construction. Do not treat all existing imagery as style evidence: when a real visual instance communicates the content best, reserve an aligned inset for the actual file instead of inventing a drawn substitute. Only explicitly collected and approved direct-content insets get reserved slots; invent no blank panels when none are selected. Those insets are composited after generation; leave only those declared slots clean and preserve their aspect ratios. This choice is open-ended across domains, not limited to any media category. Source material used illustratively must not masquerade as this method’s measured result.
+For standard models actually named in this Methodology, use a source-checked recognizable architectural silhouette at the scoped detail level. An unchanged model may remain a compact canonical inset; invent no arbitrary replacement geometry and do not expand supporting internals beyond the innovation-led hierarchy. Reuse already inspected construction evidence.
+These are intentional visual content, not ornamental stickers. Keep them small, readable and coherent with the main reference. No invented observations, numerical results or unlabelled decorative particles.
+## Typography reference
+Arial or a coherent clean sans serif. Bold black/dark headings on unpainted background; scientific interior fill only. Short readable labels, no gray microcopy, no visible underscore, mathematical indices genuinely typeset. Reserve labels away from shafts.
+Use concise unnumbered scientific headings from this Methodology only; no stage titles from other cases or orchestration codes. Default to bold dark or deliberate theme-coloured text on the normal background, not automatic coloured title strips or white-on-colour tabs. Fill emphasizes scientific content/mechanisms. Text is labels, essential terms and equations. Typeset true subscripts/superscripts; NO visible underscore in identifiers or illustrative code. Use approved aliases; raw IDs stay internal. Optically align baselines, edges and centers with consistent padding; shorten/reflow before shrinking fonts.
+## Global style direction (before domain-search aesthetics)
+Global style anchor: apply the explicitly liked reference traits, such as typography, linework, spacing, colour relationships or arrow treatment, coherently across the figure. State what is borrowed; do not claim to copy the whole reference or its composition. Layout and detail hierarchy come from this Methodology and its innovations. Do not copy source labels, characters or scientific claims. Component references affect only their named target. Active colours come from the selected compatible palette group. Title treatment defaults to bold dark or deliberate theme-coloured text without filled header strips; important scientific content receives the fill. Arrow treatment includes shaft character, head/body proportion, weight, corners and palette role; bold hand-drawn or filled arrows are valid when coherent and clear. Semantic hand-drawn icons and purposeful dividers are allowed; no pasted stickers or meaningless ornaments.
+Style brief SHA256: 5ea61b7f744f76a29d3d138553d0292c50a45c22a07b98d63bcdc5a07a89a1ce
+Family: architecture_2d; reference mode: model_composed
+Stage labeling: do not invent stages or panel letters. No generic numbered badges, emoji or decorative step labels.
+Typography follows the main reference consistently; do not default to Times New Roman. Formulas may retain appropriate mathematical notation. No gray microcopy or invented caution notes. Necessary short italic explanations use readable Arial Italic in black or a coherent dark ink. Black is welcome; do not make all text pastel.
+Frame and arrow grammar remain consistent. Neighboring base frames use analogous, similarly light fills; at most one local strong contrast focus in each proximity group. Separate far-away regions may carry a second emphasis only when the declared layout justifies their separation.
+Use pale support surfaces and deeper main marks, or a reference-supported inverse. Keep saturation and the chosen style coherent.
+Declared proximity groups: [["audio", "clap", "rvq"], ["text", "lm", "thought", "sound"], ["sampling", "analysis"]]; contrast foci: rvq
+User likes: Aligned token lattices and clear whole-model boundaries observed in peers; Consistent coherent moderately bold paths, Arial typography and generous white gutters, composed originally; Bold dark free-standing headings; important scientific interiors receive pale fill; Moderately bold hand-drawn shaft arrows with consistent head proportions and theme-coloured ink; Complete occupied rectangle before direction preference; rightward training then downward generation
+Avoid: Copied scholarly composition; Generic decorative AI icons; Numbered stages; Tiny gray prose; Coloured title strips or white text on painted headers; Arbitrary model silhouette instead of canonical model construction
+Reading path: main_side_chain; scientific mainline: audio -> clap -> rvq -> lm -> thought -> sound
+Keep every scientific edge. Simplify presentation, not scientific meaning. Every arrow has an unambiguous source and destination; add concise relation labels where needed. Arc/S layouts are geometry, not permission to invent cycles; distinguish crossings from junctions.
+Palette for this run: style-blue-violet-amber-01. For this music figure, muted indigo and neighboring violet make continuous/discrete states coherent, with one amber RVQ innovation emphasis. White background and dark ink avoid painted title bars; this is a task-specific library choice, not a universal hue default. Example purple/blue/orange hues are illustrative, not a default theme. Select per reference; reuse is allowed. Lock hues only on explicit user request.
+Use adjacent/analogous shades for related modules; one contrast family at one semantic emphasis focus: rvq. Distant extra focus, if any, follows the declared proximity plan; related legend marks may repeat that accent. Neutrals and subordinate tints are not additional dominant colours; no gratuitous gradients.
+Style may be imagined within this brief when no approved image exists, during the same Creative Director pass; do not generate an extra style-sheet image.
+## Scoped image references (attached in manifest order)
+Respect each crop aspect ratio when reading its construction; do not stretch a complete reference onto this new layout. Borrow only the declared grammar, never unrelated source nodes, labels or colours.
+## Palette
+Style-selected palette group: style-blue-violet-amber-01
+Dominant roles (style brief, not the first paper): primary, accent
+primary: #5265A5
+secondary: #7861A8
+accent: #D98A37
+ink: #243047
+surface: #EEF0F8
+Use only this palette group's active colours/evidenced extensions; borrow reference colour relationships, not source swatches.
+## Final creative construction decisions
+Creative Director brief:
+- RECTANGLE FIRST, MOSTLY ONE-WAY SECOND. Landscape 1800×1150 white canvas. Exactly four aligned bands fill one complete rectangular footprint x50..1750: band 1 Music Audio, CLAP, RVQ (RVQ spans two columns); band 2 Text Tokens, Dual Sampling, Semantic LM (LM spans two columns); band 3 Musical Thoughts spans the whole width as one shallow token sequence; band 4 two equal-width outputs Audio Tokens and Structural Analysis. Thus no empty cells, protruding cards, diagonal staircase or unbalanced blank half. Macro flow follows rightward training then downward generation: Audio→CLAP→RVQ, RVQ↓LM↓Thoughts↓the two outputs. Text and Sampling use short distinct overhead feeder lanes into LM. Every scientific arrowhead points right or down, none left or up. Vertical movement within short local feeder lanes is acceptable to keep the rectangular composition. No outer return bus. Never force all heads right at the expense of the silhouette. Dark bold plain headings, pale violet content surfaces, amber only for RVQ. No filled title strips. Preserve actual waveform as a direct-content inset: leave [75,188,300,108] clean white inside Music Audio, no text/marks drawn inside.
+Creative Director ideas:
+- `rectangle-before-direction` -> `thought`: Make a single complete rectangle with predominantly right/down scientific transmission. Intent: Compare the users revised priority with the failed all-right open staircase, preserving all nine nodes and eight edges. Construction: Use the exact four-column/four-band occupied grid. The training triplet fills the top band, the two side inputs and LM fill the second, one full-width thought-token strip fills the third, and two equally sized output views fill the fourth. Route two short overhead feeder paths to separate LM top ports without intersections; the training path reaches a third LM top port. No connector reverses to a previous stage, no bidirectional arrowhead, and no outer feedback bus. Actual waveform slot stays clean white until direct placement. Typography stays dark and bold with no painted header bars.
+## Final drawing checks
+Airy publication diagram; dark Arial labels; no decorative icons; restrained teal with one vermilion RVQ focus.
+Verify every listed arrow endpoint, concise label and semantic inset before finishing. No gray microcopy, pseudo-text, gratuitous gradients, glow, pasted clip-art or decorative badge. Purposeful dividers and hand-drawn semantic icons are allowed. Keep exact repeated geometry regular.
+Generate one PNG1. Do not copy planning prose or evidence hashes into the image.

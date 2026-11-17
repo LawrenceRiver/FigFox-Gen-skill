@@ -10,10 +10,12 @@
 
 </div>
 
-`main` 默认提供 V3，发布版本为 `v3.0.0`。它从科学 Methodology 出发，形成
+`main` 默认提供 V3，发布版本为 `v3.0.1`。它从科学 Methodology 出发，形成
 有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
 一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
 创意师确定完整矩形布局和精确连线几何。
+
+默认视觉优先级为：完整矩形整体、规整分区、在框内尽可能单向传导。以白底、黑字和浅色为主；只对重要内容定向着色，普通支撑区域尽量留白。
 
 V3 按所需粒度采用标准模型的经典结构画法，默认在普通背景上使用粗体标题，把
 颜色重点留给科学内容；箭头采用统一的比例与风格，可使用粗杆、圆角或手绘线条。
@@ -21,7 +23,7 @@ V3 按所需粒度采用标准模型的经典结构画法，默认在普通背�
 图像模型生成布局；生成图或贴入素材后的合成图就是唯一最终 PNG1，由作者检查实际
 像素后决定是否接受，不承诺可编辑 SVG。
 
-查看 [V3 案例与检查记录](examples/v3/README.md)、此前的
+查看 [V3 案例与检查记录](examples/v3-0-1/README.md)、此前的
 [布局和连线对照](examples/regular-layout-trial/README.md)，以及
 [直接视觉插图合同](references/direct-visual-insets.md)。原始 V2 保留在 `v2.0.0`；
 V1、V2 分别保留为 `$figfox-gen-v1`、`$figfox-gen-v2` 独立入口，仅在明确调用时使用。
@@ -103,14 +105,14 @@ Methodology + 约两张实际查看过的同类论文图
 
 这三个选定的 V3 输出展示当前流程，MusiCoT 使用靛蓝／紫色与琥珀色修订版。
 它们是待检查的预览，不保证像素层面的科学与视觉验收通过。所选产物与检查见
-[案例报告](examples/v3/README.md)。[英文 README](README.md#full-methodology-inputs)
+[案例报告](examples/v3-0-1/README.md)。[英文 README](README.md#full-methodology-inputs)
 完整保留三个案例的原始 Methodology，不以关键词摘要替代原文。
 
 | Methodology | 最新 V3 预览 |
 |---|---|
-| **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3/latent-diffusion.png" alt="Latent Diffusion V3 预览，需作者检查" width="620" /> |
-| **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3/musicot.png" alt="MusiCoT V3 靛蓝紫色与琥珀色预览，需作者检查" width="620" /> |
-| **AlphaFold 3** · [Abramson 等](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3/alphafold3.png" alt="AlphaFold 3 V3 预览，需作者检查" width="620" /> |
+| **Latent Diffusion** · [Rombach 等](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion V3 预览，需作者检查" width="620" /> |
+| **MusiCoT** · [论文](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT V3 靛蓝紫色与琥珀色预览，需作者检查" width="620" /> |
+| **AlphaFold 3** · [Abramson 等](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 V3 预览，需作者检查" width="620" /> |
 
 ### 原样保留的 V1 案例
 

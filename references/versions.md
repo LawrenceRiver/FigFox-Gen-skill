@@ -1,11 +1,12 @@
 # Versions and installation
 
-`main` is the V3 default, released as `v3.0.0`. Release tags preserve reproducible versions without rewriting
+`main` is the V3 default, released as `v3.0.1`. Release tags preserve reproducible versions without rewriting
 the old published history.
 
 | Ref | Skill name | Invocation | Purpose |
 |---|---|---|---|
-| `main` / `v3.0.0` | `FigFox-Gen-skill` | Implicit or explicit | Current V3 workflow; `main` can advance |
+| `main` / `v3.0.1` | `FigFox-Gen-skill` | Implicit or explicit | Current V3 workflow; `main` can advance |
+| `v3.0.0` | `FigFox-Gen-skill` | Implicit or explicit | Pinned first V3 release |
 | `v2.0.1` | `figfox-gen-v2` | Explicit only | V2 compatibility identity, original V2 algorithm/assets |
 | `v2.0.0` | `FigFox-Gen-skill` | Implicit or explicit | Pinned original V2 release |
 | `v1.0.0` | `figfox-gen-v1` | Explicit only | Original algorithm and assets, with a distinct legacy skill identity |
@@ -21,7 +22,7 @@ alongside V3 under its original name: it predates the distinct legacy identity.
 npx skills@latest add LawrenceRiver/FigFox-Gen-skill --skill FigFox-Gen-skill
 
 # Reproducible current V3 release
-npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v3.0.0 --skill FigFox-Gen-skill
+npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v3.0.1 --skill FigFox-Gen-skill
 
 # Pinned original V2 release
 npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v2.0.0 --skill FigFox-Gen-skill
@@ -78,7 +79,7 @@ into reserved slots with a deterministic helper, retaining their actual pixels a
 without another model call. The generated image or composite is the single final raster
 PNG1 for author inspection. There is no editable SVG deliverable or automatic repair loop.
 Artifact and geometry checks do not certify generated pixels. The
-[latest V3 previews and recorded checks](../examples/v3/README.md) document selected
+[latest V3 previews and recorded checks](../examples/v3-0-1/README.md) document selected
 examples, including the indigo/violet and amber MusiCoT revision, without guaranteeing pixel
 acceptance. Original V1 images and full recorded Methodology inputs remain in the
 [README](../README.md#examples).
@@ -91,3 +92,5 @@ Detailed legacy instructions: [V1 README](https://github.com/LawrenceRiver/FigFo
 and [V1 Skill](https://github.com/LawrenceRiver/FigFox-Gen-skill/blob/v1.0.0/SKILL.md).
 For the untouched historical source, inspect
 [`v1-original`](https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v1-original).
+
+V3.0.1 makes the approved pale, predominantly white and black-text direction the default. Complete rectangular composition and regular partitions take precedence over forcing all arrows to share one compass direction. See the [V3.0.1 examples](../examples/v3-0-1/README.md). Earlier tags stay fixed.

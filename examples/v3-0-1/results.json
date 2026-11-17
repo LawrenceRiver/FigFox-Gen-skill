@@ -1,0 +1,181 @@
+{
+  "policy": "rectangle before direction; predominantly white, pale targeted fills, black text",
+  "records": [
+    {
+      "case": "latent-diffusion",
+      "generation_seconds": 41.871,
+      "edit_seconds": 0,
+      "edit_prompt": null,
+      "paste_seconds": 0.163,
+      "receipt": {
+        "format": "figfox-raster-inserts-v1",
+        "step": "optional final deterministic raster composition; no model call",
+        "canvas": [
+          1526,
+          1030
+        ],
+        "background": "input/generated-layout.png",
+        "background_sha256": "7cc0dc141c979cf83e31eaa78c8994c01f2d7af6d2b6199c22473a3a65775031",
+        "output": "png1.png",
+        "output_sha256": "5fb37f1be61094019d8bda1340021cbb87bc4c8eaa34c23a766a67f22b40dae9",
+        "insets": [
+          {
+            "path": "input/raster/apollo17-earth-crop.png",
+            "target_component_id": "image",
+            "box": [
+              49,
+              158,
+              180,
+              178
+            ],
+            "source": "https://images.nasa.gov/details/ARC-1972-AS17-148-22727",
+            "permission_evidence": "NASA / Apollo 17 crew; specific PD-NASA photo AS17-148-22727.",
+            "attribution": "NASA / Apollo 17 crew; specific PD-NASA photo AS17-148-22727.",
+            "fit": "contain",
+            "sha256": "fbbd8a21806fe627349aad11b2c0157779f12dac2118a37b7f7fd58d8f2c52ca",
+            "original_size": [
+              1840,
+              1840
+            ],
+            "requested_box": [
+              49,
+              158,
+              180,
+              178
+            ],
+            "actual_box": [
+              50,
+              158,
+              178,
+              178
+            ]
+          }
+        ]
+      },
+      "artifact_validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "final": "assets/generated-figures/v3-0-1/latent-diffusion.png",
+      "sha256": "5fb37f1be61094019d8bda1340021cbb87bc4c8eaa34c23a766a67f22b40dae9"
+    },
+    {
+      "case": "alphafold3",
+      "generation_seconds": 82.106,
+      "edit_seconds": 32.365,
+      "paste_seconds": 0.13,
+      "receipt": {
+        "format": "figfox-raster-inserts-v1",
+        "step": "optional final deterministic raster composition; no model call",
+        "canvas": [
+          1587,
+          991
+        ],
+        "background": "input/generated-layout.png",
+        "background_sha256": "cb0e776644b36ff31809a7fd417b25a29fc1d80602e6bb1c2c4303265c95bba7",
+        "output": "png1.png",
+        "output_sha256": "83d62756352a3e9826664d2e6f657377d7be24bbb73e8f017826e3d0c73a5fa7",
+        "insets": [
+          {
+            "path": "input/raster/myoglobin-1mbo.png",
+            "target_component_id": "input",
+            "box": [
+              101,
+              152,
+              280,
+              226
+            ],
+            "source": "https://commons.wikimedia.org/wiki/File:Myoglobin.png",
+            "permission_evidence": "AzaToth, PD-self public domain dedication; PDB1MBO contextual example.",
+            "attribution": "AzaToth, PD-self public domain dedication; PDB1MBO contextual example.",
+            "fit": "contain",
+            "sha256": "737d1e84c7eb023840da66c4d918e9fa38f96bd6ca12e3bab511325a087d81c3",
+            "original_size": [
+              1159,
+              1173
+            ],
+            "requested_box": [
+              101,
+              152,
+              280,
+              226
+            ],
+            "actual_box": [
+              129,
+              152,
+              223,
+              226
+            ]
+          }
+        ]
+      },
+      "artifact_validation": {
+        "returncode": 0,
+        "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+        "stderr": ""
+      },
+      "final": "assets/generated-figures/v3-0-1/alphafold3.png",
+      "sha256": "83d62756352a3e9826664d2e6f657377d7be24bbb73e8f017826e3d0c73a5fa7"
+    },
+    {
+      "case": "musicot",
+      "edit_seconds": 37.532,
+      "parent": "local/one-way-flow-20261117/rectangular",
+      "paste_seconds": 0.109,
+      "receipt": {
+        "format": "figfox-raster-inserts-v1",
+        "step": "optional final deterministic raster composition; no model call",
+        "canvas": [
+          1663,
+          946
+        ],
+        "background": "input/generated-layout.png",
+        "background_sha256": "20386bf9517a17a55af0400748b1ca08a6517ece9f6bab2b192bc595c3108e14",
+        "output": "png1.png",
+        "output_sha256": "9eeefab830bb4135737b0ea8d609166890e481d753377c736113737314b01b3f",
+        "insets": [
+          {
+            "path": "input/raster/input-example-waveform.png",
+            "target_component_id": "audio",
+            "box": [
+              48,
+              124,
+              314,
+              146
+            ],
+            "source": "https://commons.wikimedia.org/wiki/File:Chopin_-_Waltz_in_A_minor,_B_150.ogg",
+            "permission_evidence": "Aya Higuchi performance, CC0; actual samples, no synthetic waveform.",
+            "attribution": "Aya Higuchi performance, CC0; actual samples, no synthetic waveform.",
+            "fit": "contain",
+            "sha256": "3dbfef06f69085dbdc982647a7f0e52edf505f7ab62718cf0b9afb5add886a67",
+            "original_size": [
+              1140,
+              411
+            ],
+            "requested_box": [
+              48,
+              124,
+              314,
+              146
+            ],
+            "actual_box": [
+              48,
+              140,
+              314,
+              113
+            ]
+          }
+        ]
+      },
+      "artifact_validation": {
+        "kind": "approved visual-edit chain from prior run; source and composition receipt retained, not a new full generation run"
+      },
+      "final": "assets/generated-figures/v3-0-1/musicot.png",
+      "sha256": "9eeefab830bb4135737b0ea8d609166890e481d753377c736113737314b01b3f"
+    }
+  ],
+  "new_other_case_generations": 2,
+  "af3_local_connector_correction": 1,
+  "musicot": "user-approved prior pale-style edit, actual source waveform restored"
+}

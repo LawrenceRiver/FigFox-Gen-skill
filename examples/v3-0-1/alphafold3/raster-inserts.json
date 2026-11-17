@@ -1,0 +1,24 @@
+{
+  "canvas": [
+    1587,
+    991
+  ],
+  "background": "input/generated-layout.png",
+  "output": "png1.png",
+  "insets": [
+    {
+      "path": "input/raster/myoglobin-1mbo.png",
+      "target_component_id": "input",
+      "box": [
+        101,
+        152,
+        280,
+        226
+      ],
+      "source": "https://commons.wikimedia.org/wiki/File:Myoglobin.png",
+      "permission_evidence": "AzaToth, PD-self public domain dedication; PDB1MBO contextual example.",
+      "attribution": "AzaToth, PD-self public domain dedication; PDB1MBO contextual example.",
+      "fit": "contain"
+    }
+  ]
+}

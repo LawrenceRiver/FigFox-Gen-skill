@@ -1,0 +1,24 @@
+{
+  "canvas": [
+    1526,
+    1030
+  ],
+  "background": "input/generated-layout.png",
+  "output": "png1.png",
+  "insets": [
+    {
+      "path": "input/raster/apollo17-earth-crop.png",
+      "target_component_id": "image",
+      "box": [
+        49,
+        158,
+        180,
+        178
+      ],
+      "source": "https://images.nasa.gov/details/ARC-1972-AS17-148-22727",
+      "permission_evidence": "NASA / Apollo 17 crew; specific PD-NASA photo AS17-148-22727.",
+      "attribution": "NASA / Apollo 17 crew; specific PD-NASA photo AS17-148-22727.",
+      "fit": "contain"
+    }
+  ]
+}

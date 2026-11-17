@@ -10,11 +10,13 @@
 
 </div>
 
-V3 is the default on `main`, released as `v3.0.0`. It turns a scientific Methodology
+V3 is the default on `main`, released as `v3.0.1`. It turns a scientific Methodology
 into one raster PNG1 through a source-grounded drawing plan. Detail follows the method's
 actual innovations; supporting stages stay at a consistent level. Cached, parallel work
 resolves the selected visual needs, scoped reference traits and palette before a Creative
 Director fixes the complete rectangular layout and exact connector geometry.
+
+Default visual priority: complete rectangular composition, regular partitions, then directional simplicity within that frame. White space and black text dominate; very pale fills identify important content, while supporting regions remain mostly unfilled.
 
 V3 adds canonical model constructions at the needed granularity, bold headings on the
 ordinary background, colour emphasis on scientific content, and a coherent arrow family
@@ -23,7 +25,7 @@ retain the actual collected pixels through deterministic placement. One layout i
 produces the figure; the generated image or inset composite is the single final PNG1.
 Authors inspect the actual pixels before accepting it. Editable SVG is not a deliverable.
 
-See the [V3 examples and recorded checks](examples/v3/README.md), the earlier
+See the [V3 examples and recorded checks](examples/v3-0-1/README.md), the earlier
 [layout and connector trial](examples/regular-layout-trial/README.md), and the
 [direct visual inset contract](references/direct-visual-insets.md). The original V2 release
 remains pinned at `v2.0.0`; V1 and V2 are explicitly callable as separate legacy skills: `$figfox-gen-v1` and `$figfox-gen-v2`.
@@ -119,15 +121,15 @@ The original detailed workflow remains in the
 
 These selected V3 outputs demonstrate the current workflow, including the indigo/violet
 and amber MusiCoT colour revision. They are previews for inspection, not a guarantee of
-pixel-level scientific or visual acceptance. See the [example report](examples/v3/README.md)
+pixel-level scientific or visual acceptance. See the [example report](examples/v3-0-1/README.md)
 for selected artifacts and checks. The [complete recorded inputs](#full-methodology-inputs)
 remain below.
 
 | Methodology | Latest V3 preview |
 |---|---|
-| **Latent Diffusion** · [Rombach et al.](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3/latent-diffusion.png" alt="Latent Diffusion V3 preview requiring author inspection" width="620" /> |
-| **MusiCoT** · [source paper](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3/musicot.png" alt="MusiCoT V3 indigo violet and amber preview requiring author inspection" width="620" /> |
-| **AlphaFold 3** · [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3/alphafold3.png" alt="AlphaFold 3 V3 preview requiring author inspection" width="620" /> |
+| **Latent Diffusion** · [Rombach et al.](https://arxiv.org/abs/2112.10752) | <img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion V3 preview requiring author inspection" width="620" /> |
+| **MusiCoT** · [source paper](https://arxiv.org/abs/2503.19611) | <img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT V3 indigo violet and amber preview requiring author inspection" width="620" /> |
+| **AlphaFold 3** · [Abramson et al.](https://www.nature.com/articles/s41586-024-07487-w) | <img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 V3 preview requiring author inspection" width="620" /> |
 
 ### Preserved V1 examples
 

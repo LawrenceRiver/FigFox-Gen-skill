@@ -34,6 +34,8 @@ GRID_GRAMMAR = (
     'equal-height parallel bands or balanced bilateral groups, according to the scientific graph. '
     'Equalize peer regions, margins and gutters; innovations may span integer cells. '
     'Reserve output inside the fixed canvas/grid; align sibling edges/baselines. '
+    'Rectangular composition takes priority over forcing every arrow in one compass direction. '
+    'Prefer a dominant flow with short necessary branches; never create an open staircase merely to point all heads alike. '
     'Reflow upstream content instead of appending a dangling final block. Visual symmetry never invents '
     'branches, reverses edges or merges unrelated paths into a bus. Keep flow simple; no added step numbers.'
 )

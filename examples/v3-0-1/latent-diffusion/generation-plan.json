@@ -1,0 +1,501 @@
+{
+  "format": "figfox-generation-plan-v2",
+  "scientific_summary": "Perceptual autoencoding learns a spatial latent space separately from generative diffusion. A time-conditional U-Net denoises in that lower-dimensional space; cross-attention supplies conditional control; decoding is one pass.",
+  "invariants": [
+    "Compression is learned before diffusion; latent space is fixed during generative learning.",
+    "Condition encoder and denoiser are jointly optimized; do not mark the condition encoder frozen.",
+    "Forward noising is fixed and training-only; synthesis begins from Gaussian latent noise.",
+    "Keep actual latent spatial grids, not a one-dimensional token vector.",
+    "A shared decoder reconstructs encoded inputs and decodes generated latent samples in one pass.",
+    "Q derives from U-Net spatial features; K,V derive from encoded condition. No full attention formula needed.",
+    "The input photograph is a real NASA image used only as an illustrative input. All reconstructed/generated outputs and latent imagery are schematic illustrations, not actual model results.",
+    "Do not redraw the selected photo; its declared square slot remains clean for deterministic embedding."
+  ],
+  "layout": "Titles are bold dark text directly on white or ordinary panel background: NO coloured title ribbons, tabs, header bars, white reversed headings, or whole-figure banner. Soft colour highlights only meaningful interior content and the key mechanism; avoid a repeated card-header grid. Use a clear matched family of moderately bold, slightly hand-drawn shaft arrows with solid readable triangular heads and palette-matched ink. Keep planned endpoints and exact centerlines; all shafts continuous beside text, including across model titles. Equal peer regions and clean rectangular outer silhouette remain. Latent Diffusion, one bounded rectangular 1700×1150 overview. Six equal-width columns. Two matched-height scientific lanes titled Perceptual Compression and Latent Generation, both centered horizontally in dedicated header bands clear of all shafts. Short middle conditioning strip. Shared decoder one spanning column, denoising two columns. Reserve a clean 150×150 white photo slot inside input image frame at [75,195,150,150], below RGB Image x and above the short NASA / Apollo 17 credit. The actual selected Earth photo is pasted after generation; DO NOT draw anything in that one slot, not even placeholder words. Upper/lower output images are schematic Earth disks, explicitly labelled Schematic, not real model results. No other empty inset. Local model geometry remains native; every source-border to target arrow is continuous and aligned.",
+  "typography": "Black Arial or coherent sans-serif text, dark bold concise headings on ordinary white background. No gray microcopy, no painted title bars, no visible underscore. Typeset indices. Labels never erase connector shafts.",
+  "placements": [
+    {
+      "component_id": "image",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "encoder",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "latent",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "reconstruct",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "noise",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "condition",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "condencoder",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "denoise",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "sample",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "decoder",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    },
+    {
+      "component_id": "output",
+      "placement": "Use the exact shared-grid box; maintain the complete regular rectangular outline."
+    }
+  ],
+  "routes": [
+    {
+      "source_id": "image",
+      "target_id": "encoder",
+      "label": "encode",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          250,
+          270
+        ],
+        [
+          330,
+          270
+        ]
+      ]
+    },
+    {
+      "source_id": "encoder",
+      "target_id": "latent",
+      "label": "z = E(x)",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          530,
+          270
+        ],
+        [
+          610,
+          270
+        ]
+      ]
+    },
+    {
+      "source_id": "latent",
+      "target_id": "decoder",
+      "label": "reconstruct",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          810,
+          270
+        ],
+        [
+          1170,
+          270
+        ]
+      ]
+    },
+    {
+      "source_id": "decoder",
+      "target_id": "reconstruct",
+      "label": "x̃ = D(z)",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1370,
+          270
+        ],
+        [
+          1450,
+          270
+        ]
+      ]
+    },
+    {
+      "source_id": "latent",
+      "target_id": "noise",
+      "label": "add noise · training",
+      "source_port": "south",
+      "target_port": "north",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "reference",
+      "points": [
+        [
+          710,
+          390
+        ],
+        [
+          710,
+          445
+        ],
+        [
+          150,
+          445
+        ],
+        [
+          150,
+          770
+        ]
+      ]
+    },
+    {
+      "source_id": "noise",
+      "target_id": "denoise",
+      "label": "zₜ, t",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          250,
+          890
+        ],
+        [
+          330,
+          890
+        ]
+      ]
+    },
+    {
+      "source_id": "condition",
+      "target_id": "condencoder",
+      "label": "encode condition",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          810,
+          580
+        ],
+        [
+          890,
+          580
+        ]
+      ]
+    },
+    {
+      "source_id": "condencoder",
+      "target_id": "denoise",
+      "label": "K, V",
+      "source_port": "south",
+      "target_port": "north",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "branch",
+      "points": [
+        [
+          990,
+          660
+        ],
+        [
+          990,
+          715
+        ],
+        [
+          700,
+          715
+        ],
+        [
+          700,
+          770
+        ]
+      ]
+    },
+    {
+      "source_id": "denoise",
+      "target_id": "sample",
+      "label": "iterative denoising",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          810,
+          890
+        ],
+        [
+          890,
+          890
+        ]
+      ]
+    },
+    {
+      "source_id": "sample",
+      "target_id": "decoder",
+      "label": "single decode",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1090,
+          890
+        ],
+        [
+          1170,
+          890
+        ]
+      ]
+    },
+    {
+      "source_id": "decoder",
+      "target_id": "output",
+      "label": "x̂ = D(z₀)",
+      "source_port": "east",
+      "target_port": "west",
+      "via": "Follow exact preflighted orthogonal points; label beside shaft only if needed.",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1370,
+          890
+        ],
+        [
+          1450,
+          890
+        ]
+      ]
+    }
+  ],
+  "display_labels": {
+    "image": "RGB Image x",
+    "encoder": "Encoder E",
+    "latent": "Spatial Latent z",
+    "reconstruct": "Reconstruction x̃",
+    "noise": "Latent Noise zₜ",
+    "condition": "Condition y",
+    "condencoder": "Condition Encoder τθ",
+    "denoise": "Latent Denoising",
+    "sample": "Sample z₀",
+    "decoder": "Decoder D",
+    "output": "Generated Image x̂"
+  },
+  "notation_map": {
+    "z_t": "zₜ",
+    "z_0": "z₀",
+    "epsilon_theta": "εθ",
+    "tau_theta": "τθ",
+    "x_tilde": "x̃",
+    "x_hat": "x̂",
+    "W_Q": "WQ",
+    "W_K": "WK",
+    "W_V": "WV"
+  },
+  "visual_needs": [
+    {
+      "id": "v-images",
+      "need": "image-valued source/reconstruction/output views",
+      "methodology_evidence": "x RGB and D(z) image reconstruction / generation",
+      "peer_evidence": "Both DDPM Fig2 and Imagen FigA4 use image miniatures at image-valued stages."
+    },
+    {
+      "id": "v-spatial",
+      "need": "spatial reduced latent and noisy state",
+      "methodology_evidence": "DM retains two-dimensional structure in latent space",
+      "peer_evidence": "DDPM Fig2 shows noisy image-valued intermediate views; Imagen FigA4 retains square spatial image views between models."
+    },
+    {
+      "id": "v-direction",
+      "need": "generation chain with conditional input",
+      "methodology_evidence": "Time-conditional U-Net augmented with cross-attention",
+      "peer_evidence": "DDPM Fig2 uses directed reverse transitions; Imagen FigA4 uses connected generative blocks and a conditioning branch."
+    }
+  ],
+  "local_visuals": [
+    {
+      "need_id": "v-images",
+      "target_component_id": "image",
+      "meaning": "RGB image type and perceptual preservation",
+      "construction": "Direct crop of collected NASA Earth raster, not borrowed style: leave the declared 150×150 input slot clean for deterministic paste; short dark NASA / Apollo 17 credit below it.",
+      "basis": "NASA AS17-148-22727 source photo; PD-NASA file-specific notice checked."
+    },
+    {
+      "need_id": "v-spatial",
+      "target_component_id": "latent",
+      "meaning": "Compressed representation retains spatial structure",
+      "construction": "Draw compact stack of square grid planes; same footprint for noisy and generated latent.",
+      "basis": "Peer spatial-state images plus inspected reference002 stacked feature planes."
+    },
+    {
+      "need_id": "v-direction",
+      "target_component_id": "denoise",
+      "meaning": "Time-conditioned latent denoising under conditional cross-attention",
+      "construction": "Canonical compact U-shaped multiscale encoder-decoder, paired level skip connections, one scoped attention inset. Q derives from spatial features; K,V from the condition encoder. Trace a continuous top-right K,V shaft into the attention inset without crossing the free-standing module title.",
+      "basis": "Peer directed chain and conditioning branch; reference005 input-port construction, redrawn with our cross-attention semantics."
+    }
+  ],
+  "detail_hierarchy": {
+    "peer_depth_observation": "DDPM Fig2 expands timestep states and Imagen FigA4 stays at whole-model cascade units. Our innovation warrants spatial-latent views and a scoped cross-attention insertion, not generic convolution internals.",
+    "innovation_focuses": [
+      {
+        "claim": "Separation of perceptual compression from lower-dimensional spatial diffusion",
+        "component_ids": [
+          "latent",
+          "noise",
+          "denoise",
+          "sample"
+        ],
+        "draw_to": "Spatial grid and iterative denoising states in a dedicated latent lane."
+      },
+      {
+        "claim": "Flexible conditional generation via U-Net cross-attention",
+        "component_ids": [
+          "condencoder",
+          "denoise"
+        ],
+        "draw_to": "Q versus K,V input distinction, with a small attention inset embedded in denoiser."
+      }
+    ],
+    "common_depth": "All support models remain single named encoder/decoder blocks; image and latent representations are meaningful thumbnails.",
+    "keep_whole": [
+      "encoder",
+      "decoder",
+      "condencoder"
+    ]
+  },
+  "attached_reference_paths": [],
+  "routing_geometry": {
+    "canvas": [
+      1700,
+      1150
+    ],
+    "margin": 20,
+    "columns": [
+      [
+        50,
+        250
+      ],
+      [
+        330,
+        530
+      ],
+      [
+        610,
+        810
+      ],
+      [
+        890,
+        1090
+      ],
+      [
+        1170,
+        1370
+      ],
+      [
+        1450,
+        1650
+      ]
+    ],
+    "rows": [
+      [
+        150,
+        390
+      ],
+      [
+        500,
+        660
+      ],
+      [
+        770,
+        1010
+      ]
+    ],
+    "slots": {
+      "image": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "encoder": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "latent": [
+        0,
+        2,
+        1,
+        1
+      ],
+      "reconstruct": [
+        0,
+        5,
+        1,
+        1
+      ],
+      "noise": [
+        2,
+        0,
+        1,
+        1
+      ],
+      "condition": [
+        1,
+        2,
+        1,
+        1
+      ],
+      "condencoder": [
+        1,
+        3,
+        1,
+        1
+      ],
+      "denoise": [
+        2,
+        1,
+        1,
+        2
+      ],
+      "sample": [
+        2,
+        3,
+        1,
+        1
+      ],
+      "decoder": [
+        0,
+        4,
+        3,
+        1
+      ],
+      "output": [
+        2,
+        5,
+        1,
+        1
+      ]
+    }
+  }
+}

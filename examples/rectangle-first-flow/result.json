@@ -1,0 +1,59 @@
+{
+  "generated_seconds": 79.517,
+  "edit_seconds": 39.482,
+  "artifact_validation": {
+    "returncode": 0,
+    "stdout": "{\"artifacts\": 13, \"creative_director\": \"no_external_svg_needed\", \"figurebench_crops\": 2, \"images\": [\"png1.png\"], \"status\": \"valid\"}\n",
+    "stderr": ""
+  },
+  "receipt": {
+    "format": "figfox-raster-inserts-v1",
+    "step": "optional final deterministic raster composition; no model call",
+    "canvas": [
+      1663,
+      946
+    ],
+    "background": "input/generated-layout.png",
+    "background_sha256": "443ee2d80a7ab80e392cfcdc3bf010b4a7e0cd20534588b58e55692cdc7e9835",
+    "output": "png1.png",
+    "output_sha256": "0904b5a276e456cac8fa6fce49be035191078deed8494823d02024825df80d9c",
+    "insets": [
+      {
+        "path": "input/raster/input-example-waveform.png",
+        "target_component_id": "audio",
+        "box": [
+          47,
+          123,
+          314,
+          147
+        ],
+        "source": "https://commons.wikimedia.org/wiki/File:Chopin_-_Waltz_in_A_minor,_B_150.ogg",
+        "permission_evidence": "Performance by Aya Higuchi released CC0; original sample-derived waveform reused.",
+        "attribution": "Aya Higuchi, Chopin Waltz B.150, CC0",
+        "fit": "contain",
+        "sha256": "3dbfef06f69085dbdc982647a7f0e52edf505f7ab62718cf0b9afb5add886a67",
+        "original_size": [
+          1140,
+          411
+        ],
+        "requested_box": [
+          47,
+          123,
+          314,
+          147
+        ],
+        "actual_box": [
+          47,
+          140,
+          314,
+          113
+        ]
+      }
+    ]
+  },
+  "priority": [
+    "complete rectangle",
+    "regular partitions",
+    "predominantly right/down flow"
+  ]
+}

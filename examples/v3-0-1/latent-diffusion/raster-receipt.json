@@ -1,0 +1,45 @@
+{
+  "format": "figfox-raster-inserts-v1",
+  "step": "optional final deterministic raster composition; no model call",
+  "canvas": [
+    1526,
+    1030
+  ],
+  "background": "input/generated-layout.png",
+  "background_sha256": "7cc0dc141c979cf83e31eaa78c8994c01f2d7af6d2b6199c22473a3a65775031",
+  "output": "png1.png",
+  "output_sha256": "5fb37f1be61094019d8bda1340021cbb87bc4c8eaa34c23a766a67f22b40dae9",
+  "insets": [
+    {
+      "path": "input/raster/apollo17-earth-crop.png",
+      "target_component_id": "image",
+      "box": [
+        49,
+        158,
+        180,
+        178
+      ],
+      "source": "https://images.nasa.gov/details/ARC-1972-AS17-148-22727",
+      "permission_evidence": "NASA / Apollo 17 crew; specific PD-NASA photo AS17-148-22727.",
+      "attribution": "NASA / Apollo 17 crew; specific PD-NASA photo AS17-148-22727.",
+      "fit": "contain",
+      "sha256": "fbbd8a21806fe627349aad11b2c0157779f12dac2118a37b7f7fd58d8f2c52ca",
+      "original_size": [
+        1840,
+        1840
+      ],
+      "requested_box": [
+        49,
+        158,
+        180,
+        178
+      ],
+      "actual_box": [
+        50,
+        158,
+        178,
+        178
+      ]
+    }
+  ]
+}

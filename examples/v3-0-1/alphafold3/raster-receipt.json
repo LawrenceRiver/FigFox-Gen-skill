@@ -1,0 +1,45 @@
+{
+  "format": "figfox-raster-inserts-v1",
+  "step": "optional final deterministic raster composition; no model call",
+  "canvas": [
+    1587,
+    991
+  ],
+  "background": "input/generated-layout.png",
+  "background_sha256": "cb0e776644b36ff31809a7fd417b25a29fc1d80602e6bb1c2c4303265c95bba7",
+  "output": "png1.png",
+  "output_sha256": "83d62756352a3e9826664d2e6f657377d7be24bbb73e8f017826e3d0c73a5fa7",
+  "insets": [
+    {
+      "path": "input/raster/myoglobin-1mbo.png",
+      "target_component_id": "input",
+      "box": [
+        101,
+        152,
+        280,
+        226
+      ],
+      "source": "https://commons.wikimedia.org/wiki/File:Myoglobin.png",
+      "permission_evidence": "AzaToth, PD-self public domain dedication; PDB1MBO contextual example.",
+      "attribution": "AzaToth, PD-self public domain dedication; PDB1MBO contextual example.",
+      "fit": "contain",
+      "sha256": "737d1e84c7eb023840da66c4d918e9fa38f96bd6ca12e3bab511325a087d81c3",
+      "original_size": [
+        1159,
+        1173
+      ],
+      "requested_box": [
+        101,
+        152,
+        280,
+        226
+      ],
+      "actual_box": [
+        129,
+        152,
+        223,
+        226
+      ]
+    }
+  ]
+}
