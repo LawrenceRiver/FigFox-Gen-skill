@@ -1,11 +1,19 @@
 ---
 name: FigFox-Gen-skill
-description: Use when turning a scientific Methodology, with an optional reference image, into one evidence-grounded final raster PNG, optionally placing collected visual assets directly.
+description: Generate a scientific figure PNG from Methodology and optional references. Only an explicit scientific or research poster request uses the bundled poster-generation branch.
 metadata:
   short-description: Build evidence-guided single-pass scientific figures
 ---
 
 # FigFox-Gen-skill
+
+## Choose the requested artifact first
+
+The default is a scientific paper figure: methodology diagrams, architecture figures and other research illustrations follow the V2 figure workflow below.
+
+Use the bundled [poster-generation branch](skills/posfox-gen/SKILL.md) **only when the user positively and explicitly asks to make a scientific/research poster, academic conference poster, 科研海报 or 学术海报**. A paper PDF, page size, poster-shaped reference, quoted poster text, or a comparison with posters does not request that artifact. Negated requests such as “不要做海报” stay out of the poster branch. An explicit `$posfox-gen` invocation without clear poster intent needs clarification before entering that branch.
+
+For a qualifying poster request, read that local Skill and follow only its generation-only workflow, ending with PNG delivery. Do not also run the scientific-figure planning pipeline below. For all other requests, keep the existing scientific-figure workflow; do not silently promote a figure request into a poster task.
 
 Turn a scientific Methodology into one source-grounded PNG1. V2 is the default workflow below. Initialize `input/style-brief.json` for every new run; if no image reference is supplied, use `model_composed`, a null main reference and empty detail/attachment lists. Never fall back to V1 because a new run lacks a file. The former standalone V2 entry is retired; V1 remains separately installable and explicitly callable as `$figfox-gen-v1`; see [versions and migration](references/versions.md).
 

@@ -1,0 +1,6 @@
+interface:
+  display_name: "PosFox Gen · Poster only"
+  short_description: "Generate a research poster PNG on explicit request"
+  default_prompt: "Use $posfox-gen to make a scientific research poster image from my paper PDF and stop after PNG generation."
+policy:
+  allow_implicit_invocation: false

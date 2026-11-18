@@ -119,9 +119,19 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
 These are preserved generated previews for author inspection. / 以上为保留的生成预览，需作者检查。
 
-We have also released [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill) for turning scientific papers into research poster images.
+### Optional research-poster branch
 
-我们也已发布 [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill)，用于将科学论文生成为科研海报图片。
+The bundled [PosFox Gen Skill](skills/posfox-gen/SKILL.md) creates a poster PNG from a paper PDF. It is used only for an explicit scientific/research-poster request. Ordinary figures and methodology diagrams continue to use FigFox-Gen's default workflow; supplying a PDF or poster reference alone does not select the poster branch.
+
+To install only that optional package:
+
+```bash
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill --full-depth --skill posfox-gen
+```
+
+Ask `$posfox-gen` explicitly for a research poster. It stops at PNG generation; editable reconstruction is outside this branch.
+
+科研海报支线已放在本仓库内。只有明确要求制作科研/学术海报时才使用；其余请求仍按科研论文图处理。该支线只交付 PNG，不自动进入可编辑重建。
 
 ## Installation
 

@@ -79,7 +79,17 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
 These are preserved generated previews for author inspection. / 以上为保留的生成预览，需作者检查。
 
-我们也已发布 [PosFox-Gen-skill](https://github.com/LawrenceRiver/PosFox-Gen-skill)，用于将科学论文生成为科研海报图片。
+### 可选科研海报支线
+
+[PosFox Gen](skills/posfox-gen/SKILL.md) 已作为附加 Skill 收进本仓库。**只有用户明确要求制作科研海报或学术海报时才进入这条支线**；论文 PDF、大幅面参考、提及或否定海报都不构成触发条件。其余仍按科研论文图、方法图或架构图处理。
+
+也可以只安装海报生成附加包：
+
+```bash
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill --full-depth --skill posfox-gen
+```
+
+明确要求 `$posfox-gen` 制作科研海报，并提供论文 PDF 与可选参考。它在生成 PNG 后结束，不自动进入 HTML/SVG 重建，也不需要旧的独立生成仓库。
 
 ## 安装
 
