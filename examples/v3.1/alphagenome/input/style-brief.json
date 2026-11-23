@@ -1,0 +1,160 @@
+{
+  "format": "figfox-style-brief-v1",
+  "workflow_policy": "svg-reference-v1",
+  "family": "architecture_2d",
+  "reference_mode": "image",
+  "main_reference": {
+    "path": "input/palette.svg",
+    "source": "Transcormer complete mask figure; https://arxiv.org/html/2205.12986v1/mask.svg",
+    "source_kind": "web",
+    "ai_reference_permitted": true,
+    "permission_evidence": "arXiv:2205.12986 lists CC-BY-4.0; source figure retained with attribution and actual paint values. Borrow colour/line grammar only."
+  },
+  "borrow": [
+    "Complete CosyVoice 2 SVG frame language: fine black outlines, plain serif labels, restrained pale functional marks, broad white separation and sparse arrows; replace speech content with our genomic content",
+    "HyenaDNA SVG shows purposeful nested functional enclosures and aligned local modules; preserve only semantic grouping and readable typography hierarchy",
+    "Complete Transcormer SVG supplies the observed pale-blue adjacency, thin blue outlines, small separated green focus and large white spaces; source matrix semantics are excluded"
+  ],
+  "avoid": [
+    "foreign Hyena gates or additions",
+    "DNABERT k-mer/BPE tokenization inside AlphaGenome",
+    "copied attention-mask topology",
+    "painted title strips",
+    "zigzag or staircase routes",
+    "duplicated skip labels and excess text"
+  ],
+  "palette_id": "transcormer-complete-mask-figure",
+  "dominant_roles": [
+    "primary",
+    "accent"
+  ],
+  "palette_reason": "Source colours and spatial relationships are supplied as observations; Director will choose actual use and derivatives.",
+  "accent_target": "backbone",
+  "reading_path": "main_side_chain",
+  "mainline": [
+    "dna",
+    "backbone",
+    "tracks"
+  ],
+  "detail_references": [
+    {
+      "path": "input/frame.svg",
+      "source": "https://arxiv.org/html/2412.10117v3/CosyVoice2-LM.svg",
+      "target_component_id": "backbone",
+      "ai_reference_permitted": false,
+      "permission_evidence": "Inspection only; no model attachment because source has arXiv nonexclusive-distribution licence.",
+      "borrow": [
+        "Coherent plain-label outline grammar and whitespace; no source model internals."
+      ]
+    }
+  ],
+  "palette": {
+    "source_mode": "svg-reference",
+    "base_palette_id": "transcormer-complete-mask-figure",
+    "dominant_colour_roles": [
+      "primary",
+      "accent"
+    ],
+    "colours": [
+      {
+        "role": "primary",
+        "hex": "#5B9BD5",
+        "rgb": [
+          91,
+          155,
+          213
+        ]
+      },
+      {
+        "role": "surface",
+        "hex": "#E5EBF7",
+        "rgb": [
+          229,
+          235,
+          247
+        ]
+      },
+      {
+        "role": "companion",
+        "hex": "#DAE3F3",
+        "rgb": [
+          218,
+          227,
+          243
+        ]
+      },
+      {
+        "role": "accent",
+        "hex": "#92D050",
+        "rgb": [
+          146,
+          208,
+          80
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#000000",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "role": "neutral",
+        "hex": "#7F7F7F",
+        "rgb": [
+          127,
+          127,
+          127
+        ]
+      }
+    ],
+    "extensions": [],
+    "reference": {
+      "path": "input/palette.svg",
+      "sha256": "176678681ec1cbda4625d47072a128a1966b5b8e15a0431a063d6d1c1142fd53",
+      "source_url": "https://arxiv.org/abs/2205.12986",
+      "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+      "source_track": "language-model attention masking",
+      "target_track": "genomic sequence-to-function prediction",
+      "complete_figure": true
+    },
+    "relationships": [
+      {
+        "roles": [
+          "primary",
+          "surface"
+        ],
+        "relation": "adjacent",
+        "observation": "Thin medium-blue rounded outlines directly enclose pale-blue mask cells."
+      },
+      {
+        "roles": [
+          "surface",
+          "companion"
+        ],
+        "relation": "adjacent",
+        "observation": "Two close low-saturation blue cell families occupy neighboring matrix regions without a harsh boundary."
+      },
+      {
+        "roles": [
+          "primary",
+          "accent"
+        ],
+        "relation": "separate",
+        "observation": "Blue bordered cells and the green query-stream label are separated by white margin; green occupies only small text/mark areas."
+      },
+      {
+        "roles": [
+          "neutral",
+          "surface"
+        ],
+        "relation": "adjacent",
+        "observation": "Neutral gray mask cells border pale-blue available cells; pale regions retain dark readable labels."
+      }
+    ]
+  },
+  "stage_labels": "none"
+}

@@ -1,0 +1,39 @@
+{
+  "domain": "genomic sequence-to-function prediction",
+  "reference_policy": "svg-only",
+  "dominant_colour_count": 2,
+  "mainline": "DNA and species → multi-scale backbone → one-dimensional tracks and two-dimensional contacts",
+  "conventions": [
+    {
+      "concept": "Transmission and grouping",
+      "recurrence_evidence": "HyenaDNA full operator SVG nests three meaningful functional groups and uses a single vertical primary chain with local skip branches. DNABERT-2 tokenizer SVG is a representation detail, not a full architecture.",
+      "methodology_relevance": "Partial: retain purposeful nested model grouping and separate input representation; AlphaGenome directed science comes from its own method.",
+      "visual_treatment": "Three purposeful macro regions with native internal modules; do not reuse Hyena gating.",
+      "terminology": "Transformer; sequence"
+    },
+    {
+      "concept": "Input/output marks",
+      "recurrence_evidence": "DNABERT-2 SVG visibly writes A/C/G/T nucleotide strings, aligned colored substrings and token rows. HyenaDNA SVG instead shows abstract x input/output, with no measured genomic trace.",
+      "methodology_relevance": "Essential input need only: use our short ACGT row and one-hot cells; do not import BPE or claim the peer supports genomic output traces.",
+      "visual_treatment": "Native nucleotide strip and tiny one-hot array; our outputs remain source-grounded symbolic tracks.",
+      "terminology": "Sequence; A C G T"
+    },
+    {
+      "concept": "Intermediates and topology",
+      "recurrence_evidence": "HyenaDNA uses repeated long-convolution/gate blocks and explicit additive residual blocks; DNABERT shows overlapping vs non-overlapping tokenization.",
+      "methodology_relevance": "Non-essential: reject Hyena operators, add/gate symbols and BPE because this AlphaGenome overview does not rely on them. Essential U-Net skips and 1D/2D branches come from the AlphaGenome method text.",
+      "visual_treatment": "Source-checked U-Net abstract levels with skips; no transplanted residual gate topology.",
+      "terminology": "Long convolution; token"
+    },
+    {
+      "concept": "Functional regions and density",
+      "recurrence_evidence": "HyenaDNA separates block/operator/filter subfigures with nested outline density. DNABERT aligns sequence examples in two comparison groups with generous surrounding white.",
+      "methodology_relevance": "Partial: a locally detailed backbone and coarse input/readouts fit; no comparison panel or extra model.",
+      "visual_treatment": "Keep supporting readouts compact and emphasize high-resolution plus pair-representation branching.",
+      "terminology": "DNA; embeddings"
+    }
+  ],
+  "source_gaps": [
+    "No genuine SVG located for original AlphaGenome or Borzoi architecture; no previous PNG/PDF image is reused. HyenaDNA is an internal module figure and DNABERT-2 is a tokenizer detail, not two complete sequence-to-function architectures."
+  ]
+}

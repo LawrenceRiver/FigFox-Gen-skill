@@ -1,0 +1,208 @@
+{
+  "format": "figfox-generation-plan-v2",
+  "scientific_summary": "Methodology-grounded SVG evidence and settled content feed Director-owned colour and layout decisions, which compile to one image call and independent pixel inspection.",
+  "invariants": [
+    "References supply drawing evidence; Methodology supplies scientific content.",
+    "A separate complete SVG supplies palette observations, not a fixed library.",
+    "Director owns the final source-derived palette, grouping, routes and exact content.",
+    "Preflight and compact prompt compilation occur before one image call.",
+    "Artifact checks do not certify actual pixels. No automatic repair loop."
+  ],
+  "layout": "Five unequal white regions in one row. Director largest; evidence second largest; method, compiler and output compact. Four straight arrows. White title/subtitle above. All action text and warning within frames.",
+  "typography": "Black Arial or similar clear sans-serif. Bold region headings; regular inner labels. No grey microcopy or very large headings that crowd contents.",
+  "placements": [
+    {
+      "component_id": "input",
+      "placement": "Compact white document region; methodology and requirements, one outgoing scientific brief."
+    },
+    {
+      "component_id": "evidence",
+      "placement": "Larger white region with two slim evidence sheets above a need-to-drawing table and a dedicated complete-palette strip. Light blue only on evidence marks."
+    },
+    {
+      "component_id": "director",
+      "placement": "Largest white region. Upper third: colour relationship swatches with ample white spacing. Centre: a miniature asymmetric three-region sketch with simple connecting lines. Lower third: a small exact-label sheet. Warm tint only within the miniature mechanism and decision strip."
+    },
+    {
+      "component_id": "compile",
+      "placement": "White medium region with a narrow compact-prompt sheet and three plain check rows; no green badges or giant ticks."
+    },
+    {
+      "component_id": "output",
+      "placement": "White compact region with one small schematic generated-figure thumbnail and an eye/inspection outline; no actual case artwork or unsupported model names."
+    }
+  ],
+  "routes": [
+    {
+      "source_id": "input",
+      "target_id": "evidence",
+      "label": "scientific brief",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          440,
+          675
+        ],
+        [
+          550,
+          675
+        ]
+      ],
+      "via": "One short straight continuous arrow. Blank corridor; no external lettering."
+    },
+    {
+      "source_id": "evidence",
+      "target_id": "director",
+      "label": "settled content and source evidence",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1110,
+          675
+        ],
+        [
+          1220,
+          675
+        ]
+      ],
+      "via": "One short straight continuous arrow. Blank corridor; no external lettering."
+    },
+    {
+      "source_id": "director",
+      "target_id": "compile",
+      "label": "Director decisions and generation plan",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1960,
+          675
+        ],
+        [
+          2070,
+          675
+        ]
+      ],
+      "via": "One short straight continuous arrow. Blank corridor; no external lettering."
+    },
+    {
+      "source_id": "compile",
+      "target_id": "output",
+      "label": "checked compact image packet",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          2500,
+          675
+        ],
+        [
+          2610,
+          675
+        ]
+      ],
+      "via": "One short straight continuous arrow. Blank corridor; no external lettering."
+    }
+  ],
+  "routing_geometry": {
+    "routing_policy": "simple",
+    "canvas": [
+      3120,
+      1200
+    ],
+    "columns": [
+      [
+        60,
+        440
+      ],
+      [
+        550,
+        1110
+      ],
+      [
+        1220,
+        1960
+      ],
+      [
+        2070,
+        2500
+      ],
+      [
+        2610,
+        3060
+      ]
+    ],
+    "rows": [
+      [
+        230,
+        1120
+      ]
+    ],
+    "slots": {
+      "input": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "evidence": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "director": [
+        0,
+        2,
+        1,
+        1
+      ],
+      "compile": [
+        0,
+        3,
+        1,
+        1
+      ],
+      "output": [
+        0,
+        4,
+        1,
+        1
+      ]
+    }
+  },
+  "local_visuals": [
+    {
+      "target_component_id": "director",
+      "meaning": "Actual Director choices rather than a named empty block",
+      "construction": "Colour relationship marks, unequal frame-and-route sketch, exact-label content sheet.",
+      "basis": "Current Methodology and active V3 skill; source-derived FiLM colours with native geometry."
+    }
+  ],
+  "detail_hierarchy": {
+    "peer_depth_observation": "Inspected SVGs expose artifacts and interfaces while keeping supporting operations whole. Same-track SVG gap is disclosed.",
+    "innovation_focuses": [
+      {
+        "claim": "Source SVG relationships and Director-owned decisions",
+        "component_ids": [
+          "evidence",
+          "director"
+        ],
+        "draw_to": "Need correspondence, separate palette evidence and actual colour-layout-content decisions."
+      }
+    ],
+    "common_depth": "Method input, compiler and output remain concise artifact/process views.",
+    "keep_whole": [
+      "input",
+      "compile",
+      "output"
+    ]
+  },
+  "notation_map": {}
+}

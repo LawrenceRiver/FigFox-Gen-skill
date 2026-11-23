@@ -1,0 +1,29 @@
+{
+  "domain": "Stochastic latent world dynamics",
+  "reference_policy": "svg-only",
+  "dominant_colour_count": 2,
+  "mainline": "Latent/action/state → LSTM and Gaussian-mixture prediction → next latent and updated state",
+  "conventions": [
+    {
+      "concept": "Genuine recurrent temporal topology",
+      "recurrence_evidence": "One validated native author MDN-RNN SVG from World Models. This is source-specific topology evidence, not a cross-paper commonality; an alternate export with foreignObject was rejected.",
+      "visual_treatment": "Same-weight recurrent units across time, horizontal state transmission, per-step latent/action conditioning and MDN predictions; optional compact internal motif.",
+      "terminology": "RNN; MDN; latent; action; hidden state; temperature",
+      "methodology_relevance": "These internals really belong to this model, unlike the undisclosed Genie architecture."
+    },
+    {
+      "concept": "Stochastic intermediate representation",
+      "recurrence_evidence": "Author method explicitly describes a Gaussian-mixture output distribution instead of deterministic latent prediction.",
+      "visual_treatment": "Meaningful parameter/vector marks and small schematic mixture curves; exact time indices and Greek symbols.",
+      "terminology": "Gaussian mixture; probability; temperature",
+      "methodology_relevance": "Explain what the MDN predicts and how stochastic sampling differs from recurrent-state updating."
+    },
+    {
+      "concept": "Topology and operator audit",
+      "recurrence_evidence": "Author SVG separates recurrent-state flow, actions, latent inputs, MDN head and temperature control.",
+      "visual_treatment": "Preserve separate state and sample meanings. No fake addition, model-family substitution or future-latent-to-controller arrow.",
+      "terminology": "z; a; h; τ",
+      "methodology_relevance": "Internal true relationships matter more than generic boxes. Do not simplify away these distinctions."
+    }
+  ]
+}

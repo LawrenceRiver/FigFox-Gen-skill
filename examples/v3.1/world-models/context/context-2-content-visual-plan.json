@@ -1,0 +1,45 @@
+{
+  "mainline": "Current latent, action and state condition recurrent stochastic dynamics; predict the next latent while retaining updated memory.",
+  "components": [
+    {
+      "id": "context",
+      "label": "Current context",
+      "semantic_role": "input",
+      "visual_treatment": "Native latent-vector, action and recurrent-state representations, explicitly distinguished as z at t, a at t and h at t. No invented observed pixel sample or toy numeric values.",
+      "construction_provenance": "Official author MDN-RNN SVG and method text.",
+      "source_context": "methodology",
+      "special": "no"
+    },
+    {
+      "id": "dynamics",
+      "label": "MDN-RNN",
+      "semantic_role": "mechanism",
+      "visual_treatment": "Show actual LSTM recurrence and mixture-density head at meaningful internal depth. The Director chooses single-cell state loop or a compact truthful shared-weight unrolled motif. Mixture parameters are weights, means and standard deviations, not invented tokens. Preserve updated state as a separate object from predictive distribution. Temperature sampling may be internal for honest single-port grouping.",
+      "construction_provenance": "Original author vector topology and public MDN-RNN equations.",
+      "source_context": "methodology",
+      "special": "no"
+    },
+    {
+      "id": "prediction",
+      "label": "Next-step prediction",
+      "semantic_role": "output",
+      "visual_treatment": "Show stochastic next latent versus updated recurrent state distinctly. If sampling is here, use a source-grounded internal state passthrough rather than making h flow through the sampler. Temperature controls uncertainty. Gaussian visualization only illustrative. No fictitious quantitative results.",
+      "construction_provenance": "Official method: stochastic Gaussian-mixture prediction and temperature sampling.",
+      "source_context": "methodology",
+      "special": "no"
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "context",
+      "target_id": "dynamics",
+      "label": "current latent and action with recurrent state condition latent dynamics"
+    },
+    {
+      "source_id": "dynamics",
+      "target_id": "prediction",
+      "label": "next latent predictive distribution and updated recurrent state"
+    }
+  ],
+  "scientific_scope": "MDN-RNN memory component of World Models, not full V-M-C project pipeline"
+}

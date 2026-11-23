@@ -1,0 +1,135 @@
+{
+  "reference_strategy": "essential-only",
+  "selected_references": [],
+  "coverage_matrix": [
+    {
+      "component_id": "dna",
+      "basic_geometry_justification": "Native rectangles, paths, symbolic cells; Short symbolic DNA nucleotide row and compact one-hot cells with 1 Mb and human/mouse labels. No biological artwork."
+    },
+    {
+      "component_id": "backbone",
+      "basic_geometry_justification": "Native rectangles, paths, symbolic cells; U-shaped convolutional encoder/decoder at selected scales 1 bp and 4 bp, with skipped intermediate scales shown by ellipses. Bottleneck Transformer Tower is 128 bp; do not show any further pooling below 128 bp. Two matched encoder-to-decoder skips. Output embedder receives restored 1-bp decoder features plus a separate 128-bp transformer tap. Pair representation branch from transformer bypasses decoder to 2D contact output."
+    },
+    {
+      "component_id": "tracks",
+      "basic_geometry_justification": "Native rectangles, paths, symbolic cells; All eight 1-bp readout types plus histone modification and TF binding at 128 bp; native schematic aligned profile lines with donor–acceptor splice arcs, no measured data."
+    },
+    {
+      "component_id": "contacts",
+      "basic_geometry_justification": "Native rectangles, paths, symbolic cells; Native symmetric contact matrix with diagonal plus a few off-diagonal cells at 2,048 bp; no quantitative claims."
+    }
+  ],
+  "palette": {
+    "source_mode": "svg-reference",
+    "base_palette_id": "transcormer-complete-mask-figure",
+    "dominant_colour_roles": [
+      "primary",
+      "accent"
+    ],
+    "colours": [
+      {
+        "role": "primary",
+        "hex": "#5B9BD5",
+        "rgb": [
+          91,
+          155,
+          213
+        ]
+      },
+      {
+        "role": "surface",
+        "hex": "#E5EBF7",
+        "rgb": [
+          229,
+          235,
+          247
+        ]
+      },
+      {
+        "role": "companion",
+        "hex": "#DAE3F3",
+        "rgb": [
+          218,
+          227,
+          243
+        ]
+      },
+      {
+        "role": "accent",
+        "hex": "#92D050",
+        "rgb": [
+          146,
+          208,
+          80
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#000000",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "role": "neutral",
+        "hex": "#7F7F7F",
+        "rgb": [
+          127,
+          127,
+          127
+        ]
+      }
+    ],
+    "extensions": [],
+    "reference": {
+      "path": "input/palette.svg",
+      "sha256": "176678681ec1cbda4625d47072a128a1966b5b8e15a0431a063d6d1c1142fd53",
+      "source_url": "https://arxiv.org/abs/2205.12986",
+      "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+      "source_track": "language-model attention masking",
+      "target_track": "genomic sequence-to-function prediction",
+      "complete_figure": true
+    },
+    "relationships": [
+      {
+        "roles": [
+          "primary",
+          "surface"
+        ],
+        "relation": "adjacent",
+        "observation": "Thin medium-blue rounded outlines directly enclose pale-blue mask cells."
+      },
+      {
+        "roles": [
+          "surface",
+          "companion"
+        ],
+        "relation": "adjacent",
+        "observation": "Two close low-saturation blue cell families occupy neighboring matrix regions without a harsh boundary."
+      },
+      {
+        "roles": [
+          "primary",
+          "accent"
+        ],
+        "relation": "separate",
+        "observation": "Blue bordered cells and the green query-stream label are separated by white margin; green occupies only small text/mark areas."
+      },
+      {
+        "roles": [
+          "neutral",
+          "surface"
+        ],
+        "relation": "adjacent",
+        "observation": "Neutral gray mask cells border pale-blue available cells; pale regions retain dark readable labels."
+      }
+    ]
+  },
+  "taste_constraints": [
+    "Mostly white; pale blue only in meaningful local modules; restrained green at matched skip emphasis; dark/black readable typography.",
+    "No invented quantitative results or benchmark plots. No gradients, shadows, decorated cards or title ribbons.",
+    "Every title, word and symbol stays inside its actual parent region. Only continuous real inter-region connections leave frames."
+  ]
+}

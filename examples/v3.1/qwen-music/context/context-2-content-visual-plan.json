@@ -1,0 +1,63 @@
+{
+  "mainline": "condition -> llm -> render with offline tokenizer support and direct text conditioning",
+  "components": [
+    {
+      "id": "tokenizer",
+      "label": "Qwen-Music-Tokenizer",
+      "semantic_role": "Offline music representation and LM targets; not text-only inference input",
+      "visual_treatment": "Separate lower-left offline representation inset; plain encoder and VQ, token marks, offline training caption inside.",
+      "construction_provenance": "Source-grounded native geometry, informed by inspected MusicGen and CosyVoice2 vector token/model grammar.",
+      "special": "no",
+      "source_context": "methodology"
+    },
+    {
+      "id": "condition",
+      "label": "Text Conditioning",
+      "semantic_role": "Rewrite user request to tags and lyrics for both LLM and renderer",
+      "visual_treatment": "Compact white text conditioning region; plain dark request/rewriter/tags labels.",
+      "construction_provenance": "Source-grounded native geometry, informed by inspected MusicGen and CosyVoice2 vector token/model grammar.",
+      "special": "no",
+      "source_context": "methodology"
+    },
+    {
+      "id": "llm",
+      "label": "Qwen-Music-LLM",
+      "semantic_role": "Autoregressive semantic sequence generation with optional generated or reference melody",
+      "visual_treatment": "Main central generator; focus on optional Melody-CoT and cover melody prefix; shared dense 3B LM stays whole. Training landing isolated in bottom footer.",
+      "construction_provenance": "Source-grounded native geometry, informed by inspected MusicGen and CosyVoice2 vector token/model grammar.",
+      "special": "no",
+      "source_context": "methodology"
+    },
+    {
+      "id": "render",
+      "label": "Qwen-Music-Render",
+      "semantic_role": "Semantic- and text-conditioned acoustic synthesis to 48 kHz stereo",
+      "visual_treatment": "White right renderer; semantic tokens and text enter real DiT inlets, then one compact acoustic synthesis sequence.",
+      "construction_provenance": "Source-grounded native geometry, informed by inspected MusicGen and CosyVoice2 vector token/model grammar.",
+      "special": "no",
+      "source_context": "methodology"
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "tokenizer",
+      "target_id": "llm",
+      "label": "offline training targets at 25 Hz"
+    },
+    {
+      "source_id": "condition",
+      "target_id": "llm",
+      "label": "music tags and lyrics"
+    },
+    {
+      "source_id": "llm",
+      "target_id": "render",
+      "label": "generated Music Semantic Tokens at 25 Hz"
+    },
+    {
+      "source_id": "condition",
+      "target_id": "render",
+      "label": "rewritten text via text encoder for DiT cross-attention"
+    }
+  ]
+}

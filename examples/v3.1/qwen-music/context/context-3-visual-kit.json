@@ -1,0 +1,119 @@
+{
+  "reference_strategy": "essential-only",
+  "selected_references": [],
+  "coverage_matrix": [
+    {
+      "component_id": "tokenizer",
+      "basic_geometry_justification": "Ordinary native model rectangles and token rows; inspected SVG constructions, no raster library quota."
+    },
+    {
+      "component_id": "condition",
+      "basic_geometry_justification": "Ordinary native model rectangles and token rows; inspected SVG constructions, no raster library quota."
+    },
+    {
+      "component_id": "llm",
+      "basic_geometry_justification": "Ordinary native model rectangles and token rows; inspected SVG constructions, no raster library quota."
+    },
+    {
+      "component_id": "render",
+      "basic_geometry_justification": "Ordinary native model rectangles and token rows; inspected SVG constructions, no raster library quota."
+    }
+  ],
+  "palette": {
+    "source_mode": "svg-reference",
+    "base_palette_id": "transcormer-mask-svg",
+    "dominant_colour_roles": [
+      "primary",
+      "accent"
+    ],
+    "colours": [
+      {
+        "role": "primary",
+        "hex": "#5B9BD5",
+        "rgb": [
+          91,
+          155,
+          213
+        ]
+      },
+      {
+        "role": "accent",
+        "hex": "#00B050",
+        "rgb": [
+          0,
+          176,
+          80
+        ]
+      },
+      {
+        "role": "pale",
+        "hex": "#E5EBF7",
+        "rgb": [
+          229,
+          235,
+          247
+        ]
+      },
+      {
+        "role": "neighbour",
+        "hex": "#DAE3F3",
+        "rgb": [
+          218,
+          227,
+          243
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#000000",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "extensions": [],
+    "reference": {
+      "path": "input/palette.svg",
+      "sha256": "176678681ec1cbda4625d47072a128a1966b5b8e15a0431a063d6d1c1142fd53",
+      "source_url": "https://arxiv.org/abs/2205.12986",
+      "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+      "source_track": "sentence scoring",
+      "target_track": "text-conditioned music generation",
+      "complete_figure": true
+    },
+    "relationships": [
+      {
+        "roles": [
+          "primary",
+          "pale"
+        ],
+        "relation": "adjacent",
+        "observation": "Fine blue square boundaries directly enclose very pale blue cells throughout the complete attention-mask SVG."
+      },
+      {
+        "roles": [
+          "primary",
+          "accent"
+        ],
+        "relation": "separate",
+        "observation": "Green query labels sit on white outside the blue cell array; stronger green and blue are spatially separated by white rather than adjacent solid areas."
+      },
+      {
+        "roles": [
+          "pale",
+          "neighbour"
+        ],
+        "relation": "adjacent",
+        "observation": "The forward/backward halves use two compatible low-saturation blue cell fills separated by thin lines."
+      }
+    ]
+  },
+  "taste_constraints": [
+    "White frames and black labels; no header bands or gradients.",
+    "Every label and local object inside parent; outside frames only actual inter-frame shafts.",
+    "Training targets land only at training footer; do not enter original-song inference.",
+    "Tokens enter DiT; rewritten text enters text encoder; no floating endpoints."
+  ]
+}

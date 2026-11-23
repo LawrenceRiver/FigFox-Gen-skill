@@ -1,0 +1,72 @@
+{
+  "mainline": "method input to SVG evidence to Director to checked prompt to generated PNG inspection",
+  "components": [
+    {
+      "id": "input",
+      "label": "Method input",
+      "semantic_role": "Source of exact scientific content and user constraints",
+      "visual_treatment": "Compact white document region; methodology and requirements, one outgoing scientific brief.",
+      "construction_provenance": "Native geometry and inspected vector grouping/array grammar; process semantics derive exclusively from current V3 SKILL and Python compiler.",
+      "source_context": "methodology",
+      "special": "no"
+    },
+    {
+      "id": "evidence",
+      "label": "SVG evidence",
+      "semantic_role": "Inspect genuine SVGs and settle scientific graph, narrative and source palette observations",
+      "visual_treatment": "Larger white region with two slim evidence sheets above a need-to-drawing table and a dedicated complete-palette strip. Light blue only on evidence marks.",
+      "construction_provenance": "Native geometry and inspected vector grouping/array grammar; process semantics derive exclusively from current V3 SKILL and Python compiler.",
+      "source_context": "methodology",
+      "special": "no"
+    },
+    {
+      "id": "director",
+      "label": "Creative Director",
+      "semantic_role": "Own final colour, grouping, geometry, exact text and meaningful local constructions",
+      "visual_treatment": "Largest white region. Upper third: colour relationship swatches with ample white spacing. Centre: a miniature asymmetric three-region sketch with simple connecting lines. Lower third: a small exact-label sheet. Warm tint only within the miniature mechanism and decision strip.",
+      "construction_provenance": "Native geometry and inspected vector grouping/array grammar; process semantics derive exclusively from current V3 SKILL and Python compiler.",
+      "source_context": "methodology",
+      "special": "no"
+    },
+    {
+      "id": "compile",
+      "label": "Compile + preflight",
+      "semantic_role": "Verify artifacts and compile the compact image packet",
+      "visual_treatment": "White medium region with a narrow compact-prompt sheet and three plain check rows; no green badges or giant ticks.",
+      "construction_provenance": "Native geometry and inspected vector grouping/array grammar; process semantics derive exclusively from current V3 SKILL and Python compiler.",
+      "source_context": "methodology",
+      "special": "no"
+    },
+    {
+      "id": "output",
+      "label": "Generate + inspect",
+      "semantic_role": "One image call then separate actual-pixel inspection",
+      "visual_treatment": "White compact region with one small schematic generated-figure thumbnail and an eye/inspection outline; no actual case artwork or unsupported model names.",
+      "construction_provenance": "Native geometry and inspected vector grouping/array grammar; process semantics derive exclusively from current V3 SKILL and Python compiler.",
+      "source_context": "methodology",
+      "special": "no"
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "input",
+      "target_id": "evidence",
+      "label": "scientific brief"
+    },
+    {
+      "source_id": "evidence",
+      "target_id": "director",
+      "label": "settled content and source evidence"
+    },
+    {
+      "source_id": "director",
+      "target_id": "compile",
+      "label": "Director decisions and generation plan"
+    },
+    {
+      "source_id": "compile",
+      "target_id": "output",
+      "label": "checked compact image packet"
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "format": "figfox-generation-plan-v2",
+  "scientific_summary": "Current latent zₜ, action aₜ and recurrent state hₜ condition an LSTM update. Updated hₜ₊₁ supports an MDN Gaussian-mixture distribution for zₜ₊₁ and also passes through separately. Temperature τ controls distribution sampling; sampled next latent and updated state are distinct outputs.",
+  "invariants": [
+    "World Models M component, Ha and Schmidhuber 2018; not a latest model or full V-M-C architecture.",
+    "LSTM updated state supports the MDN head and is also retained as the separate recurrent-state output.",
+    "The mixture head outputs π/μ/σ of the stochastic next-latent distribution; it is not a deterministic future prediction.",
+    "Only the predictive distribution enters the temperature-controlled sampler; hidden state never passes through sampling.",
+    "The dynamics-to-prediction boundary carries a distribution/state tuple, not a new arithmetic merge.",
+    "No sampled-future-latent arrow to Controller C, no done/reward head, and no invented Transformer/diffusion block.",
+    "Mixture curves and vector marks are schematic model representations without measured values."
+  ],
+  "layout": "Content-sized left input frame and detailed middle/right scientific regions share bottom y=650. Current context enters dynamics on a straight horizontal arrow at y=510. Dynamics sends the grouped distribution/state tuple to prediction on another straight horizontal arrow at y=420. No exterior feedback or staircase. True internal recurrence/density/sampling topology is explicitly drawn inside its parent regions.",
+  "typography": "Arial; black scientific headings and labels, real Greek letters and true subscripts. Keep formulas readable and all text within regions. No gray microcopy or automatic colored title strip.",
+  "routing_geometry": {
+    "canvas": [
+      2200,
+      800
+    ],
+    "margin": 25,
+    "clearance": 16,
+    "routing_policy": "simple",
+    "columns": [
+      [
+        50,
+        380
+      ],
+      [
+        490,
+        1390
+      ],
+      [
+        1500,
+        2150
+      ]
+    ],
+    "rows": [
+      [
+        180,
+        380
+      ],
+      [
+        450,
+        650
+      ]
+    ],
+    "slots": {
+      "context": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "dynamics": [
+        0,
+        1,
+        2,
+        1
+      ],
+      "prediction": [
+        0,
+        2,
+        2,
+        1
+      ]
+    }
+  },
+  "placements": [
+    {
+      "component_id": "context",
+      "placement": "Compact lower-left typed context frame, exact inner rows for latent/action/state, all three time-t objects distinguished."
+    },
+    {
+      "component_id": "dynamics",
+      "placement": "Wide white central mechanism region containing actual LSTM-below-MDN topology, parameter/distribution representation, lower updated-state channel and semantic tuple brace."
+    },
+    {
+      "component_id": "prediction",
+      "placement": "Right white region with upper temperature-controlled sampling and clearly separated lower recurrent-state passthrough; no state-to-sampler connection."
+    }
+  ],
+  "routes": [
+    {
+      "source_id": "context",
+      "target_id": "dynamics",
+      "label": "current latent and action with recurrent state condition latent dynamics",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          380,
+          510
+        ],
+        [
+          490,
+          510
+        ]
+      ],
+      "via": "One direct horizontal dark arrow carrying current-context tuple; no long visible arrow description."
+    },
+    {
+      "source_id": "dynamics",
+      "target_id": "prediction",
+      "label": "next latent predictive distribution and updated recurrent state",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1390,
+          420
+        ],
+        [
+          1500,
+          420
+        ]
+      ],
+      "via": "One direct horizontal dark arrow carrying predictive distribution and updated-state tuple; no fake arithmetic merge or long caption."
+    }
+  ],
+  "local_visuals": [
+    {
+      "target_component_id": "dynamics",
+      "meaning": "One real recurrent update with its density head",
+      "construction": "Within dynamics [490,180,900,470], place LSTM around [600,450,240,120] and the MDN/Gaussian-mixture head above around [600,240,240,110]. The grouped context enters the LSTM via a short straight extension from the external input landing y=510. Updated hₜ₊₁ leaves LSTM right at y=510 as a straight lower state channel; it also branches upward from the top of LSTM to the MDN bottom on a single vertical source-supported state connector. Label that state branch hₜ₊₁ once. MDN outputs π/μ/σ to the right into a compact mixture-parameter representation, around [930,240,330,150]. Use small smooth Gaussian curves as an abstract distribution glyph, not a measured graph. Below it typeset P(zₜ₊₁ | aₜ, zₜ, hₜ). At the right edge collect the upper distribution channel and lower state channel with a thin tuple brace spanning y=280..550; it is not a processing node. The exterior output leaves the overall region at y=420. Put the recurrence equation low inside the region at y≈610. Local scientific branching is justified by the actual model, while the outer frame still has exactly one input and one output.",
+      "basis": "Author MDN-RNN source SVG and source method text; complete FiLM SVG supplies color relationships only."
+    },
+    {
+      "target_component_id": "prediction",
+      "meaning": "Temperature sampling with independent state passthrough",
+      "construction": "Within prediction [1500,180,650,470], the tuple entering at y=420 is unpacked by a thin brace, not an arithmetic operator. The upper distribution channel continues directly to a modest Sample unit around [1770,285,150,80], with τ and Temperature above entering it by one short vertical control arrow. A short rightward arrow leaves Sample and lands on zₜ₊₁, with Sampled latent below, near x=2030/y=325. The separate lower channel runs at y≈520 straight to a recurrent-state vector mark hₜ₊₁ near x=2010, with Updated state. No connector from that lower channel may touch the sampler or sampled z. Keep generous white separation between these two scientifically distinct outputs.",
+      "basis": "Author MDN-RNN source SVG and source method text; complete FiLM SVG supplies color relationships only."
+    },
+    {
+      "target_component_id": "context",
+      "meaning": "Explicit latent action and recurrent context",
+      "construction": "Compact white current-context frame [50,450,330,200]. Under the heading align three short rows: Latent zₜ with a small cool-pale vector glyph, Action aₜ with a compact native action mark, State hₜ with a recurrent-state glyph. No numeric toy vectors or photographs. Treat the one exterior arrow as carrying the typed context tuple, not as a fake plus operation. The vector/state marks are meaningful primitives, not decorative dots.",
+      "basis": "Author MDN-RNN source SVG and source method text; complete FiLM SVG supplies color relationships only."
+    }
+  ],
+  "detail_hierarchy": {
+    "common_depth": "Current context and terminal outputs are typed latent/action/state objects; the actual novel mechanism is shown at LSTM, MDN mixture and sampling depth.",
+    "peer_depth_observation": "The author SVG exposes repeated recurrent cells, their MDN heads, state links, latent/action conditions and temperature rather than using a model-name card.",
+    "innovation_focuses": [
+      {
+        "claim": "Recurrent stochastic latent dynamics predict a Gaussian mixture rather than one deterministic future.",
+        "component_ids": [
+          "dynamics",
+          "prediction"
+        ],
+        "draw_to": "LSTM updated state, MDN weights/means/scales, conditional next-latent law, temperature sampling and independent state output."
+      }
+    ],
+    "keep_whole": [
+      "context"
+    ]
+  },
+  "attached_reference_paths": [
+    "input/palette-reference-view.png"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "domain": "scientific figure generation workflow",
+  "mainline": "method input to SVG evidence to Director to checked prompt to generated PNG inspection",
+  "reference_policy": "svg-only",
+  "dominant_colour_count": 2,
+  "conventions": [
+    {
+      "concept": "Evidence-to-construction correspondence",
+      "recurrence_evidence": "MusicGen retains ordered vector token cells; CosyVoice encloses a whole LM and distinguishes actual interfaces. Both retained original SVGs were inspected for native repeated artifacts and grouping only. Same-track figure-generator SVG evidence is missing and disclosed.",
+      "visual_treatment": "Small native document and SVG sheets, simple nested process frames and continuous arrows. No imported speech/music topology.",
+      "terminology": "Methodology; SVG evidence; Creative Director; compact prompt; PNG1",
+      "methodology_relevance": "Explain provenance and composition decisions at artifact/interface level without inventing neural network internals."
+    }
+  ]
+}

@@ -1,0 +1,213 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "A white, type-led scholarly figure: main inference reads across the upper middle, offline representation sits lower left and lands in a separate training footer. The centre expands melody planning and reference conditioning; ordinary acoustic reconstruction stays a restrained vertical chain. Integrate observed thin native model frames and serif lettering with the dedicated pale-blue/green source relationships. No gradient, blanket panel wash or saturated model block.",
+  "design_intents": {
+    "layout": "我想主线横排训练另置",
+    "flow": "我想文字经语义生成音乐",
+    "density": "我想旋律局部紧凑其余留白"
+  },
+  "colour_decision": {
+    "chosen_palette": {
+      "source_mode": "svg-reference",
+      "base_palette_id": "transcormer-mask-svg",
+      "dominant_colour_roles": [
+        "primary",
+        "accent"
+      ],
+      "colours": [
+        {
+          "role": "primary",
+          "hex": "#5B9BD5",
+          "rgb": [
+            91,
+            155,
+            213
+          ]
+        },
+        {
+          "role": "accent",
+          "hex": "#00B050",
+          "rgb": [
+            0,
+            176,
+            80
+          ]
+        },
+        {
+          "role": "pale",
+          "hex": "#E5EBF7",
+          "rgb": [
+            229,
+            235,
+            247
+          ]
+        },
+        {
+          "role": "neighbour",
+          "hex": "#DAE3F3",
+          "rgb": [
+            218,
+            227,
+            243
+          ]
+        },
+        {
+          "role": "ink",
+          "hex": "#000000",
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "role": "melodytint",
+          "hex": "#E7F4EB",
+          "rgb": [
+            231,
+            244,
+            235
+          ],
+          "base_role": "accent",
+          "relationship": "tint",
+          "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+          "evidence_summary": "Tint of the source green query-label colour; reserve for one small melody mechanism only."
+        }
+      ],
+      "reference": {
+        "path": "input/palette.svg",
+        "sha256": "176678681ec1cbda4625d47072a128a1966b5b8e15a0431a063d6d1c1142fd53",
+        "source_url": "https://arxiv.org/abs/2205.12986",
+        "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+        "source_track": "sentence scoring",
+        "target_track": "text-conditioned music generation",
+        "complete_figure": true
+      },
+      "relationships": [
+        {
+          "roles": [
+            "primary",
+            "pale"
+          ],
+          "relation": "adjacent",
+          "observation": "Fine blue square boundaries directly enclose very pale blue cells throughout the complete attention-mask SVG."
+        },
+        {
+          "roles": [
+            "primary",
+            "accent"
+          ],
+          "relation": "separate",
+          "observation": "Green query labels sit on white outside the blue cell array; stronger green and blue are spatially separated by white rather than adjacent solid areas."
+        },
+        {
+          "roles": [
+            "pale",
+            "neighbour"
+          ],
+          "relation": "adjacent",
+          "observation": "The forward/backward halves use two compatible low-saturation blue cell fills separated by thin lines."
+        }
+      ]
+    },
+    "rationale": "Use the source pale blue for only compact semantic-token or model content, blue for fine mechanism boundaries, and a single source-green tint for optional Melody-CoT. Black text and dark arrows keep the page readable. Do not transplant attention masks.",
+    "region_colours": {
+      "condition": [
+        "white",
+        "black"
+      ],
+      "tokenizer": [
+        "white",
+        "black",
+        "pale"
+      ],
+      "llm": [
+        "white",
+        "black",
+        "primary",
+        "pale",
+        "melodytint"
+      ],
+      "render": [
+        "white",
+        "black",
+        "pale"
+      ]
+    },
+    "adjacency_review": "The central blue semantic strip and small green melody planning inset stay separated by white. Supporting frames remain white, so pale blue and pale green never form adjacent full-panel colour fields. No green on renderer or input labels. Strong accents occupy only fine strokes or tiny token marks.",
+    "whitespace_plan": "All four major surfaces white; keep at least roughly three quarters of the figure uncoloured. No coloured title strips. Use white gutter around every group and between local colour foci."
+  },
+  "topology_review": "Text tags/lyrics condition both dense autoregressive LM and renderer, so Text Conditioning has two real exits. The renderer has distinct semantic-token and text entrances; each must land at DiT or Text encoder. The LLM has inference conditioning and offline targets entering separate actual subregions. These are source-supported multi-port exceptions, not generic aesthetic branching. Music tokenizer is an offline support path, never upstream inference input. A single 3B LM generates optional Melody-CoT before music tokens or directly emits music tokens; do not draw Melody-CoT as mandatory preprocessing. Cover melody tokens condition that same LM prefix. No additive/multiplicative gates, MoE, codebook stacks or attention matrices are supported.",
+  "ideas": [
+    {
+      "id": "melody-prefix",
+      "target_component_id": "llm",
+      "concept": "One LM with optional generated melody and cover reference prefix",
+      "visual_intent": "Explain the actual innovation at token interface level while keeping the familiar dense backbone whole.",
+      "construction_plan": "Shared 3B dense LM at mainline height. Show an optional small green-tint Melody-CoT sequence between autoregressive prefix planning and full-mixture semantic continuation, alongside direct generation. Cover-song reference melody passes through a compact named Melody Tokenizer (RMVPE, median pooling, relative pitch) to 6.25Hz melody tokens entering the same LM prefix. Do not feed music tags to RMVPE. Music Semantic Tokens at 25Hz are the only mainline output. Keep local lines short and simple; no invented network layers.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "offline-support",
+      "target_component_id": "tokenizer",
+      "concept": "Offline representation kept apart from inference",
+      "visual_intent": "Prevent the prior false mandatory audio-to-LLM chain.",
+      "construction_plan": "Small lower-left white region: tiny schematic audio mark, log-Mel, causal Conformer, single-codebook VQ and 25Hz token row. A dashed straight edge enters ONLY an isolated lower LLM training-target footer. No target-to-original-song inference arrow. Put Offline training targets label inside the tokenizer frame.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "acoustic-render",
+      "target_component_id": "render",
+      "concept": "Two real conditioning signals meet at DiT",
+      "visual_intent": "Use correct actual landings instead of border-only arrows.",
+      "construction_plan": "Top incoming text curve lands at Text encoder inside renderer; its local down arrow goes into DiT. Mainline semantic edge continues from the west boundary to a distinct DiT inlet. Chain: DiT, acoustic latents, Spec-VAE decoder, complex spectrogram, Band-Mode Refiner, inverse STFT, then 48kHz stereo schematic waveform. Supporting spectral intermediates use only simple native outlines, not invented data heatmaps.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ],
+  "visible_text": [
+    "Qwen-Music-Tokenizer",
+    "Offline training targets",
+    "Example audio",
+    "Log-Mel",
+    "Causal Conformer",
+    "Single-codebook VQ",
+    "25 Hz tokens",
+    "Text Conditioning",
+    "User request",
+    "Prompt rewriter",
+    "Music tags + Lyrics",
+    "Qwen-Music-LLM",
+    "3B dense LM",
+    "Original song",
+    "Direct generation",
+    "Melody-CoT (optional)",
+    "Cover song",
+    "Reference melody",
+    "Melody Tokenizer",
+    "RMVPE",
+    "Median pooling",
+    "Relative pitch",
+    "6.25 Hz melody tokens",
+    "Music Semantic Tokens",
+    "25 Hz",
+    "Quality-graded pre-training",
+    "SFT → DPO → GSPO",
+    "Qwen-Music-Render",
+    "Text encoder",
+    "Flow-matching DiT",
+    "Acoustic latents",
+    "Spec-VAE decoder",
+    "Complex spectrogram",
+    "Band-Mode Refiner",
+    "Inverse STFT",
+    "48 kHz stereo"
+  ],
+  "visible_word_count": 77,
+  "visible_symbols": [],
+  "notation_map": {}
+}

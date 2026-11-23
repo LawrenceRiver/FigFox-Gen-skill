@@ -1,0 +1,23 @@
+{
+  "format": "scholarly-domain-figure-manifest-v1",
+  "sources": [
+    {
+      "id": "author-mdn",
+      "title": "World Models",
+      "figure": "Original MDN-RNN SVG",
+      "source_url": "https://worldmodels.github.io/",
+      "evidence_url": "https://worldmodels.github.io/assets/mdn_rnn_new.svg",
+      "crop_path": "references/web/crops/author-mdn-rnn.svg",
+      "inspection": "Directly inspected original pure vector diagram: repeated RNN cells, horizontal hidden states, MDN heads, latent/action and temperature marks. All relevant to this chosen M-component scope."
+    },
+    {
+      "id": "colour",
+      "title": "Feature-wise transformations",
+      "figure": "Complete FiLM SVG",
+      "source_url": "https://distill.pub/2018/feature-wise-transformations/",
+      "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+      "crop_path": "references/web/crops/palette-reference.svg",
+      "inspection": "Full source SVG plus real source CSS. Only colour relationships/whole visual restraint; no model topology transfer."
+    }
+  ]
+}

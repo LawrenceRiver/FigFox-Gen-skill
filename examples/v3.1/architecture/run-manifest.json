@@ -1,0 +1,15 @@
+{
+  "format": "figfox-svg-run-v1",
+  "artifacts": {
+    "methodology": "input/methodology.md",
+    "context1": "context/context-1-domain-conventions.json",
+    "context2": "context/context-2-content-visual-plan.json",
+    "context3": "context/context-3-visual-kit.json",
+    "web_manifest": "references/web/manifest.json",
+    "creative_director_prompt": "creative-director/prompt.md",
+    "creative_director_brief": "creative-director/brief.json",
+    "prompt1": "prompt-1/prompt.md",
+    "prompt1_attachments": "prompt-1/attachments.json",
+    "png1": "png1.png"
+  }
+}

@@ -1,0 +1,265 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Director chooses cool for recurrent state and warm for mixture/sampling, separated by white; all outer frames and headings stay white. Use black Arial, fine dark arrows and modest consistent corners. This is an actual MDN-RNN mechanism: LSTM below MDN as in the author SVG. Updated state branches to the head and also passes directly to the output, distinct from the predicted distribution. A mathematical brace groups distribution/state, never an arithmetic node. Only the distribution enters the τ sampler; the lower hidden-state channel bypasses it. Two straight exterior arrows; no exterior loop, staircase, extra ports, title bands, gradients or decorative scenery. Use small schematic Gaussian curves with π/μ/σ, no empirical axes/values. Follow the exact inner constructions and positions in the drawing-correspondence table. All content inside parent frames with 24px padding. Render only the approved inventories; leave connector corridors blank.",
+  "design_intents": {
+    "layout": "我想中间展开真实机制",
+    "flow": "我想主线直连内部分流",
+    "density": "我想状态与采样分层留白"
+  },
+  "colour_decision": {
+    "chosen_palette": {
+      "source_mode": "svg-reference",
+      "base_palette_id": "film-complete-svg",
+      "dominant_colour_roles": [
+        "cool",
+        "warm"
+      ],
+      "colours": [
+        {
+          "role": "cool",
+          "hex": "#C0DFF2",
+          "rgb": [
+            192,
+            223,
+            242
+          ]
+        },
+        {
+          "role": "cool-edge",
+          "hex": "#81BEE4",
+          "rgb": [
+            129,
+            190,
+            228
+          ]
+        },
+        {
+          "role": "warm",
+          "hex": "#F2CBC2",
+          "rgb": [
+            242,
+            203,
+            194
+          ]
+        },
+        {
+          "role": "warm-edge",
+          "hex": "#E49381",
+          "rgb": [
+            228,
+            147,
+            129
+          ]
+        },
+        {
+          "role": "neutral",
+          "hex": "#F9F9F9",
+          "rgb": [
+            249,
+            249,
+            249
+          ]
+        },
+        {
+          "role": "ink",
+          "hex": "#666666",
+          "rgb": [
+            102,
+            102,
+            102
+          ]
+        },
+        {
+          "role": "black",
+          "hex": "#000000",
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "role": "white",
+          "hex": "#FFFFFF",
+          "rgb": [
+            255,
+            255,
+            255
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "role": "cool-pale",
+          "hex": "#EFF7FC",
+          "rgb": [
+            239,
+            247,
+            252
+          ],
+          "base_role": "cool",
+          "relationship": "tint",
+          "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+          "evidence_summary": "75 percent white tint of source cool #C0DFF2 for the LSTM and recurrent-state representation."
+        },
+        {
+          "role": "warm-pale",
+          "hex": "#FCF2F0",
+          "rgb": [
+            252,
+            242,
+            240
+          ],
+          "base_role": "warm",
+          "relationship": "tint",
+          "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+          "evidence_summary": "75 percent white tint of source warm #F2CBC2 for the MDN and temperature-controlled sampling representation."
+        }
+      ],
+      "reference": {
+        "path": "input/palette-reference.svg",
+        "sha256": "4a402aa96e9dde8e92b9a7cc96907b022d70510a19ec3e0bb59bad02ead52613",
+        "source_url": "https://distill.pub/2018/feature-wise-transformations/",
+        "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+        "source_track": "feature-wise conditioning for visual reasoning",
+        "target_track": "stochastic latent world dynamics",
+        "complete_figure": true
+      },
+      "relationships": [
+        {
+          "roles": [
+            "cool",
+            "cool-edge"
+          ],
+          "relation": "adjacent",
+          "observation": "The cool generator fill and deeper blue border touch within one semantic region."
+        },
+        {
+          "roles": [
+            "warm",
+            "warm-edge"
+          ],
+          "relation": "adjacent",
+          "observation": "Warm FiLM layer fill and warmer border form one region."
+        },
+        {
+          "roles": [
+            "cool",
+            "warm"
+          ],
+          "relation": "separate",
+          "observation": "Cool generator and warm modulated network are separated by a generous white corridor, not pressed against each other."
+        },
+        {
+          "roles": [
+            "warm",
+            "neutral"
+          ],
+          "relation": "adjacent",
+          "observation": "Warm active layers sit beside much quieter support layers in the same vertical family."
+        }
+      ]
+    },
+    "rationale": "Use the complete FiLM SVG relationship with a fresh scientific role assignment: cool recurrence/state and warm density/sampling. Director-derived white tints reduce covered area. No palette-library choice.",
+    "region_colours": {
+      "context": [
+        "white",
+        "black",
+        "ink",
+        "cool-pale"
+      ],
+      "dynamics": [
+        "white",
+        "black",
+        "ink",
+        "cool-pale",
+        "cool-edge",
+        "warm-pale",
+        "warm-edge",
+        "warm"
+      ],
+      "prediction": [
+        "white",
+        "black",
+        "ink",
+        "warm-pale",
+        "warm-edge",
+        "cool-pale",
+        "cool-edge"
+      ]
+    },
+    "adjacency_review": "Cool fill/border and warm fill/border each form a local family. Keep the two families apart through white corridors; outer frames stay white and text stays black.",
+    "whitespace_plan": "Only actual LSTM/state and mixture/sampler marks carry restrained colour. Outer regions, headings, formula surroundings, tuple braces and connector corridors remain white."
+  },
+  "topology_review": "Single-cell recurrent update from current zₜ, aₜ and hₜ produces hₜ₊₁. The MDN head depends on the updated recurrent state and emits Gaussian-mixture weights, means and standard deviations, denoted π/μ/σ, describing P(zₜ₊₁ | aₜ,zₜ,hₜ). Updated state also continues as a separate state output. A semantic distribution/state tuple, not an arithmetic merge, carries both across the single exterior dynamics output. In prediction, only the distribution reaches the τ-controlled sampler; hₜ₊₁ follows the separate lower passthrough. Sampled zₜ₊₁ and updated hₜ₊₁ remain distinct terminal objects. The one-cell recurrence is made explicit by hₜ₊₁ = LSTM(zₜ,aₜ,hₜ), not a false self-loop for a single time step. This reflects the author SVG's recurrent/MDN relationship without needlessly replicating multiple cells. No future sample feeds Controller C; no done/reward/Transformer/diffusion head is present.",
+  "visible_text": [
+    "World Models",
+    "MDN-RNN latent dynamics · 2018",
+    "Current context",
+    "Latent",
+    "Action",
+    "State",
+    "MDN-RNN",
+    "LSTM",
+    "Gaussian mixture",
+    "Mixture parameters",
+    "Next-step prediction",
+    "Temperature",
+    "Sample",
+    "Sampled latent",
+    "Updated state"
+  ],
+  "visible_word_count": 25,
+  "visible_symbols": [
+    "zₜ",
+    "aₜ",
+    "hₜ",
+    "hₜ₊₁",
+    "π, μ, σ",
+    "P(zₜ₊₁ | aₜ, zₜ, hₜ)",
+    "hₜ₊₁ = LSTM(zₜ, aₜ, hₜ)",
+    "τ",
+    "zₜ₊₁",
+    "hₜ₊₁"
+  ],
+  "notation_map": {
+    "z_t": "zₜ",
+    "a_t": "aₜ",
+    "h_t": "hₜ",
+    "z_next": "zₜ₊₁",
+    "h_next": "hₜ₊₁",
+    "pi": "π",
+    "mu": "μ",
+    "sigma": "σ",
+    "tau": "τ"
+  },
+  "ideas": [
+    {
+      "id": "conditioned-recurrence",
+      "target_component_id": "dynamics",
+      "concept": "One real recurrent update with its density head",
+      "visual_intent": "Expose the actual source topology and state semantics rather than reducing the model to a named rectangle.",
+      "construction_plan": "Follow the exact dynamics construction in the correspondence table: LSTM below MDN; updated-state branch to head plus separate state channel, mixture parameters/distribution above, semantic tuple brace at exit. Preserve all stated positions and index meanings.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "state-is-not-sample",
+      "target_component_id": "prediction",
+      "concept": "Temperature sampling with independent state passthrough",
+      "visual_intent": "Prevent the common false topology in which recurrent state passes through the stochastic sampler.",
+      "construction_plan": "Follow the exact prediction construction: upper distribution → τ sampler → next latent; lower updated-state channel bypasses sampler. Preserve distinct symbols, white separation and stated positions.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "typed-current-context",
+      "target_component_id": "context",
+      "concept": "Explicit latent action and recurrent context",
+      "visual_intent": "Show the conditioning objects and time indices faithfully without inventing a pixel-input stage.",
+      "construction_plan": "Follow the exact context construction: three typed current latent/action/state rows and a single grouped-context exit. No numeric toy values or fake arithmetic.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

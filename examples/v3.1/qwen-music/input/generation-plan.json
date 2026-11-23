@@ -1,0 +1,209 @@
+{
+  "format": "figfox-generation-plan-v2",
+  "scientific_summary": "Rewritten tags and lyrics condition a dense music LM and acoustic renderer. Optional generated melody or extracted cover melody conditions semantic-token continuation. A separate offline music tokenizer supplies LM targets.",
+  "invariants": [
+    "Text-only inference does not run the music tokenizer. Its dashed targets route lands only in the isolated LLM training footer.",
+    "Music semantic tokens are single-codebook 25Hz; melody tokens are distinct 6.25Hz relative-pitch tokens.",
+    "The LM is one dense 3B model. Melody-CoT is optional autoregressive planning, not mandatory external preprocessing.",
+    "Cover reference melody tokens enter the shared LM prefix; text never enters RMVPE.",
+    "Both text and semantic tokens must reach the DiT through their actual Text encoder and semantic inlet.",
+    "Render: flow-matching DiT -> acoustic latents -> Spec-VAE decoder -> complex spectrogram -> Band-Mode Refiner -> inverse STFT -> 48kHz stereo.",
+    "Training pretraining/SFT/DPO/GSPO is an isolated footer, not an inference loop."
+  ],
+  "layout": "Main inference along one shared horizontal axis: compact text region upper left, larger dense LM centre, taller renderer right. Offline tokenizer lower left enters only LM lower training footer. One smooth short-height overhead text branch, no captions outside frames.",
+  "typography": "Reference-informed readable dark serif lettering, moderate bold headings. Preserve exact model names. No title background, gradients or underlines.",
+  "placements": [
+    {
+      "component_id": "tokenizer",
+      "placement": "Separate lower-left offline representation inset; plain encoder and VQ, token marks, offline training caption inside."
+    },
+    {
+      "component_id": "condition",
+      "placement": "Compact white text conditioning region; plain dark request/rewriter/tags labels."
+    },
+    {
+      "component_id": "llm",
+      "placement": "Main central generator; focus on optional Melody-CoT and cover melody prefix; shared dense 3B LM stays whole. Training landing isolated in bottom footer."
+    },
+    {
+      "component_id": "render",
+      "placement": "White right renderer; semantic tokens and text enter real DiT inlets, then one compact acoustic synthesis sequence."
+    }
+  ],
+  "routes": [
+    {
+      "source_id": "tokenizer",
+      "target_id": "llm",
+      "label": "offline training targets at 25 Hz",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "reference",
+      "points": [
+        [
+          580,
+          920
+        ],
+        [
+          760,
+          920
+        ]
+      ],
+      "via": "straight continuous source-to-target shaft"
+    },
+    {
+      "source_id": "condition",
+      "target_id": "llm",
+      "label": "music tags and lyrics",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          580,
+          420
+        ],
+        [
+          760,
+          420
+        ]
+      ],
+      "via": "straight continuous source-to-target shaft"
+    },
+    {
+      "source_id": "llm",
+      "target_id": "render",
+      "label": "generated Music Semantic Tokens at 25 Hz",
+      "source_port": "east",
+      "target_port": "west",
+      "route_kind": "mainline",
+      "points": [
+        [
+          1480,
+          420
+        ],
+        [
+          1660,
+          420
+        ]
+      ],
+      "via": "straight continuous source-to-target shaft"
+    },
+    {
+      "source_id": "condition",
+      "target_id": "render",
+      "label": "rewritten text via text encoder for DiT cross-attention",
+      "source_port": "north",
+      "target_port": "north",
+      "route_kind": "branch",
+      "points": [
+        [
+          320,
+          220
+        ],
+        [
+          320,
+          40
+        ],
+        [
+          2000,
+          40
+        ],
+        [
+          2000,
+          220
+        ]
+      ],
+      "via": "single smooth overhead text-conditioning curve",
+      "curve": "cubic"
+    }
+  ],
+  "routing_geometry": {
+    "routing_policy": "simple",
+    "canvas": [
+      2400,
+      1200
+    ],
+    "columns": [
+      [
+        60,
+        580
+      ],
+      [
+        760,
+        1480
+      ],
+      [
+        1660,
+        2340
+      ]
+    ],
+    "rows": [
+      [
+        220,
+        580
+      ],
+      [
+        740,
+        1100
+      ]
+    ],
+    "slots": {
+      "condition": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "tokenizer": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "llm": [
+        0,
+        1,
+        2,
+        1
+      ],
+      "render": [
+        0,
+        2,
+        2,
+        1
+      ]
+    },
+    "multi_port_exceptions": {
+      "condition": "Rewritten tags and lyrics independently condition the dense LM and acoustic renderer, as specified in the Qwen report. Two distinct true exits: east to LM and north to renderer text encoder.",
+      "llm": "Separate inference tags/lyrics input and offline training-target input; targets land only in isolated footer and do not join inference.",
+      "render": "Independent semantic-token input reaches DiT; text input reaches Text encoder and then DiT. Preserve distinct actual ports."
+    }
+  },
+  "local_visuals": [
+    {
+      "target_component_id": "llm",
+      "meaning": "semantic versus melody prefix interfaces",
+      "construction": "Small native uniform token rows, no peer multi-codebook matrices; optional melody row locally green-tinted, full-mixture semantic row pale blue.",
+      "basis": "Inspected MusicGen token-cell SVG and CosyVoice token/model SVG; exact sequence semantics follow Qwen."
+    }
+  ],
+  "detail_hierarchy": {
+    "peer_depth_observation": "MusicGen illustrates its token interleaving at cell level; CosyVoice keeps its shared LM as one whole block and exposes token interfaces.",
+    "innovation_focuses": [
+      {
+        "claim": "Melody-CoT and reference melody conditioning",
+        "component_ids": [
+          "llm"
+        ],
+        "draw_to": "Optional melody-token planning and cover reference-prefix route into the same LM."
+      }
+    ],
+    "common_depth": "Supporting tokenizer and acoustic stages remain compact named whole operations.",
+    "keep_whole": [
+      "condition",
+      "tokenizer",
+      "render"
+    ]
+  },
+  "notation_map": {}
+}

@@ -1,0 +1,244 @@
+{
+  "format": "creative-director-brief-v1",
+  "design_intents": {
+    "layout": "我想主干展开而输入收紧",
+    "flow": "我想两路读出直接落位",
+    "density": "我想机制紧凑且底框留白"
+  },
+  "colour_decision": {
+    "chosen_palette": {
+      "source_mode": "svg-reference",
+      "base_palette_id": "transcormer-complete-mask-figure",
+      "dominant_colour_roles": [
+        "primary",
+        "accent"
+      ],
+      "colours": [
+        {
+          "role": "primary",
+          "hex": "#5B9BD5",
+          "rgb": [
+            91,
+            155,
+            213
+          ]
+        },
+        {
+          "role": "surface",
+          "hex": "#E5EBF7",
+          "rgb": [
+            229,
+            235,
+            247
+          ]
+        },
+        {
+          "role": "companion",
+          "hex": "#DAE3F3",
+          "rgb": [
+            218,
+            227,
+            243
+          ]
+        },
+        {
+          "role": "accent",
+          "hex": "#92D050",
+          "rgb": [
+            146,
+            208,
+            80
+          ]
+        },
+        {
+          "role": "ink",
+          "hex": "#000000",
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "role": "neutral",
+          "hex": "#7F7F7F",
+          "rgb": [
+            127,
+            127,
+            127
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "role": "deepblue",
+          "hex": "#315B80",
+          "rgb": [
+            49,
+            91,
+            128
+          ],
+          "base_role": "primary",
+          "relationship": "shade",
+          "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+          "evidence_summary": "Darker same blue family for thin frames and clear shafts; source medium-blue outlines guide this derivation."
+        },
+        {
+          "role": "softgreen",
+          "hex": "#EDF5E3",
+          "rgb": [
+            237,
+            245,
+            227
+          ],
+          "base_role": "accent",
+          "relationship": "tint",
+          "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+          "evidence_summary": "Near-white green tint subordinate to the small source green focus; used only for the bottleneck local region."
+        }
+      ],
+      "reference": {
+        "path": "input/palette.svg",
+        "sha256": "176678681ec1cbda4625d47072a128a1966b5b8e15a0431a063d6d1c1142fd53",
+        "source_url": "https://arxiv.org/abs/2205.12986",
+        "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+        "source_track": "language-model attention masking",
+        "target_track": "genomic sequence-to-function prediction",
+        "complete_figure": true
+      },
+      "relationships": [
+        {
+          "roles": [
+            "primary",
+            "surface"
+          ],
+          "relation": "adjacent",
+          "observation": "Thin medium-blue rounded outlines directly enclose pale-blue mask cells."
+        },
+        {
+          "roles": [
+            "surface",
+            "companion"
+          ],
+          "relation": "adjacent",
+          "observation": "Two close low-saturation blue cell families occupy neighboring matrix regions without a harsh boundary."
+        },
+        {
+          "roles": [
+            "primary",
+            "accent"
+          ],
+          "relation": "separate",
+          "observation": "Blue bordered cells and the green query-stream label are separated by white margin; green occupies only small text/mark areas."
+        },
+        {
+          "roles": [
+            "neutral",
+            "surface"
+          ],
+          "relation": "adjacent",
+          "observation": "Neutral gray mask cells border pale-blue available cells; pale regions retain dark readable labels."
+        }
+      ]
+    },
+    "rationale": "Choose one primary blue family plus a restrained separated green mechanism focus from the complete Transcormer SVG. Deep blue is a shade of its actual outline colour; near-white green is a tint of its query-stream green. White stays dominant. Do not reproduce the source mask matrix layout or grey blocked-cell semantics.",
+    "region_colours": {
+      "dna": [
+        "white",
+        "primary",
+        "ink"
+      ],
+      "backbone": [
+        "white",
+        "surface",
+        "companion",
+        "deepblue",
+        "softgreen",
+        "ink"
+      ],
+      "tracks": [
+        "white",
+        "primary",
+        "deepblue",
+        "ink"
+      ],
+      "contacts": [
+        "white",
+        "surface",
+        "primary",
+        "deepblue",
+        "ink"
+      ]
+    },
+    "adjacency_review": "Related encoder/decoder cells use neighboring pale source blues with deep blue linework. Strongest local colour is the small green-tinted transformer mechanism at the bottom; white around it separates it from blue feature columns. Same-scale skip shafts stay deep blue; green is not scattered across unrelated readouts. White regions and black text preserve figure hierarchy.",
+    "whitespace_plan": "Keep canvas and major frames white. Only feature cells, transformer interior and tiny readout marks receive pale colour. Leave broad clear gutters and the U interior white. Title and section headings never receive a band."
+  },
+  "topology_review": "The original AlphaGenome science requires convolutional downsampling to a 128-bp transformer and upsampling to 1 bp with same-scale encoder/decoder skips. A 128-bp transformer tap and the restored 1-bp decoder stream feed output embeddings; pair features from the transformer independently feed contacts at 2,048 bp. Two macro outputs from backbone are therefore a necessary source-supported exception, with distinct internal landings at the 1D output embedder and 2D pair representation. No gate, multiply, arbitrary add or BPE operator from HyenaDNA/DNABERT is inserted. Repeated actual network levels are summarized; 1 bp and 4 bp are selected scale examples with ellipses down to the only 128-bp bottleneck. No pooling below this bottleneck.",
+  "brief": "Create an airy publication diagram using the source whole-reference language: fine uniform outlined enclosures, plain readable typographic labels, small functional pale shapes, simple continuous arrows, large white space. Use a coherent Times-like serif for body labels inspired by the inspected CosyVoice SVG; use bold serif for headings and mathematical/native symbols consistently. Avoid enormous title branding. Set a compact 1 Mb DNA input left, largest central backbone, and two unequal output frames right. Preserve all source-grounded topology. Blue source cells/shades show representations, tiny near-white green focuses the Transformer Tower; black text and unfilled titles. No gradients or shadows. Native schematic genomic marks only. Correct the earlier ambiguous 128 bp label placement: ONLY mark 128 bp in the bottleneck and output-embedding/readout labels, never halfway down the encoder. Use 4 bp for the selected middle skip scale and ellipses to summarize intermediate scale stages. Within the backbone use two smooth skip curves rather than complex orthogonal pipes. The macro grid/ports in the resulting plan are exact; all local words and marks are contained.",
+  "notation_map": {},
+  "visible_text": [
+    "AlphaGenome",
+    "DNA sequence to molecular readouts",
+    "DNA Input",
+    "1 Mb",
+    "A C G T",
+    "One-hot encoding",
+    "Human / mouse",
+    "Multi-scale Backbone",
+    "Encoder",
+    "Conv + pooling",
+    "1 bp",
+    "4 bp",
+    "Decoder",
+    "Conv + upsampling",
+    "1 bp",
+    "4 bp",
+    "Same-scale skips",
+    "Transformer Tower",
+    "128 bp",
+    "Long-range interactions",
+    "Output embeddings",
+    "1 bp + 128 bp",
+    "Pair embeddings",
+    "2,048 bp",
+    "Genomic Tracks",
+    "1 bp",
+    "RNA-seq · CAGE · PRO-cap",
+    "DNase · ATAC",
+    "Splice sites · Usage · Junctions",
+    "Donor–acceptor pairs",
+    "128 bp",
+    "Histone modifications",
+    "TF binding",
+    "DNA Contact Maps",
+    "2,048 bp",
+    "Pairwise interactions",
+    "Schematic readouts"
+  ],
+  "visible_word_count": 85,
+  "visible_symbols": [
+    "…",
+    "0",
+    "1"
+  ],
+  "ideas": [
+    {
+      "id": "scale-correct-u",
+      "target_component_id": "backbone",
+      "concept": "Make the U-shaped scale transition and the two distinct output representations visible",
+      "visual_intent": "Prevent an incorrect extra downsampling stage while retaining real skip and pair dependencies",
+      "construction_plan": "Inside the model frame place encoder left x650–880 and decoder right x1160–1390. Top selected 1-bp features at y410, middle selected 4-bp features at y650. Encoder down arrows descend toward one Transformer Tower centered x1000 y1010 and decoder arrows ascend from it; use ellipses between 4-bp strips and bottleneck to summarize unshown levels. Mark 128 bp only within Transformer Tower. Two smooth single-curve skip arrows connect corresponding encoder/decoder feature strips; label Same-scale skips once inside their whitespace. Place Output embeddings as small right-side region x1450–1660 y400–630, receiving decoder-top 1-bp features by one straight arrow and the 128-bp tower tap by one unobstructed smooth curve in the empty right inner corridor. Output embeddings connects directly to the upper-right genomic frame at y500. Pair embeddings as a compact blue matrix at x1450–1660 y1080–1240 receives its own simple curve from transformer and connects directly to lower-right contacts at y1150. Keep the pair path below the decoder. No overlapping pipes, no shared arrowhead, no staircase.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "scientific-readouts",
+      "target_component_id": "tracks",
+      "concept": "Group all assay types by resolution and keep contacts separate",
+      "visual_intent": "Explain the biological readout families without presenting invented measurements",
+      "construction_plan": "In the tall upper-right region, align 1-bp headings, three short grouped modality lines and small schematic profiles; donor–acceptor arcs distinguish splicing. A simple divider separates 128-bp histone/TF readouts. Lower contact region contains a symmetric schematic diagonal matrix and 2,048-bp label. Curves and grids are symbolic without numerical axes or empirical scores. Schematic readouts appears once in ordinary dark italic text inside the lower contact frame.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ]
+}

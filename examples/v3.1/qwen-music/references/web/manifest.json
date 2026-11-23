@@ -1,0 +1,23 @@
+{
+  "format": "scholarly-domain-figure-manifest-v1",
+  "sources": [
+    {
+      "id": "musicgen",
+      "title": "Simple and Controllable Music Generation",
+      "figure": "Figure 1",
+      "source_url": "https://arxiv.org/abs/2306.05284v3",
+      "evidence_url": "https://arxiv.org/html/2306.05284v3/codebook_interleaving_patterns_2_minimal_v10.svg",
+      "crop_path": "references/web/crops/musicgen.svg",
+      "inspection": "A complete token-pattern SVG, not a whole architecture. Repeated square cells show temporal ordering; multi-codebook patterns are not transferred."
+    },
+    {
+      "id": "cosyvoice",
+      "title": "CosyVoice 2",
+      "figure": "Figure 2",
+      "source_url": "https://arxiv.org/abs/2412.10117v3",
+      "evidence_url": "https://arxiv.org/html/2412.10117v3/CosyVoice2-LM.svg",
+      "crop_path": "references/web/crops/cosyvoice.svg",
+      "inspection": "Complete LM-mode schematic SVG: sparse token rows surrounding a plain round-corner white model, black arrows, serif labels. Streaming topology not transferred."
+    }
+  ]
+}

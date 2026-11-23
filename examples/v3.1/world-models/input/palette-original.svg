@@ -1,0 +1,84 @@
+<svg viewBox="0 0 704 510" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <path id="arrow-right" d="M 0 0 C -2.779 1 -5.376 2.445 -7.69 4.28 L -6.14 0 L -7.69 -4.28 C -5.376 -2.445 -2.779 -1 0 0 Z"/>
+    <path id="arrow-down" d="M 0 0 C 1 2.779 2.445 5.376 4.28 7.69 L 0 6.14 L -4.28 7.69 C -2.444 5.376 -1 2.770 0 0 Z" transform="rotate(180, 0, 0)"/>
+  </defs>
+  <text x="0" y="20" class="figure-text">
+    <tspan>
+      The <tspan style="font-weight: bold;">FiLM generator</tspan>
+      processes the conditioning information
+    </tspan>
+    <tspan x="0" dy="1.5em">
+      and produces parameters that describe how the target network
+    </tspan>
+    <tspan x="0" dy="1.5em">
+      should alter its computation.
+    </tspan>
+  </text>
+  <path d="M420,10l0,510" style="stroke-width: 1px; stroke: #666; opacity: 0.15;"/>
+  <text x="460" y="20" class="figure-text">
+    <tspan>
+      Here, the <tspan style="font-weight: bold;">FiLM-ed network</tspan>'s
+      computation
+    </tspan>
+    <tspan x="460" dy="1.5em">
+      is conditioned by two FiLM layers.
+    </tspan>
+  </text>
+  <g transform="translate(0, 40)">
+    <g transform="translate(460, 40)">
+      <text x="150" y="425" class="figure-text">output</text>
+      <path d="M130,399L130,430" class="figure-line"/>
+      <use x="130" y="430" xlink:href="#arrow-down" class="figure-path"/>
+      <g transform="translate(20, 337)" class="figure-faded">
+        <rect width="222" height="62" class="figure-filmed-network figure-group figure-box"/>
+        <text x="111" y="31" dy="0.4em" style="text-anchor: middle;" class="figure-text">sub-network</text>
+      </g>
+      <path d="M130,305.5L130,332" class="figure-line"/>
+      <use x="130" y="332" xlink:href="#arrow-down" class="figure-path"/>
+      <g transform="translate(20, 275.5)" class="film-layer">
+        <rect width="222" height="30" class="figure-filmed-network figure-group figure-box"/>
+        <text x="111" y="15" dy="0.4em" style="text-anchor: middle; font-weight: bold;" class="figure-text">FiLM</text>
+      </g>
+      <path d="M130,244L130,270.5" class="figure-line"/>
+      <use x="130" y="270.5" xlink:href="#arrow-down" class="figure-path"/>
+      <g transform="translate(20, 182)" class="figure-faded">
+        <rect width="222" height="62" class="figure-filmed-network figure-group figure-box"/>
+        <text x="111" y="31" dy="0.4em" style="text-anchor: middle;" class="figure-text">sub-network</text>
+      </g>
+      <path d="M130,149.5L130,177" class="figure-line"/>
+      <use x="130" y="177" xlink:href="#arrow-down" class="figure-path"/>
+      <g transform="translate(20, 119.5)" class="film-layer">
+        <rect width="222" height="30" class="figure-filmed-network figure-group figure-box"/>
+        <text x="111" y="15" dy="0.4em" style="text-anchor: middle; font-weight: bold;" class="figure-text">FiLM</text>
+      </g>
+      <path d="M130,88L130,114.5" class="figure-line"/>
+      <use x="130" y="114.5" xlink:href="#arrow-down" class="figure-path"/>
+      <g transform="translate(20, 26)" class="figure-faded">
+        <rect width="222" height="62" class="figure-filmed-network figure-group figure-box"/>
+        <text x="111" y="31" dy="0.4em" style="text-anchor: middle;" class="figure-text">sub-network</text>
+      </g>
+      <text x="150" y="0" class="figure-text">input</text>
+      <path d="M130,-15l0,36" class="figure-line"/>
+      <use x="130" y="21" xlink:href="#arrow-down" class="figure-path"/>
+    </g>
+    <g transform="translate(0, 190)">
+      <path d="M0,0l110,0" class="figure-line"/>
+      <use x="110" y="0" xlink:href="#arrow-right" class="figure-path"/>
+      <text x="0" y="0" dy="-0.8em" class="figure-text">conditioning</text>
+    </g>
+    <g transform="translate(115, 140)" class="film-generator">
+      <rect width="180" height="100" class="figure-film-generator figure-group figure-box"/>
+      <text x="90" y="50" dy="0.4em" style="text-anchor: middle; font-weight: bold;" class="figure-text">FiLM generator</text>
+    </g>
+    <g>
+      <path d="M295,175l175,0" class="figure-line"/>
+      <use x="475" y="175" xlink:href="#arrow-right" class="figure-path"/>
+      <text x="305" y="175" dy="-0.8em" class="figure-text">FiLM parameters</text>
+    </g>
+    <g>
+      <path d="M295,205C360,205,387.5,205,387.5,265S415,330,475,330" class="figure-line"/>
+      <use x="475" y="330" xlink:href="#arrow-right" class="figure-path"/>
+    </g>
+  </g>
+</svg>

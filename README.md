@@ -17,6 +17,10 @@
 
 ## V3 · SVG-reference workflow / SVG 参考流程
 
+<img src="examples/v3.1/architecture/png1.png" alt="FigFox-Gen V3: Methodology and SVG evidence feed Creative Director decisions, preflight, one generation and pixel inspection" width="100%" />
+
+[Full V3 Methodology / 完整方法正文](examples/v3.1/architecture/input/methodology.md) · [Generated with our own skill / 自己的 skill 生成记录](examples/v3.1/architecture/README.md) · [Prompt / 提示词](examples/v3.1/architecture/prompt-1/prompt.md)
+
 Current version: **V3 (`v3.1.0`)**. / 当前版本：**V3 (`v3.1.0`)**。
 
 - Inspect genuine vector SVG references and retain source provenance; report missing references rather than substitute raster images.
@@ -93,7 +97,7 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
 [Installation & workflow / 安装与流程](https://github.com/LawrenceRiver/FigFox/blob/main/docs/skill.md) · [Our editable V2 example / 本仓库 V2 可编辑示例](examples/v2-architecture/editable/README.md)
 
-## What is new in V2
+## Historical V2 highlights
 
 **V2 更新亮点**
 
@@ -117,25 +121,35 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
    **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
 
-## Examples
+## Examples · V3 / V3 新案例
 
-**案例展示**
+Complete updated Methodology inputs and recorded checks are linked below. / 以下包含更新后的完整 Methodology 与实际检查记录。
 
-### Latent Diffusion
+### Qwen-Music
 
-<img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion generated figure / 科研图生成案例" width="100%" />
+<img src="examples/v3.1/qwen-music/png1.png" alt="Qwen-Music generated with FigFox-Gen V3" width="100%" />
 
-### MusiCoT
+[Full Methodology / 完整方法正文](examples/v3.1/qwen-music/input/methodology.md) · [Prompt, sources & inspection / 提示词、来源与检查](examples/v3.1/qwen-music/README.md)
 
-<img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT generated figure / 科研图生成案例" width="100%" />
+Known deviations: external connector prose and incomplete internal melody continuation. / 已记录：连线说明出框，旋律到语义输出连接仍不完整。
 
-### AlphaFold 3
+### AlphaGenome
 
-<img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 generated figure / 科研图生成案例" width="100%" />
+<img src="examples/v3.1/alphagenome/png1.png" alt="AlphaGenome generated with FigFox-Gen V3" width="100%" />
 
-[Source papers, Methodology and recorded checks / 原论文、方法正文与检查记录](examples/v3-0-1/README.md) · [Complete Methodology inputs / 完整方法输入](README.md#full-methodology-inputs)
+[Full Methodology / 完整方法正文](examples/v3.1/alphagenome/input/methodology.md) · [Prompt, sources & inspection / 提示词、来源与检查](examples/v3.1/alphagenome/README.md)
 
-These are preserved generated previews for author inspection. / 以上为保留的生成预览，需作者检查。
+Known deviation: some connector labels remain outside frames. Readouts are schematic. / 已记录：少量连线标签出框；读出均为示意。
+
+### World Models · MDN-RNN
+
+<img src="examples/v3.1/world-models/png1.png" alt="World Models · MDN-RNN generated with FigFox-Gen V3" width="100%" />
+
+[Full Methodology / 完整方法正文](examples/v3.1/world-models/input/methodology.md) · [Prompt, sources & inspection / 提示词、来源与检查](examples/v3.1/world-models/README.md)
+
+Known deviation: mild shading/gradients. / 已记录：局部有轻微渐变。
+
+[All V3 run packages / 全部 V3 运行记录](examples/v3.1/README.md) · [Historical preview cases / 历史预览案例](examples/v3-0-1/README.md)
 
 ### Optional research-poster branch
 
@@ -185,56 +199,20 @@ V1 skill has a separate name, `figfox-gen-v1`, and requires explicit invocation.
 ## Workflow
 
 ```text
-Methodology + about two inspected peer figures
-  → one source-grounded visual-needs anchor
-  → cached parallel construction evidence / scoped style traits / palette selection
-  → need-to-drawing correspondence + scientific graph
-  → Creative Director: innovation detail, whole-frame grid, notation and routes
-  → deterministic V2 grid/route preflight → compact Prompt 1
-  → one layout image call → optional deterministic content-inset placement → final PNG1 → author inspection
+Methodology + user requirements
+  → genuine SVG evidence + settled content/narrative
+  → Creative Director: colour/whitespace → frames/simple routes → exact content
+  → source/graph/geometry/notation checks → compact image packet
+  → one image call → PNG1 → actual-pixel inspection + recorded deviations
 ```
 
-1. **Anchor once.** Inspect about two relevant scholarly figures and retain shared visual
-   conventions only when the Methodology needs them. Preserve exact scientific components,
-   directed relationships, source-supported claims and assumptions.
-2. **Build from needs.** In parallel, inspect useful construction evidence, identify liked
-   reference traits and select a compatible palette from the 14 bundled groups. A reference
-   has a scoped role—such as typography, line character or a local construction. It does
-   not license copying the whole composition, labels or colours. Each selected visual need
-   gets a concrete drawing correspondence; there is no image-search quota per component.
-   Reuse source-checked caches and search again only for a named unresolved need. For a
-   standard model named in the Methodology, use its established architectural grammar at
-   the chosen detail level rather than an invented symbol or unnecessarily expanded internals.
-3. **Plan the entire frame.** The Creative Director allocates detail to the innovation and
-   fixes a regular row/column layout including the output. Use concise scientific captions
-   and approved notation aliases with real subscripts/superscripts; visible underscores are
-   rejected. Keep the output within the same rectangular footprint and align sibling
-   regions, edges and spacing. Default to bold dark or theme-coloured headings on the
-   ordinary background; use colour fill for important mechanisms and content, rather than
-   automatic painted title strips. Palette selection is per run, with no hardcoded demo hue theme.
-4. **Route before generation.** Declare exact node ports and path points. The deterministic
-   V2 grid/route preflight checks the planned geometry: keep the mainline to at most one
-   bend and avoid crossings. An unavoidable crossing needs an explicit continuous bridge
-   or a distinct, approved ink treatment. Move components to improve routes before locking
-   the packet; do not hide broken shafts behind text.
-5. **Generate once.** Compile the compact drawing packet and make one layout image call.
-   In no-reference mode the manifest has `attachments: []`; omit image-input arguments
-   (`referenced_image_paths` and `num_last_images_to_include`) from the image-generation call.
-   When suitable content assets have been inspected and licensed for use, reserve clean
-   inset slots and paste the actual collected files with the optional deterministic helper
-   after generation; that composite is PNG1. Keep source, crop, permission and placement
-   records. Illustrative material must stay illustrative and cannot replace the method's
-   evidence. Without insets, the generated image is PNG1. The normal workflow ends at this
-   single raster PNG1 for inspection, without an automatic repair loop or extra model call.
+1. **Settle scientific content.** Methodology defines components, directed dependencies and claims. Inspect relevant genuine SVG figures when available; keep only useful constructions and disclose missing sources. Retain SVG provenance and the need-to-drawing correspondence.
+2. **Collect complete style and palette evidence.** A dedicated complete SVG from another track supplies original colours and observed adjacency, separation and whitespace. New runs do not select a fixed palette-library group. Local PNG previews are derivatives of retained SVGs.
+3. **Let the Director decide.** The Creative Director integrates content and complete references, chooses source-derived colours, then places content-sized frames and simple routes together before filling exact text and meaningful local visuals. Preserve actual scientific topology. Ordinary frames usually have one input/output; justified exceptions retain true dependencies.
+4. **Compile and preflight.** Verify SVGs/hashes, source-derived colour decisions, graph, notation and explicit geometry. Routes are straight or one necessary smooth curve. Reposition frames instead of adding staircase detours. The compiler preserves invariants and approved attachments in a compact prompt.
+5. **Generate once and inspect.** Make one image-generation call, deliver PNG1 and inspect actual pixels. Keep the prompt, Methodology, provenance, plan and deviations. Artifact validation does not prove visual or scientific correctness. There is no automatic repair or editable-reconstruction loop.
 
-File, graph, notation and geometry validation checks the declared artifacts. It does **not**
-prove that the generated pixels preserve scientific meaning, labels, arrowheads, symbols,
-spacing or visual quality. Inspect the actual PNG1 before accepting it.
-
-See [SKILL.md](SKILL.md) for execution instructions and
-[the compact generation contract](references/compact-generation.md) for artifacts and commands.
-The original detailed workflow remains in the
-[V1 tagged documentation](https://github.com/LawrenceRiver/FigFox-Gen-skill/blob/v1.0.0/README.md).
+[Full V3 Methodology](examples/v3.1/architecture/input/methodology.md) · [Active skill](SKILL.md) · [SVG schemas](references/svg-reference-workflow.md) · [Compact handoff](references/compact-generation.md)
 
 ## Historical V1 examples
 
@@ -249,7 +227,7 @@ and the historical palette preview (which depicts the older library).
 
 [V1 FigureBench/palette preview](assets/figurebench-palette-preview.png)
 
-## Full Methodology inputs
+## Historical preview Methodology inputs
 
 These examples preserve the original Methodology inputs rather than replacing them with
 keyword-only summaries. They are recorded source inputs for the workflow, not

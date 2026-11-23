@@ -1,0 +1,15 @@
+{
+  "domain": "text-conditioned token-based music generation",
+  "reference_policy": "svg-only",
+  "dominant_colour_count": 2,
+  "mainline": "text to semantic sequence to acoustic rendering",
+  "conventions": [
+    {
+      "concept": "Discrete representation interfaces",
+      "recurrence_evidence": "MusicGen Figure1 SVG uses square token sequences; neighboring speech CosyVoice2 Figure2 SVG uses sparse circular token sequences. These support token marks, not shared internals or a fixed stage count. MusicLM/AudioLM/MAGNeT full architecture SVG unavailable in bounded retrieval.",
+      "visual_treatment": "Small native ordered token rows beside a whole-model enclosure; source-specific shapes need not match exactly.",
+      "terminology": "tokens; language model; text; audio",
+      "methodology_relevance": "Draw Qwen 25Hz semantic tokens and distinct 6.25Hz melody prefix; never copy peer multi-codebook, attention masks or streaming layout."
+    }
+  ]
+}

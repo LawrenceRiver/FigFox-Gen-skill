@@ -1,0 +1,168 @@
+{
+  "format": "figfox-style-brief-v1",
+  "workflow_policy": "svg-reference-v1",
+  "family": "architecture_2d",
+  "reference_mode": "image",
+  "main_reference": {
+    "path": "input/palette-reference.svg",
+    "source_kind": "web",
+    "source": "Feature-wise transformations, complete FiLM architecture SVG with its actual source CSS; original files retained.",
+    "ai_reference_permitted": true,
+    "permission_evidence": "Article source repository LICENSE is CC BY 4.0: https://github.com/distillpub/post--feature-wise-transformations/blob/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/LICENSE ; original vector diagram from same article repository. Reference use only; no copied scientific content."
+  },
+  "borrow": [
+    "Fine continuous dark arrows, generous white corridors, modest consistent corners and legible dark typography.",
+    "Complete SVG colour relationships: cool family local to evidence, warm family isolated at creative decisions, white between them.",
+    "Native token/document arrays and nested whole-model frames from inspected MusicGen and CosyVoice SVGs; no music or speech topology transferred."
+  ],
+  "avoid": [
+    "Staircase and maze routing",
+    "Multiple ordinary entries/exits",
+    "Bright blue outlines around everything",
+    "Invented network internals",
+    "Decorative symbols",
+    "Filled title bands"
+  ],
+  "palette_id": "film-complete-svg",
+  "dominant_roles": [
+    "cool",
+    "warm"
+  ],
+  "accent_target": "director",
+  "palette_reason": "Inspected complete FiLM SVG supplies candidate cool/warm relationships. The Director decides how to allocate them for the figure-generation workflow.",
+  "reading_path": "horizontal",
+  "mainline": [
+    "input",
+    "evidence",
+    "director",
+    "compile",
+    "output"
+  ],
+  "detail_references": [],
+  "palette": {
+    "source_mode": "svg-reference",
+    "base_palette_id": "film-complete-svg",
+    "dominant_colour_roles": [
+      "cool",
+      "warm"
+    ],
+    "colours": [
+      {
+        "role": "cool",
+        "hex": "#C0DFF2",
+        "rgb": [
+          192,
+          223,
+          242
+        ]
+      },
+      {
+        "role": "cool-edge",
+        "hex": "#81BEE4",
+        "rgb": [
+          129,
+          190,
+          228
+        ]
+      },
+      {
+        "role": "warm",
+        "hex": "#F2CBC2",
+        "rgb": [
+          242,
+          203,
+          194
+        ]
+      },
+      {
+        "role": "warm-edge",
+        "hex": "#E49381",
+        "rgb": [
+          228,
+          147,
+          129
+        ]
+      },
+      {
+        "role": "neutral",
+        "hex": "#F9F9F9",
+        "rgb": [
+          249,
+          249,
+          249
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#666666",
+        "rgb": [
+          102,
+          102,
+          102
+        ]
+      },
+      {
+        "role": "black",
+        "hex": "#000000",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "role": "white",
+        "hex": "#FFFFFF",
+        "rgb": [
+          255,
+          255,
+          255
+        ]
+      }
+    ],
+    "extensions": [],
+    "reference": {
+      "path": "input/palette-reference.svg",
+      "sha256": "4a402aa96e9dde8e92b9a7cc96907b022d70510a19ec3e0bb59bad02ead52613",
+      "source_url": "https://distill.pub/2018/feature-wise-transformations/",
+      "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+      "source_track": "feature-wise conditioning for visual reasoning",
+      "target_track": "scientific figure generation workflow",
+      "complete_figure": true
+    },
+    "relationships": [
+      {
+        "roles": [
+          "cool",
+          "cool-edge"
+        ],
+        "relation": "adjacent",
+        "observation": "The cool generator fill and deeper blue border touch within one semantic region."
+      },
+      {
+        "roles": [
+          "warm",
+          "warm-edge"
+        ],
+        "relation": "adjacent",
+        "observation": "Warm FiLM layer fill and warmer border form one region."
+      },
+      {
+        "roles": [
+          "cool",
+          "warm"
+        ],
+        "relation": "separate",
+        "observation": "Cool generator and warm modulated network are separated by a generous white corridor, not pressed against each other."
+      },
+      {
+        "roles": [
+          "warm",
+          "neutral"
+        ],
+        "relation": "adjacent",
+        "observation": "Warm active layers sit beside much quieter support layers in the same vertical family."
+      }
+    ]
+  }
+}

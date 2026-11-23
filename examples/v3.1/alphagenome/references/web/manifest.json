@@ -1,0 +1,41 @@
+{
+  "format": "scholarly-domain-figure-manifest-v1",
+  "sources": [
+    {
+      "id": "hyenadna",
+      "title": "HyenaDNA: Long-Range Genomic Sequence Modeling at Single Nucleotide Resolution",
+      "figure": "HyenaDNA block / operator figure",
+      "source_url": "https://arxiv.org/abs/2306.15794",
+      "evidence_url": "https://arxiv.org/html/2306.15794v2/hyenadna.svg",
+      "crop_path": "references/web/crops/hyenadna.svg",
+      "inspection": "Inspected complete SVG. Nested block/operator/filter regions, repeated gating, addition and residual branches. Borrow grouping only; gate/add structure is rejected."
+    },
+    {
+      "id": "dnabert2",
+      "title": "DNABERT-2: Efficient Foundation Model and Benchmark For Multi-Species Genome",
+      "figure": "Tokenizer comparison figure",
+      "source_url": "https://arxiv.org/abs/2306.15006",
+      "evidence_url": "https://arxiv.org/html/2306.15006v2/tokenizer.svg",
+      "crop_path": "references/web/crops/dnabert2.svg",
+      "inspection": "Inspected complete SVG. Nucleotide strings and aligned subsequences. Borrow input mark convention only; reject tokenizer overlap/BPE logic."
+    },
+    {
+      "id": "frame",
+      "title": "CosyVoice 2",
+      "figure": "Language model figure",
+      "source_url": "https://arxiv.org/abs/2412.10117",
+      "evidence_url": "https://arxiv.org/html/2412.10117v3/CosyVoice2-LM.svg",
+      "crop_path": "references/web/crops/frame.svg",
+      "inspection": "Inspected complete SVG for neighboring-track frame/typography/arrow language only."
+    },
+    {
+      "id": "palette",
+      "title": "Transcormer",
+      "figure": "Complete attention-mask figure",
+      "source_url": "https://arxiv.org/abs/2205.12986",
+      "evidence_url": "https://arxiv.org/html/2205.12986v1/mask.svg",
+      "crop_path": "references/web/crops/palette.svg",
+      "inspection": "Inspected complete genuine SVG and paints for colour adjacency/separation only. Source topology is excluded."
+    }
+  ]
+}

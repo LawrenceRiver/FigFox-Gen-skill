@@ -1,0 +1,262 @@
+{
+  "format": "creative-director-brief-v1",
+  "brief": "Create a publication-quality vector-like workflow infographic on white. Five unequal horizontal regions, all frame centres aligned, with only four short straight external arrows and empty connector corridors. The large Director region exposes its three real decisions through restrained mini constructions. Use readable black sans-serif text, thin dark contours, consistent modest corners, complete reference spacing and limited flat source-derived colour. No title bands or excessive blue outlines. The page title/subtitle stay in a white top margin. Every other word, symbol and icon belongs inside its frame. The final warning belongs inside the output frame. Do not print route prose, component ids or planning metadata.",
+  "design_intents": {
+    "layout": "我想证据汇入创意决策",
+    "flow": "我想五段直连解释原理",
+    "density": "我想创意展开其余收紧"
+  },
+  "colour_decision": {
+    "chosen_palette": {
+      "source_mode": "svg-reference",
+      "base_palette_id": "film-complete-svg",
+      "dominant_colour_roles": [
+        "cool",
+        "warm"
+      ],
+      "colours": [
+        {
+          "role": "cool",
+          "hex": "#C0DFF2",
+          "rgb": [
+            192,
+            223,
+            242
+          ]
+        },
+        {
+          "role": "cool-edge",
+          "hex": "#81BEE4",
+          "rgb": [
+            129,
+            190,
+            228
+          ]
+        },
+        {
+          "role": "warm",
+          "hex": "#F2CBC2",
+          "rgb": [
+            242,
+            203,
+            194
+          ]
+        },
+        {
+          "role": "warm-edge",
+          "hex": "#E49381",
+          "rgb": [
+            228,
+            147,
+            129
+          ]
+        },
+        {
+          "role": "neutral",
+          "hex": "#F9F9F9",
+          "rgb": [
+            249,
+            249,
+            249
+          ]
+        },
+        {
+          "role": "ink",
+          "hex": "#666666",
+          "rgb": [
+            102,
+            102,
+            102
+          ]
+        },
+        {
+          "role": "black",
+          "hex": "#000000",
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "role": "white",
+          "hex": "#FFFFFF",
+          "rgb": [
+            255,
+            255,
+            255
+          ]
+        }
+      ],
+      "extensions": [
+        {
+          "role": "cool-pale",
+          "hex": "#EFF7FC",
+          "rgb": [
+            239,
+            247,
+            252
+          ],
+          "base_role": "cool",
+          "relationship": "tint",
+          "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+          "evidence_summary": "White tint of the complete source family; retain low covered area and meaningful separated foci."
+        },
+        {
+          "role": "warm-pale",
+          "hex": "#FCF2F0",
+          "rgb": [
+            252,
+            242,
+            240
+          ],
+          "base_role": "warm",
+          "relationship": "tint",
+          "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+          "evidence_summary": "White tint of the complete source family; retain low covered area and meaningful separated foci."
+        }
+      ],
+      "reference": {
+        "path": "input/palette-reference.svg",
+        "sha256": "4a402aa96e9dde8e92b9a7cc96907b022d70510a19ec3e0bb59bad02ead52613",
+        "source_url": "https://distill.pub/2018/feature-wise-transformations/",
+        "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+        "source_track": "feature-wise conditioning for visual reasoning",
+        "target_track": "scientific figure generation workflow",
+        "complete_figure": true
+      },
+      "relationships": [
+        {
+          "roles": [
+            "cool",
+            "cool-edge"
+          ],
+          "relation": "adjacent",
+          "observation": "The cool generator fill and deeper blue border touch within one semantic region."
+        },
+        {
+          "roles": [
+            "warm",
+            "warm-edge"
+          ],
+          "relation": "adjacent",
+          "observation": "Warm FiLM layer fill and warmer border form one region."
+        },
+        {
+          "roles": [
+            "cool",
+            "warm"
+          ],
+          "relation": "separate",
+          "observation": "Cool generator and warm modulated network are separated by a generous white corridor, not pressed against each other."
+        },
+        {
+          "roles": [
+            "warm",
+            "neutral"
+          ],
+          "relation": "adjacent",
+          "observation": "Warm active layers sit beside much quieter support layers in the same vertical family."
+        }
+      ]
+    },
+    "rationale": "Use the complete FiLM cool family only for evidence artifacts and warm family only for the Director decisions. White corridors separate the families. Compilation and output remain largely white with black type; pale marks suggest a generated figure without reproducing case outputs.",
+    "region_colours": {
+      "input": [
+        "white",
+        "black",
+        "neutral"
+      ],
+      "evidence": [
+        "white",
+        "black",
+        "cool-pale",
+        "cool-edge"
+      ],
+      "director": [
+        "white",
+        "black",
+        "warm-pale",
+        "warm-edge",
+        "cool-pale"
+      ],
+      "compile": [
+        "white",
+        "black",
+        "neutral"
+      ],
+      "output": [
+        "white",
+        "black",
+        "cool-pale",
+        "warm-pale"
+      ]
+    },
+    "adjacency_review": "Within each local semantic mini-construction the pale interior and slightly deeper boundary are neighbours; warm Director emphasis is separated from blue evidence by a broad white corridor. Do not colour whole cards or title backgrounds.",
+    "whitespace_plan": "Keep most of the canvas white; all outer frames white, roughly 28px inner padding. Compact support regions and a larger decision region. Use generous internal spacing and short readable labels rather than filling every area."
+  },
+  "topology_review": "This is an orchestration workflow with an exact five-stage overview chain, not a learned model or independently running agent team. Method input supplies current scientific truth. SVG evidence contains selected constructions, settled narrative, graph and separate palette observations. Director combines these rather than copying source topology. Its three ordered decisions are colour/whitespace, frames/routes and exact content; topology review and inventory support this pass. Compile validates artifacts and produces a compact packet. One image call is followed by actual pixel inspection and recorded deviations. No automatic repair loop or editable reconstruction belongs here.",
+  "ideas": [
+    {
+      "id": "need-correspondence",
+      "target_component_id": "evidence",
+      "concept": "Evidence becomes a drawing correspondence",
+      "visual_intent": "Show what reference gathering contributes beyond searching pictures.",
+      "construction_plan": "Two small native SVG document sheets; below them a tiny three-column row with one simple construction mark per column. Put the exact correspondence sentence inside the lower evidence area. A distinct complete SVG palette sheet uses cool pale marks; no raster photo or scientific model topology.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "director-decisions",
+      "target_component_id": "director",
+      "concept": "Colour then frame/route planning then content",
+      "visual_intent": "Make the actual V3 decision process visible.",
+      "construction_plan": "Three vertically separated micro-scenes: top a few restrained warm/cool swatches separated by white with short label; middle unequal outlined frames with simple horizontal attached arrow; bottom a native text sheet with two clean lines and a small meaningful geometric inset. Place exact three Director action labels alongside these scenes. A small plain footer names topology review and visible text/symbols. No pictorial robot, brain, wand or decorative icon.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    },
+    {
+      "id": "one-call-inspection",
+      "target_component_id": "output",
+      "concept": "Generated image and actual inspection remain distinct",
+      "visual_intent": "Avoid equating schema checks with scientific correctness.",
+      "construction_plan": "One small native figure-page thumbnail with tiny outlined frames and two simple connections; a small plain eye outline below it. One image call and PNG1 at top. Inspect actual pixels and Record deviations below. Put Artifact checks ≠ visual correctness as two readable lines INSIDE this frame at its bottom.",
+      "requires_svg_evidence": false,
+      "svg_crops": []
+    }
+  ],
+  "visible_text": [
+    "FigFox-Gen V3",
+    "From scientific content to one inspected figure",
+    "Method input",
+    "Methodology",
+    "User requirements",
+    "Scientific content",
+    "SVG evidence",
+    "Inspect genuine SVGs",
+    "Filter useful constructions",
+    "Settle content + narrative",
+    "Complete palette SVG",
+    "Colours + relationships",
+    "Need → observed construction → our drawing",
+    "Creative Director",
+    "Choose colour + whitespace",
+    "Place frames + simple routes",
+    "Fill exact text + local visuals",
+    "Topology review",
+    "Visible text + symbols",
+    "Compile + preflight",
+    "Source + graph checks",
+    "Geometry + notation checks",
+    "Compact prompt + attachments",
+    "Generate + inspect",
+    "One image call",
+    "PNG1",
+    "Inspect actual pixels",
+    "Record deviations",
+    "Artifact checks ≠ visual correctness"
+  ],
+  "visible_word_count": 82,
+  "visible_symbols": [],
+  "notation_map": {}
+}

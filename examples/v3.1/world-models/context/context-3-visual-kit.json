@@ -1,0 +1,151 @@
+{
+  "reference_strategy": "essential-only",
+  "selected_references": [],
+  "coverage_matrix": [
+    {
+      "component_id": "context",
+      "basic_geometry_justification": "Native latent-vector, action and recurrent-state representations, explicitly distinguished as z at t, a at t and h at t. No invented observed pixel sample or toy numeric values."
+    },
+    {
+      "component_id": "dynamics",
+      "basic_geometry_justification": "Show actual LSTM recurrence and mixture-density head at meaningful internal depth. The Director chooses single-cell state loop or a compact truthful shared-weight unrolled motif. Mixture parameters are weights, means and standard deviations, not invented tokens. Preserve updated state as a separate object from predictive distribution. Temperature sampling may be internal for honest single-port grouping."
+    },
+    {
+      "component_id": "prediction",
+      "basic_geometry_justification": "Show stochastic next latent versus updated recurrent state distinctly. If sampling is here, use a source-grounded internal state passthrough rather than making h flow through the sampler. Temperature controls uncertainty. Gaussian visualization only illustrative. No fictitious quantitative results."
+    }
+  ],
+  "palette": {
+    "source_mode": "svg-reference",
+    "base_palette_id": "film-complete-svg",
+    "dominant_colour_roles": [
+      "cool",
+      "warm"
+    ],
+    "colours": [
+      {
+        "role": "cool",
+        "hex": "#C0DFF2",
+        "rgb": [
+          192,
+          223,
+          242
+        ]
+      },
+      {
+        "role": "cool-edge",
+        "hex": "#81BEE4",
+        "rgb": [
+          129,
+          190,
+          228
+        ]
+      },
+      {
+        "role": "warm",
+        "hex": "#F2CBC2",
+        "rgb": [
+          242,
+          203,
+          194
+        ]
+      },
+      {
+        "role": "warm-edge",
+        "hex": "#E49381",
+        "rgb": [
+          228,
+          147,
+          129
+        ]
+      },
+      {
+        "role": "neutral",
+        "hex": "#F9F9F9",
+        "rgb": [
+          249,
+          249,
+          249
+        ]
+      },
+      {
+        "role": "ink",
+        "hex": "#666666",
+        "rgb": [
+          102,
+          102,
+          102
+        ]
+      },
+      {
+        "role": "black",
+        "hex": "#000000",
+        "rgb": [
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "role": "white",
+        "hex": "#FFFFFF",
+        "rgb": [
+          255,
+          255,
+          255
+        ]
+      }
+    ],
+    "extensions": [],
+    "reference": {
+      "path": "input/palette-reference.svg",
+      "sha256": "4a402aa96e9dde8e92b9a7cc96907b022d70510a19ec3e0bb59bad02ead52613",
+      "source_url": "https://distill.pub/2018/feature-wise-transformations/",
+      "evidence_url": "https://raw.githubusercontent.com/distillpub/post--feature-wise-transformations/1a833066485ade58ed8b04f3e5fcbb85fe9b627d/public/diagrams/film-architecture.svg",
+      "source_track": "feature-wise conditioning for visual reasoning",
+      "target_track": "stochastic latent world dynamics",
+      "complete_figure": true
+    },
+    "relationships": [
+      {
+        "roles": [
+          "cool",
+          "cool-edge"
+        ],
+        "relation": "adjacent",
+        "observation": "The cool generator fill and deeper blue border touch within one semantic region."
+      },
+      {
+        "roles": [
+          "warm",
+          "warm-edge"
+        ],
+        "relation": "adjacent",
+        "observation": "Warm FiLM layer fill and warmer border form one region."
+      },
+      {
+        "roles": [
+          "cool",
+          "warm"
+        ],
+        "relation": "separate",
+        "observation": "Cool generator and warm modulated network are separated by a generous white corridor, not pressed against each other."
+      },
+      {
+        "roles": [
+          "warm",
+          "neutral"
+        ],
+        "relation": "adjacent",
+        "observation": "Warm active layers sit beside much quieter support layers in the same vertical family."
+      }
+    ]
+  },
+  "taste_constraints": [
+    "No staircase, zigzag, crossing maze or complicated detour. Plan base frames and simple paths together.",
+    "Ordinary external regions at most one input and one output; actual internal model ports retain source-supported meanings.",
+    "White support surfaces, black readable labels, deliberate source-derived pale fills; no title strips or gradients.",
+    "All text and scientific glyphs inside their parent frames. Exact visible inventory only; do not print long route meaning prose.",
+    "Leave every external connector corridor blank. Do not print any route-meaning prose; only exact Director visible-text and symbol inventories may appear. No callout frame around connector labels."
+  ]
+}

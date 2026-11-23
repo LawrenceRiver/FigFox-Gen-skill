@@ -14,6 +14,10 @@
 
 ## V3 · SVG-reference workflow / SVG 参考流程
 
+<img src="examples/v3.1/architecture/png1.png" alt="FigFox-Gen V3: Methodology and SVG evidence feed Creative Director decisions, preflight, one generation and pixel inspection" width="100%" />
+
+[Full V3 Methodology / 完整方法正文](examples/v3.1/architecture/input/methodology.md) · [Generated with our own skill / 自己的 skill 生成记录](examples/v3.1/architecture/README.md) · [Prompt / 提示词](examples/v3.1/architecture/prompt-1/prompt.md)
+
 Current version: **V3 (`v3.1.0`)**. / 当前版本：**V3 (`v3.1.0`)**。
 
 - Inspect genuine vector SVG references and retain source provenance; report missing references rather than substitute raster images.
@@ -71,7 +75,7 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
 [Installation & workflow / 安装与流程](https://github.com/LawrenceRiver/FigFox/blob/main/docs/skill.md) · [Our editable V2 example / 本仓库 V2 可编辑示例](examples/v2-architecture/editable/README.md)
 
-## V2 更新亮点
+## 历史 V2 更新亮点
 
 1. **不再出现过度配色的 Mermaid 式拓扑图。** 用主视觉参考统一图形、箭头和字体，让生成结果具有真正科研架构图的构造感。
 2. **真正从简的逻辑布局。** 支持反 C、S 型和环形等排布，整体规整、饱满、对齐，尽可能单向传导，并逐条复查实际箭头的逻辑走向。
@@ -79,23 +83,35 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 4. **图片插入开挂。** 音频波形、街景等外部图片可以按科学需要直接嵌入框架图，让具体内容进入方法表达。
 5. **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
 
-## 案例
+## Examples · V3 / V3 新案例
 
-### Latent Diffusion
+Complete updated Methodology inputs and recorded checks are linked below. / 以下包含更新后的完整 Methodology 与实际检查记录。
 
-<img src="assets/generated-figures/v3-0-1/latent-diffusion.png" alt="Latent Diffusion generated figure / 科研图生成案例" width="100%" />
+### Qwen-Music
 
-### MusiCoT
+<img src="examples/v3.1/qwen-music/png1.png" alt="Qwen-Music generated with FigFox-Gen V3" width="100%" />
 
-<img src="assets/generated-figures/v3-0-1/musicot.png" alt="MusiCoT generated figure / 科研图生成案例" width="100%" />
+[Full Methodology / 完整方法正文](examples/v3.1/qwen-music/input/methodology.md) · [Prompt, sources & inspection / 提示词、来源与检查](examples/v3.1/qwen-music/README.md)
 
-### AlphaFold 3
+Known deviations: external connector prose and incomplete internal melody continuation. / 已记录：连线说明出框，旋律到语义输出连接仍不完整。
 
-<img src="assets/generated-figures/v3-0-1/alphafold3.png" alt="AlphaFold 3 generated figure / 科研图生成案例" width="100%" />
+### AlphaGenome
 
-[Source papers, Methodology and recorded checks / 原论文、方法正文与检查记录](examples/v3-0-1/README.md) · [Complete Methodology inputs / 完整方法输入](README.md#full-methodology-inputs)
+<img src="examples/v3.1/alphagenome/png1.png" alt="AlphaGenome generated with FigFox-Gen V3" width="100%" />
 
-These are preserved generated previews for author inspection. / 以上为保留的生成预览，需作者检查。
+[Full Methodology / 完整方法正文](examples/v3.1/alphagenome/input/methodology.md) · [Prompt, sources & inspection / 提示词、来源与检查](examples/v3.1/alphagenome/README.md)
+
+Known deviation: some connector labels remain outside frames. Readouts are schematic. / 已记录：少量连线标签出框；读出均为示意。
+
+### World Models · MDN-RNN
+
+<img src="examples/v3.1/world-models/png1.png" alt="World Models · MDN-RNN generated with FigFox-Gen V3" width="100%" />
+
+[Full Methodology / 完整方法正文](examples/v3.1/world-models/input/methodology.md) · [Prompt, sources & inspection / 提示词、来源与检查](examples/v3.1/world-models/README.md)
+
+Known deviation: mild shading/gradients. / 已记录：局部有轻微渐变。
+
+[All V3 run packages / 全部 V3 运行记录](examples/v3.1/README.md) · [Historical preview cases / 历史预览案例](examples/v3-0-1/README.md)
 
 ### 可选科研海报支线
 
@@ -140,45 +156,20 @@ python scripts/check_installation.py
 ## 工作流程
 
 ```text
-Methodology + 约两张实际查看过的同类论文图
-  → 一次形成有来源依据的视觉需求锚点
-  → 复用缓存，并行处理构件证据 / 有范围的风格特征 / 配色选择
-  → 需求—画法对照表 + 科学关系图
-  → 创意师：创新细节、完整画布网格、符号与走线
-  → V2 确定性网格/路径预检 → 紧凑 Prompt 1
-  → 一次布局图生成 → 按需确定性贴入内容素材 → 最终 PNG1 → 作者检查
+Methodology + 用户要求
+  → 真实 SVG 证据 + 已确定的科学内容与叙事
+  → 创意师：配色与留白 → 框架与简单连线 → 准确文字与局部构造
+  → 来源/科学关系/几何/符号预检 → 紧凑图像提示词
+  → 一次图像调用 → PNG1 → 实际像素检查 + 偏差记录
 ```
 
-1. **先确定需求。** 查看约两个同类论文案例，只保留 Methodology 确实需要的共同
-   视觉惯例。准确保留科学模块、方向关系、原文支持的贡献和必要假设。
-2. **按需并行。** 查找有效的构件画法、明确喜欢的参考图特征，并从 SVG 来源配色中
-   选取适合本次任务的一组。参考图分别承担字体、线条或局部构造等明确角色，不能
-   整体照搬构图、标签和颜色。每个已选视觉需求都有对应画法，不要求每个模块都搜图。
-   复用已核实的缓存，只为明确未解决的需求补查；Methodology 中已命名的标准模型，
-   在所选粒度使用有来源依据的经典结构画法，不凭空造符号，也不展开无关内部细节。
-3. **先规划完整画布。** 创意师按创新点分配细节，在规则行列中安排所有内容与输出。
-   标签使用简洁科学术语；索引采用真实上下标或经确认的符号别名，不允许可见下划线。
-   输出也在同一矩形轮廓内，平级区域、边缘与间距保持对齐。标题默认是普通背景上的
-   深色或主题色粗体字，不自动加彩色标题条；填色重点留给重要机制与科学内容。
-   每次重新判断合适的配色，不把演示图的色相当成固定主题。
-4. **先走线再生成。** 声明精确节点端口和路径点，由 V2 确定性预检检查计划几何。
-   主线至多一个转弯，尽量消除交叉；不可避免的交叉必须明确使用连续跨线桥，或经
-   批准且可区分的线色处理。先通过移动模块改善路径，再锁定计划；不能用文字遮住
-   断裂线段。路径点规定的是中心线，不强制使用细黑线；整图及局部模型视图采用
-   统一的箭头家族，保持杆身和箭头比例一致，并预留足够宽度。每条箭头都须从源边界
-   连续到达目标箭头端，准确落到所指的过程子区域。
-5. **只生成一次。** 将紧凑绘图清单交给图像模型，只生成一次布局图。无参考图模式下，
-   清单为 `attachments: []`，图像生成调用省略 `referenced_image_paths` 和
-   `num_last_images_to_include`。若选用了已检查且获准使用的直接内容素材，在预留插图
-   区域确定性贴入实际文件，合成后为 PNG1；保留来源、裁剪、许可与放置记录。示意素材
-   须保持示意身份，不能替代该方法的实验或结果证据。不使用插图时，生成图本身就是
-   PNG1。常规流程交付这一张待检查的栅格 PNG1，不自动进入修图循环或增加模型调用。
+1. **先确定科学内容。** Methodology 决定模块、依赖关系与贡献。优先检查真实 SVG 论文图，只保留有用构造，记录参考缺口及需求—观察画法—本图表达的对应关系。
+2. **收集完整风格与配色证据。** 从另一赛道的一张完整 SVG 中记录真实色值、相邻和分离关系、强调与留白。新流程不从固定色板库选配色；本地 PNG 只作为原 SVG 的显示或传输衍生图。
+3. **创意师统筹决策。** 创意师结合方法内容与完整参考，先决定来源配色及衍生色，再共同安排内容大小合适的框架与简单走线，最后填入准确文字、符号和局部构造。保留真实内部拓扑；普通框通常一个输入和一个输出，必要多端口须有科学依据。
+4. **编译与预检。** 检查 SVG 与哈希、来源配色决策、科学关系、符号及几何。路径只用直线或必要的单条简单曲线；复杂绕线通过移动或重组框架解决。将科学不变量、构造要求和实际参考附件编译为紧凑提示词。
+5. **单次生成与实际检查。** 调用一次图像模型，交付 PNG1，检查真实图像，保留方法正文、来源、创意决策、计划、提示词与已知偏差。产物校验不能证明视觉或科学正确，不自动修图或还原可编辑 SVG。
 
-文件、图关系、符号与几何验证检查的是声明的产物，**不能证明最终像素正确**。
-实际输出的科学含义、符号、箭头端点、文字、布局与美观仍须逐项目检。
-执行步骤见 [SKILL.md](SKILL.md)，产物和命令见
-[紧凑生成合同](references/compact-generation.md)。旧版详细工作流保留在
-[V1 标签文档](https://github.com/LawrenceRiver/FigFox-Gen-skill/blob/v1.0.0/README_ZH.md)。
+[完整 V3 Methodology](examples/v3.1/architecture/input/methodology.md) · [当前 skill](SKILL.md) · [SVG 合同](references/svg-reference-workflow.md) · [紧凑交付](references/compact-generation.md)
 
 ## 历史 V1 案例
 

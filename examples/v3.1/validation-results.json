@@ -1,0 +1,51 @@
+{
+  "qwen-music": {
+    "artifacts": 10,
+    "images": [
+      "png1.png"
+    ],
+    "limitation": "Artifact validation and sampled curve clearance do not prove pixel fidelity.",
+    "palette": "Creative Director source-derived decision",
+    "routing": "simple",
+    "source_format": "svg",
+    "status": "valid",
+    "workflow": "svg-reference-v1"
+  },
+  "alphagenome": {
+    "artifacts": 10,
+    "images": [
+      "png1.png"
+    ],
+    "limitation": "Artifact validation and sampled curve clearance do not prove pixel fidelity.",
+    "palette": "Creative Director source-derived decision",
+    "routing": "simple",
+    "source_format": "svg",
+    "status": "valid",
+    "workflow": "svg-reference-v1"
+  },
+  "world-models": {
+    "artifacts": 10,
+    "images": [
+      "png1.png"
+    ],
+    "limitation": "Artifact validation and sampled curve clearance do not prove pixel fidelity.",
+    "palette": "Creative Director source-derived decision",
+    "routing": "simple",
+    "source_format": "svg",
+    "status": "valid",
+    "workflow": "svg-reference-v1"
+  },
+  "architecture": {
+    "artifacts": 10,
+    "images": [
+      "png1.png"
+    ],
+    "limitation": "Artifact validation and sampled curve clearance do not prove pixel fidelity.",
+    "palette": "Creative Director source-derived decision",
+    "routing": "simple",
+    "source_format": "svg",
+    "status": "valid",
+    "workflow": "svg-reference-v1"
+  },
+  "scope": "Deterministic artifacts and retained sources only; known pixel deviations remain in case READMEs and inspection records."
+}

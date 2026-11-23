@@ -1,0 +1,58 @@
+{
+  "mainline": "DNA and species identity feed the multi-scale U-Net/transformer backbone; 1D embeddings predict genomic tracks while pair embeddings predict contact maps.",
+  "components": [
+    {
+      "id": "dna",
+      "label": "DNA Input",
+      "semantic_role": "input",
+      "visual_treatment": "Short symbolic DNA nucleotide row and compact one-hot cells with 1 Mb and human/mouse labels. No biological artwork.",
+      "construction_provenance": "Source-checked AlphaGenome textual architecture; native geometry plus inspected SVG grouping/input/frame constructions.",
+      "source_context": "Nature Fig1a and Extended Data Fig1; Methods architecture",
+      "special": "supporting"
+    },
+    {
+      "id": "backbone",
+      "label": "Multi-scale Backbone",
+      "semantic_role": "model",
+      "visual_treatment": "U-shaped convolutional encoder/decoder at selected scales 1 bp and 4 bp, with skipped intermediate scales shown by ellipses. Bottleneck Transformer Tower is 128 bp; do not show any further pooling below 128 bp. Two matched encoder-to-decoder skips. Output embedder receives restored 1-bp decoder features plus a separate 128-bp transformer tap. Pair representation branch from transformer bypasses decoder to 2D contact output.",
+      "construction_provenance": "Source-checked AlphaGenome textual architecture; native geometry plus inspected SVG grouping/input/frame constructions.",
+      "source_context": "Nature Fig1a and Extended Data Fig1; Methods architecture",
+      "special": "core architectural feature"
+    },
+    {
+      "id": "tracks",
+      "label": "Genomic Tracks",
+      "semantic_role": "output",
+      "visual_treatment": "All eight 1-bp readout types plus histone modification and TF binding at 128 bp; native schematic aligned profile lines with donor–acceptor splice arcs, no measured data.",
+      "construction_provenance": "Source-checked AlphaGenome textual architecture; native geometry plus inspected SVG grouping/input/frame constructions.",
+      "source_context": "Nature Fig1a and Extended Data Fig1; Methods architecture",
+      "special": "supporting"
+    },
+    {
+      "id": "contacts",
+      "label": "DNA Contact Maps",
+      "semantic_role": "output",
+      "visual_treatment": "Native symmetric contact matrix with diagonal plus a few off-diagonal cells at 2,048 bp; no quantitative claims.",
+      "construction_provenance": "Source-checked AlphaGenome textual architecture; native geometry plus inspected SVG grouping/input/frame constructions.",
+      "source_context": "Nature Fig1a and Extended Data Fig1; Methods architecture",
+      "special": "supporting"
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "dna",
+      "target_id": "backbone",
+      "label": "sequence and species"
+    },
+    {
+      "source_id": "backbone",
+      "target_id": "tracks",
+      "label": "1D embeddings"
+    },
+    {
+      "source_id": "backbone",
+      "target_id": "contacts",
+      "label": "2D embeddings"
+    }
+  ]
+}
