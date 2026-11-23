@@ -1,5 +1,5 @@
 {
-  "final_sha256": "7069d2fa2be07791cc1d0961e22dda77b07b11d80e381e158ad4fda367e78d8a",
+  "final_sha256": "3ea255af0086130ea061a360152de5263aae785c47e0ff26fa6c6a4edf2ea90b",
   "native_text_elements": 99,
   "embedded_images": 7,
   "external_resources": 0,
@@ -23,5 +23,6 @@
     ],
     "rendered_and_observed": true,
     "final_hash_unchanged": true
-  }
+  },
+  "subsequent_edit": "Added three native light-grey outline rectangles for Methodology, Example and Scientific content; increased Example caption top padding. Rendered and visually checked."
 }
