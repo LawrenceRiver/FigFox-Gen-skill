@@ -13,3 +13,7 @@ The screenshots show local HTML previews of the actual Methodology, Creative Dir
 The same assistant compared source/draft whole views and four paired quadrants, repaired oversized miniatures and verified a separate edit probe by rendering an actual title change, frame stroke change and embedded-image movement. The final file’s hash remained unchanged. See [editability check](editability-check.json), [asset inventory](asset-manifest.json) and [observations](observations.json).
 
 Fonts, document details and flat fills approximate the generated raster; this is not a pixel-perfect font/gradient copy. The source duplicate compiler label is preserved. Screenshot text remains raster; main workflow text stays native.
+
+## Bilingual explanation
+
+The current SVG pairs English labels with native editable Chinese translations and adds a three-line Chinese explanation of each of the five phases. Vertical spacing was expanded; original record screenshots and case images remain unchanged.

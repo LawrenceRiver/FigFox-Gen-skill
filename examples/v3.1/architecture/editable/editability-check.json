@@ -1,6 +1,6 @@
 {
-  "final_sha256": "62e2c92959ad6fa90d64d3bd9b5aa2930cd26061c38c7c78b8b513ef3fe3ad36",
-  "native_text_elements": 46,
+  "final_sha256": "ca1509dd6537e8ab0e4ece8a9030c259bc3ba905d87be7c0bb3d82e9d1d18cfd",
+  "native_text_elements": 99,
   "native_shapes_and_paths": 115,
   "embedded_images": 6,
   "external_resources": 0,
@@ -16,6 +16,8 @@
     "Font weight, document details and flat fills approximate the generated raster.",
     "Six evidence/example illustrations remain independently movable raster images."
   ],
-  "previous_verified_sha256": "7a95ba38e2ffff87e544076fe0c458576d4fa7ee0856ad21eaa11507582b2e19",
-  "subsequent_edit": "Removed only two user-specified explanatory captions; rendered and visually checked. Earlier operation probe applies to the preceding revision."
+  "previous_verified_sha256": "62e2c92959ad6fa90d64d3bd9b5aa2930cd26061c38c7c78b8b513ef3fe3ad36",
+  "subsequent_edit": "Added native Chinese translations beneath English labels and three explanatory lines for each of five phases. Expanded vertical spacing and kept six independently movable images. Previous text-edit, shape-edit and image-move probe remains recorded for the earlier revision.",
+  "bilingual_phase_descriptions": 5,
+  "bilingual_render_review": "same assistant visual inspection"
 }

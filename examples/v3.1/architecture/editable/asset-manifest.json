@@ -4,10 +4,10 @@
     "source": "Browser screenshot of assets/methodology.html; content copied from actual saved artifact",
     "sha256": "ab6048042449030432dfe705c69598bcbece8a80c54a367e34e972d98e47996d",
     "target_box": [
-      44,
-      917,
-      612,
-      254
+      44.0,
+      1489.0,
+      612.0,
+      232.0
     ],
     "type": "embedded raster illustration",
     "editable": "independently movable/replaceable image; screenshot text remains raster",
@@ -25,10 +25,10 @@
     "source": "Browser screenshot of assets/director.html; content copied from actual saved artifact",
     "sha256": "9f890a64fa120654717b1355d7193c92d76885f6ad6027000c79a65618f19003",
     "target_box": [
-      704,
-      917,
-      612,
-      254
+      704.0,
+      1489.0,
+      612.0,
+      232.0
     ],
     "type": "embedded raster illustration",
     "editable": "independently movable/replaceable image; screenshot text remains raster",
@@ -46,10 +46,10 @@
     "source": "Browser screenshot of assets/validation.html; content copied from actual saved artifact",
     "sha256": "3452617b036043aa9e50da55ae239c7c0b9693fb6946e9a977dc007dd0031bd7",
     "target_box": [
-      1364,
-      917,
-      612,
-      254
+      1364.0,
+      1489.0,
+      612.0,
+      232.0
     ],
     "type": "embedded raster illustration",
     "editable": "independently movable/replaceable image; screenshot text remains raster",
@@ -67,10 +67,10 @@
     "source": "examples/v3.1/qwen-music/png1.png",
     "sha256": "dbffc93200161735b28826cfd1cb3966f28321ddff066b16429d33e2e9d6f5c0",
     "target_box": [
-      44,
-      1300,
-      612,
-      232
+      44.0,
+      1912.0,
+      612.0,
+      210.0
     ],
     "type": "embedded raster illustration",
     "editable": "independently movable/replaceable image; screenshot text remains raster"
@@ -80,10 +80,10 @@
     "source": "examples/v3.1/alphagenome/png1.png",
     "sha256": "72741b159aa528d09894b5ff5a49949afcecaf570aa776481c09077a10a1ca00",
     "target_box": [
-      704,
-      1300,
-      612,
-      232
+      704.0,
+      1912.0,
+      612.0,
+      210.0
     ],
     "type": "embedded raster illustration",
     "editable": "independently movable/replaceable image; screenshot text remains raster"
@@ -93,10 +93,10 @@
     "source": "examples/v3.1/world-models/png1.png",
     "sha256": "91aeb3aab824be6331f29109e44d48f469231e77a29ea437a5aaa0c087cf4e55",
     "target_box": [
-      1364,
-      1300,
-      612,
-      232
+      1364.0,
+      1912.0,
+      612.0,
+      210.0
     ],
     "type": "embedded raster illustration",
     "editable": "independently movable/replaceable image; screenshot text remains raster"
