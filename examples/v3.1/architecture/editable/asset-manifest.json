@@ -1,104 +1,121 @@
 [
   {
-    "id": "record-methodology",
-    "source": "Browser screenshot of assets/methodology.html; content copied from actual saved artifact",
-    "sha256": "ab6048042449030432dfe705c69598bcbece8a80c54a367e34e972d98e47996d",
+    "id": "actual-methodology",
+    "source": "examples/v3.1/qwen-music/input/methodology.md \u2014 browser file preview",
+    "sha256": "43194947d73b2e3331e51f7bc59b08db5362239ad9cae50f85db030f6429800e",
+    "source_size": [
+      1100,
+      500
+    ],
     "target_box": [
-      44.0,
-      1489.0,
-      612.0,
-      232.0
+      54.0,
+      524.7272727272727,
+      362.0,
+      164.54545454545456
     ],
-    "type": "embedded raster illustration",
-    "editable": "independently movable/replaceable image; screenshot text remains raster",
-    "embedded_source": "assets/methodology-crop.png",
-    "crop_box": [
-      0,
-      0,
-      1080,
-      450
-    ],
-    "original_screenshot": "assets/methodology.png"
+    "uniform_scale": 0.3290909090909091,
+    "aspect_ratio_preserved": true
   },
   {
-    "id": "record-director",
-    "source": "Browser screenshot of assets/director.html; content copied from actual saved artifact",
-    "sha256": "9f890a64fa120654717b1355d7193c92d76885f6ad6027000c79a65618f19003",
+    "id": "source-musicgen",
+    "source": "https://arxiv.org/html/2306.05284v3/codebook_interleaving_patterns_2_minimal_v10.svg",
+    "sha256": "31b53299233dc4512124071f9b1dddcaf132803beaf751bd7aacf6215bea2f90",
+    "source_size": [
+      1500,
+      837
+    ],
     "target_box": [
-      704.0,
-      1489.0,
-      612.0,
-      232.0
+      519.0,
+      454.59000000000003,
+      290.0,
+      161.82
     ],
-    "type": "embedded raster illustration",
-    "editable": "independently movable/replaceable image; screenshot text remains raster",
-    "embedded_source": "assets/director-crop.png",
-    "crop_box": [
-      0,
-      0,
-      1080,
-      450
-    ],
-    "original_screenshot": "assets/director.png"
+    "uniform_scale": 0.19333333333333333,
+    "aspect_ratio_preserved": true
   },
   {
-    "id": "record-validation",
-    "source": "Browser screenshot of assets/validation.html; content copied from actual saved artifact",
+    "id": "source-cosyvoice",
+    "source": "https://arxiv.org/html/2412.10117v3/CosyVoice2-LM.svg",
+    "sha256": "37ec3f7145e3993527636dadf233c3e4222d8260e0d9fe42742e4e2798da2e0d",
+    "source_size": [
+      1500,
+      892
+    ],
+    "target_box": [
+      828.0,
+      449.2733333333333,
+      290.0,
+      172.45333333333332
+    ],
+    "uniform_scale": 0.19333333333333333,
+    "aspect_ratio_preserved": true
+  },
+  {
+    "id": "source-palette",
+    "source": "https://arxiv.org/html/2205.12986v1/mask.svg",
+    "sha256": "d79680bfa85936dc8d7939bacffba8208c174d14c87bf267db3be572a33da1f3",
+    "source_size": [
+      900,
+      922
+    ],
+    "target_box": [
+      1243.6475054229934,
+      443.0,
+      175.70498915401302,
+      180.0
+    ],
+    "uniform_scale": 0.19522776572668113,
+    "aspect_ratio_preserved": true
+  },
+  {
+    "id": "actual-director",
+    "source": "examples/v3.1/qwen-music/creative-director/brief.json \u2014 browser file preview excerpt",
+    "sha256": "9f660392dfe707c96d1f2d84183fc3c15d0bbf49ecddb680fdaa1070eacac6dd",
+    "source_size": [
+      1100,
+      250
+    ],
+    "target_box": [
+      1224.4,
+      952.0,
+      651.1999999999999,
+      148.0
+    ],
+    "uniform_scale": 0.592,
+    "aspect_ratio_preserved": true
+  },
+  {
+    "id": "actual-validation",
+    "source": "examples/v3.1/validation-results.json \u2014 browser file preview excerpt",
     "sha256": "3452617b036043aa9e50da55ae239c7c0b9693fb6946e9a977dc007dd0031bd7",
-    "target_box": [
-      1364.0,
-      1489.0,
-      612.0,
-      232.0
-    ],
-    "type": "embedded raster illustration",
-    "editable": "independently movable/replaceable image; screenshot text remains raster",
-    "embedded_source": "assets/validation-crop.png",
-    "crop_box": [
-      0,
-      0,
+    "source_size": [
       1080,
       450
     ],
-    "original_screenshot": "assets/validation.png"
+    "target_box": [
+      1979.0,
+      913.9166666666666,
+      382.0,
+      159.16666666666666
+    ],
+    "uniform_scale": 0.3537037037037037,
+    "aspect_ratio_preserved": true
   },
   {
-    "id": "case-qwen-music",
+    "id": "actual-qwen-output",
     "source": "examples/v3.1/qwen-music/png1.png",
     "sha256": "dbffc93200161735b28826cfd1cb3966f28321ddff066b16429d33e2e9d6f5c0",
-    "target_box": [
-      44.0,
-      1912.0,
-      612.0,
-      210.0
+    "source_size": [
+      1774,
+      887
     ],
-    "type": "embedded raster illustration",
-    "editable": "independently movable/replaceable image; screenshot text remains raster"
-  },
-  {
-    "id": "case-alphagenome",
-    "source": "examples/v3.1/alphagenome/png1.png",
-    "sha256": "72741b159aa528d09894b5ff5a49949afcecaf570aa776481c09077a10a1ca00",
     "target_box": [
-      704.0,
-      1912.0,
-      612.0,
-      210.0
+      2464.0,
+      459.0,
+      482.00000000000006,
+      241.00000000000003
     ],
-    "type": "embedded raster illustration",
-    "editable": "independently movable/replaceable image; screenshot text remains raster"
-  },
-  {
-    "id": "case-world-models",
-    "source": "examples/v3.1/world-models/png1.png",
-    "sha256": "91aeb3aab824be6331f29109e44d48f469231e77a29ea437a5aaa0c087cf4e55",
-    "target_box": [
-      1364.0,
-      1912.0,
-      612.0,
-      210.0
-    ],
-    "type": "embedded raster illustration",
-    "editable": "independently movable/replaceable image; screenshot text remains raster"
+    "uniform_scale": 0.2717023675310034,
+    "aspect_ratio_preserved": true
   }
 ]

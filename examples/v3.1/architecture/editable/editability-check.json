@@ -1,23 +1,27 @@
 {
-  "final_sha256": "ca1509dd6537e8ab0e4ece8a9030c259bc3ba905d87be7c0bb3d82e9d1d18cfd",
+  "final_sha256": "7069d2fa2be07791cc1d0961e22dda77b07b11d80e381e158ad4fda367e78d8a",
   "native_text_elements": 99,
-  "native_shapes_and_paths": 115,
-  "embedded_images": 6,
+  "embedded_images": 7,
   "external_resources": 0,
-  "probe_operations": [
-    "Changed native title text",
-    "Changed Director frame stroke/width",
-    "Moved embedded Methodology screenshot group"
-  ],
-  "probe_render_observed": true,
-  "final_unchanged_by_probe": true,
-  "reviewer": "same assistant; sequential source/draft quadrant comparison and rendered edit probe",
-  "limitations": [
-    "Font weight, document details and flat fills approximate the generated raster.",
-    "Six evidence/example illustrations remain independently movable raster images."
-  ],
-  "previous_verified_sha256": "62e2c92959ad6fa90d64d3bd9b5aa2930cd26061c38c7c78b8b513ef3fe3ad36",
-  "subsequent_edit": "Added native Chinese translations beneath English labels and three explanatory lines for each of five phases. Expanded vertical spacing and kept six independently movable images. Previous text-edit, shape-edit and image-move probe remains recorded for the earlier revision.",
-  "bilingual_phase_descriptions": 5,
-  "bilingual_render_review": "same assistant visual inspection"
+  "all_image_aspect_ratios_verified": true,
+  "nonuniform_transforms": 0,
+  "layout": "One five-stage workflow. All sources, record screenshots and generated output are embedded in the corresponding stage. No separate run-material section.",
+  "running_example": "Qwen-Music",
+  "source_tracks": {
+    "music generation": "MusicGen Fig.1",
+    "adjacent speech": "CosyVoice 2 Fig.2",
+    "dedicated other-track palette": "Transcormer complete mask.svg"
+  },
+  "example_typography": "Arial italic; Chinese fallbacks where needed",
+  "reviewer": "Same assistant, rendered visual review; previous edition operation probes are historical, not a probe of this new composition.",
+  "current_operation_probe": {
+    "receipt": "inline-probe.svg.receipt.json",
+    "operations": [
+      "native title text edit",
+      "native frame stroke edit",
+      "embedded Methodology image movement"
+    ],
+    "rendered_and_observed": true,
+    "final_hash_unchanged": true
+  }
 }
