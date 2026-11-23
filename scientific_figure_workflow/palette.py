@@ -194,6 +194,9 @@ def validate_palette(
 ) -> dict[str, Any]:
     """Return a Context 3-compatible palette from one named multi-colour group and extensions."""
 
+    if isinstance(value, Mapping) and value.get('source_mode') == 'svg-reference':
+        from .svg_workflow import validate_svg_palette
+        return validate_svg_palette(dict(value))
     normalized = _palette_shape(value)
     group = _library_group(palette_library, normalized["base_palette_id"])
     library_colours = _validate_colours(group.get("colours"), "selected base palette colours")
@@ -261,7 +264,7 @@ def select_palette_group(
 def palette_hex_set(value: Mapping[str, Any]) -> frozenset[str]:
     """Return the exact active HEX values from a validated Context 3 palette."""
 
-    palette = _palette_shape(value)
+    palette = validate_palette(value, []) if value.get('source_mode') == 'svg-reference' else _palette_shape(value)
     return frozenset(
         colour["hex"] for colour in [*palette["colours"], *palette["extensions"]]
     )

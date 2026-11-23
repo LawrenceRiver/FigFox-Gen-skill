@@ -21,12 +21,23 @@ def _reference(record,root):
     relative=Path(record['path']);path=(root/relative).resolve(strict=True)
     if relative.is_absolute() or '..' in relative.parts or not path.is_relative_to(root/'input') or any((root/Path(*relative.parts[:i])).is_symlink() for i in range(1,len(relative.parts)+1)):
         raise ValueError('reference must stay inside input without symlinks')
-    try:
-        with Image.open(path) as image:image.verify()
-    except (OSError,ValueError) as exc:raise ValueError('reference must be a real image') from exc
+    svg = path.suffix.lower() == '.svg'
+    if svg:
+        from .svg_workflow import svg_source
+        svg_source(path)
+    else:
+        try:
+            with Image.open(path) as image:image.verify()
+        except (OSError,ValueError) as exc:raise ValueError('reference must be a real image') from exc
     if not isinstance(record.get('source'),str) or not record['source'].strip():raise ValueError('reference source required; unresolved is allowed but is not permission')
     normalized=copy.deepcopy(record);normalized['path']=path.relative_to(root).as_posix()
     normalized['sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
+    if svg:
+        from .svg_workflow import svg_preview
+        preview = path.with_name(path.stem + '-view.png')
+        svg_preview(path, preview)
+        normalized['source_svg_path'] = normalized['path']
+        normalized['path'] = preview.relative_to(root).as_posix()
     return normalized
 
 
@@ -71,13 +82,25 @@ def load_style_brief(root,component_ids=None):
         _strings(item.get('borrow'),'detail borrow');normalized=_reference(item,root)
         if item.get('ai_reference_permitted') is True and not item.get('permission_evidence','').strip():raise ValueError('detail image requires permission evidence')
         result['detail_references'].append(normalized)
+    if d.get('workflow_policy') == 'svg-reference-v1':
+        from .svg_workflow import verify_palette_source, svg_source, local_file
+        result['palette'] = verify_palette_source(d.get('palette'), root)
+        for ref in [result['main_reference'], *result['detail_references']]:
+            if ref is not None:
+                svg_source(local_file(root, ref.get('source_svg_path', ref['path'])))
+        if result['palette']['base_palette_id'] != d['palette_id']:
+            raise ValueError('Style palette id must refer to its inspected SVG palette')
     return result
 
 
 def style_attachments(brief):
     if brief is None:return []
     out=[]
-    if brief['reference_mode']=='image':out.append({'path':brief['main_reference']['path'],'role':'style_anchor','contract':STYLE_CONTRACT})
+    if brief['reference_mode']=='image':
+        contract = STYLE_CONTRACT
+        if brief.get('workflow_policy') == 'svg-reference-v1':
+            contract = ('Complete source SVG rendered locally for model transport. Borrow its coherent colour relationships, white separation, subdued source-derived fills, typography scale and purposeful frame/line treatment ONLY. This is NOT the scientific layout or model architecture to copy. Follow the Director exact new content, grouping, geometry and simple routes. No FiLM labels, network layers or source topology. Colour decisions come from the Director source-derived palette, never a fixed library. Keep all titles on white.')
+        out.append({'path':brief['main_reference']['path'],'role':'style_anchor','contract':contract})
     for ref in brief['detail_references']:
         if ref.get('ai_reference_permitted') is True:
             out.append({'path':ref['path'],'role':'style_component','target_component_id':ref['target_component_id'],'borrow':ref['borrow'],'contract':'Local component style only; subordinate to global style anchor. Change all original content; no pasted source objects.'})
@@ -85,6 +108,8 @@ def style_attachments(brief):
 
 
 def style_palette(brief,library):
+    if brief.get('workflow_policy') == 'svg-reference-v1':
+        return copy.deepcopy(brief['palette'])
     group=next((g for g in library if g['id']==brief['palette_id']),None)
     if group is None:raise ValueError('style palette_id must name an approved library group')
     if not set(brief['dominant_roles'])<={c['role'] for c in group['colours']}:raise ValueError('style dominant roles not supplied by group')
@@ -92,11 +117,18 @@ def style_palette(brief,library):
 
 
 def validate_style_palette(brief,palette):
+    if brief and brief.get('workflow_policy') == 'svg-reference-v1':
+        if palette != brief['palette']:
+            raise ValueError('Source palette differs from the inspected SVG reference')
+        return
     if brief and (palette['base_palette_id']!=brief['palette_id'] or palette['dominant_colour_roles']!=brief['dominant_roles']):raise ValueError('style palette differs from approved style brief; run select-palette')
 
 
 def style_lines(brief):
     if brief is None:return []
+    if brief.get('workflow_policy') == 'svg-reference-v1':
+        from .svg_workflow import svg_style_lines
+        return svg_style_lines(brief)
     return ['## Global style direction (before domain-search aesthetics)',STYLE_CONTRACT,
             'Style brief SHA256: '+hashlib.sha256(json.dumps(brief,sort_keys=True,ensure_ascii=False).encode()).hexdigest(),
             'Family: '+brief['family']+'; reference mode: '+brief['reference_mode'],
@@ -114,15 +146,21 @@ def style_lines(brief):
             'Style may be imagined within this brief when no approved image exists, during the same Creative Director pass; do not generate an extra style-sheet image.']
 
 
-def init_style_run(root,family,*,methodology=None,reference=None,source_kind="user_provided",source="user provided; original source unresolved"):
+def init_style_run(root,family,*,methodology=None,reference=None,source_kind="user_provided",source="user provided; original source unresolved",workflow_policy=None):
     root=Path(root)
     if root.exists():raise ValueError('run already exists; never overwrite methodology or references')
     family='instruction_manual' if family=='manual' else family
     if family not in FAMILIES:raise ValueError('unsupported style family')
     methodology_text=Path(methodology).read_text() if methodology else '# Methodology\n\nREPLACE_WITH_YOUR_METHODOLOGY\n'
     reference_path=Path(reference).resolve(strict=True) if reference else None
+    if workflow_policy == 'svg-reference-v1' and reference_path and reference_path.suffix.lower() != '.svg':
+        raise ValueError('New-run references must be genuine SVG files')
     if reference_path:
-        with Image.open(reference_path) as image:image.verify()
+        if reference_path.suffix.lower() == '.svg':
+            from .svg_workflow import svg_source
+            svg_source(reference_path)
+        else:
+            with Image.open(reference_path) as image:image.verify()
     if source_kind not in {'user_provided','figurebench','figfoxbench','web'}:raise ValueError('unsupported reference source kind')
     (root/'input').mkdir(parents=True)
     (root/'input/methodology.md').write_text(methodology_text)
@@ -131,6 +169,9 @@ def init_style_run(root,family,*,methodology=None,reference=None,source_kind="us
         target=root/'input'/('main-style-reference'+reference_path.suffix.lower())
         shutil.copyfile(reference_path,target)
         d.update(reference_mode='traits_only',main_reference={'path':target.relative_to(root).as_posix(),'source_kind':source_kind,'source':source,'ai_reference_permitted':False,'permission_evidence':''})
+    if workflow_policy == 'svg-reference-v1':
+        d.update(workflow_policy=workflow_policy, palette=None, palette_id='REPLACE_WITH_INSPECTED_SVG_SOURCE_ID',
+                 palette_reason='Inspect one complete SVG from another track; record its source swatches and adjacency/separation. Creative Director makes the final choice, not a fixed library.')
     (root/'input/style-brief.json').write_text(json.dumps(d,indent=2)+'\n')
     return {'run':str(root),'next':'Supply methodology, component ids and style preferences; optionally add a permitted main reference. No model called.'}
 

@@ -1,6 +1,10 @@
+# Active SVG-reference handoff
+
+New-run rules and schemas are in [svg-reference-workflow.md](svg-reference-workflow.md). They take precedence over the legacy library/orthogonal-only details below. Never run palette-library selection for a new SVG task.
+
 # V2 compact generation handoff
 
-Use this default route for new tasks. Complete the same evidence artifacts, then write `input/generation-plan.json` after Context2 is resolved. Both Creative Director and Prompt1 consume one checked generation checklist instead of raw Context JSON and search notes. New runs require a V2 plan with exact grid and route geometry. Legacy compilation remains available for archived replay only; use the separately named V1 skill for intentional legacy generation.
+Use this default route for new tasks. Complete the same evidence artifacts, then write `input/generation-plan.json` after Context2 is resolved. For active SVG-reference runs the Creative Director receives source-grounded content and complete reference traits before final geometry exists; it creates the plan. Prompt1 consumes its checked plan. The checklist-before-Director route below is retained for legacy replay. New runs require a V2 plan with exact grid and route geometry. Legacy compilation remains available for archived replay only; use the separately named V1 skill for intentional legacy generation.
 
 ## Circuit and retrieval stop conditions
 

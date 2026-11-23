@@ -242,6 +242,13 @@ def _palette_lines(
 
 def _style_palette_lines(context3, style):
     palette = context3["palette"]
+    if palette.get('source_mode') == 'svg-reference':
+        return ['Creative Director selected this source-derived palette; no fixed library.',
+                'Dedicated complete SVG: ' + palette['reference']['path'],
+                'Dominant roles: ' + ', '.join(palette['dominant_colour_roles']),
+                *[c['role'] + ': ' + c['hex'] for c in palette['colours'] + palette['extensions']],
+                *[' / '.join(r['roles']) + ': ' + r['relation'] + '; ' + r['observation'] for r in palette['relationships']],
+                'Use only selected roles where meaningful; white remains a deliberate surface. Black typography is allowed. Preserve the Director adjacency/separation and whitespace decisions.']
     return ["Style-selected palette group: "+palette["base_palette_id"],
             "Dominant roles (style brief, not the first paper): "+", ".join(palette["dominant_colour_roles"]),
             *[c["role"]+": "+c["hex"] for c in palette["colours"]],
@@ -328,6 +335,23 @@ def build_creative_director_prompt(
     methodology = _string(methodology, "methodology")
     normalized1, normalized2, normalized3 = _validated_contexts(context1, context2, context3)
     validate_style_palette(style_brief, normalized3["palette"])
+    if style_brief and style_brief.get('workflow_policy') == 'svg-reference-v1':
+        # Give the Director science and full references, not a pre-locked layout.
+        # Its resulting plan is compiled and checked only after this decision.
+        prompt = '\n'.join([
+            'Act as the Creative Director. Choose the colour system and complete composition before the generator runs.',
+            *style_lines(style_brief),
+            '## Scientific source', methodology,
+            '## Scientific components', *[c['id'] + ': ' + c['label'] + '; ' + c['visual_treatment'] for c in normalized2['components']],
+            '## Required directed relationships', *_relationship_lines(normalized2),
+            '## Inspected SVG constructions', *[c['concept'] + ': ' + c['visual_treatment'] + '; ' + c['methodology_relevance'] for c in normalized1['conventions']],
+            'Produce one creative-director-brief-v1 brief with ideas, design_intents, visible_text, visible_word_count, visible_symbols, notation_map, topology_review and colour_decision.',
+            'colour_decision contains chosen_palette, rationale, region_colours (every component), adjacency_review and whitespace_plan. The chosen palette keeps the inspected SVG source, swatches and observed relationships; extensions cite a base_role and relationship.',
+            'Also produce input/generation-plan.json using figfox-generation-plan-v2. Choose routing_geometry with routing_policy simple, a bounded canvas, row/column slots, explicit ports and routes. Use straight points or one quadratic/cubic curve with its curve field and Bezier control points. These are not staircase waypoints. Ordinary frames have at most one input and one output; source-grounded exceptions must be documented.',
+            'Do not generate an image. Aim below 100 English words; absolute maximum 160. No invented mechanisms, foreign topology or decorative symbols. Preserve all scientific relationships through truthful grouping.',
+        ])
+        return dict(format='creative-director-prompt-bundle-v1', phase='creative_director', prompt=prompt,
+                    component_ids=sorted(c['id'] for c in normalized2['components']), attachments=style_attachments(style_brief))
     if generation_plan is not None:
         if style_brief is None:
             raise ValueError("generation checklist requires a style brief")
@@ -387,6 +411,14 @@ def _creative_director_attachments(
 
 def _creative_director_lines(creative_director: Mapping[str, Any]) -> list[str]:
     lines = ["Creative Director brief:", f"- {creative_director['brief']}", "Creative Director ideas:"]
+    if 'colour_decision' in creative_director:
+        d = creative_director['colour_decision']
+        lines += ['Director colour rationale: ' + d['rationale'],
+                  'Director adjacency review: ' + d['adjacency_review'],
+                  'Director whitespace plan: ' + d['whitespace_plan'],
+                  *[ident + ' region colours: ' + ', '.join(roles) for ident,roles in d['region_colours'].items()],
+                  'Topology review: ' + creative_director['topology_review']]
+        lines += ['Design intent: ' + value for value in creative_director['design_intents'].values()]
     for idea in creative_director["ideas"]:
         lines.append(
             f"- `{idea['id']}` -> `{idea['target_component_id']}`: {idea['concept']} "
@@ -423,6 +455,9 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
     attachments: list[dict[str, Any]] = []
     style = load_style_brief(run_root, component_ids)
     validate_style_palette(style, normalized3["palette"])
+    if style and style.get('workflow_policy') == 'svg-reference-v1':
+        from .svg_workflow import director_palette
+        normalized3['palette'] = director_palette(normalized_creative, style, run_root, component_ids)
     attachments.extend(style_attachments(style))
     if style and any(not isinstance(edge.get("label"),str) or not edge["label"].strip() for edge in normalized2["relationships"]):
         raise ValueError("style-first relationships need explicit scientific arrow labels")
@@ -438,6 +473,9 @@ def build_prompt1_bundle(methodology: str, context1: Mapping[str, Any], context2
     attachments.extend(figurebench_crops)
     attachments.extend(creative_crops)
     generation_plan = load_generation_plan(run_root, normalized2)
+    if style and style.get('workflow_policy') == 'svg-reference-v1':
+        if not generation_plan or generation_plan['routing_geometry'].get('routing_policy') != 'simple':
+            raise ValueError('SVG workflow requires a Director-planned simple routing plan before generation')
     if generation_plan is not None:
         if style is None:
             raise ValueError("generation checklist requires a style brief")

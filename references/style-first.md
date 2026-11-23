@@ -1,3 +1,7 @@
+# Active SVG-reference workflow
+
+For new tasks follow [the active entrypoint](../SKILL.md) and [SVG workflow](svg-reference-workflow.md). Palette-library selection and raster-reference modes below describe archived runs only. Preserve full Director capability; new colour comes from a dedicated complete SVG and Director-owned adjacency/separation decisions.
+
 # Style-anchor experiment
 
 This branch adds an opt-in style-first circuit. The original workflow remains available when `input/style-brief.json` is absent. No production skill is reinstalled automatically; no merge into main is implied.

@@ -221,12 +221,13 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
            'Keep whole (no invented model internals): ' + ', '.join(plan['detail_hierarchy'].get('keep_whole', [])),
            'Allocate detail to the actual contributions; do not expand standard components just because they are familiar. Match supporting regions at the shared level.'] if 'detail_hierarchy' in plan else []),
         '## Locked overall framework', plan['layout'],
-        GRID_GRAMMAR,
+        ('Content determines frame sizes; the Director planned frames and routes together. Unequal regions and useful white space are allowed. Keep every local title, symbol, text and picture inside its parent with padding; no filled title strips. Do not force a rectangular silhouette or equal-card template.' if geometry and geometry.get('routing_policy') == 'simple' else GRID_GRAMMAR),
         *(['Canvas pixels: ' + json.dumps(geometry['canvas']) + '; preserve the exact boxes and path points below. Scale the entire composition uniformly.',
            'Grid rows: ' + json.dumps(geometry['rows']) + '; columns: ' + json.dumps(geometry['columns']),
            'Clearance: ' + str(geometry['clearance']) + ' pixels. Captions must stay in their reserved boxes; never cut shafts.',
            *[f"Declared crossing of routes {c['routes']} at {c['point']}: {c['treatment'].replace('_', ' ')}; {c['reason']}" for c in geometry.get('crossings', [])]] if geometry else []),
-        '## Connector construction (Creative Director and generator)', ROUTING_GRAMMAR,
+        '## Connector construction (Creative Director and generator)',
+        ('Only basic straight lines or one simple smooth curve. No staircase, zigzag, maze, crossings or complicated perimeter pipes. Ordinary frames have at most one input and one output; source-grounded exceptions must be explicit. The Director moved/regrouped boxes before choosing these paths. Bezier points are control handles, never polyline corners. Keep shafts continuous and arrows attached to actual source/target borders. Trace all lines after placing text. A simple curved human return is not an internal neural loop.' if geometry and geometry.get('routing_policy') == 'simple' else ROUTING_GRAMMAR),
         'Draw every named component once. A container may be the component itself; do not add duplicate stand-ins. Repeated snapshots inside a component are insets, not extra pipeline nodes.',
         '## Exact components and placement',
         *[f"- {c['id']} = `{labels[c['id']]}` | {placements[c['id']]} | {c['visual_treatment']}" for c in context2['components']],
@@ -257,7 +258,7 @@ def checklist_lines(plan, methodology, context1, context2, context3, *, for_imag
 def _route_construction(route, geometry):
     if not geometry:
         return route['via']
-    result = route['route_kind'] + ' points ' + json.dumps(route['points'])
+    result = route['route_kind'] + (' ' + route['curve'] + ' Bezier control points ' if route.get('curve') else ' line points ') + json.dumps(route['points'])
     if route.get('caption'):
         result += ' | visible caption `' + route['caption'] + '` in box ' + json.dumps(route['caption_box'])
     return result

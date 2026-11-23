@@ -108,6 +108,8 @@ def _shared_stem(left,right):
 
 def compile_routing_geometry(geometry, routes, component_ids):
     """Return detached normalized geometry/routes, or raise a descriptive ValueError."""
+    if isinstance(geometry, dict) and geometry.get('routing_policy') == 'simple':
+        return _compile_simple_routes(geometry, routes, component_ids)
     if not isinstance(geometry,dict) or not isinstance(routes,list):
         raise ValueError('routing geometry must be an object and routes must be a list')
     g=deepcopy(geometry);result=deepcopy(routes)
@@ -176,6 +178,99 @@ def compile_routing_geometry(geometry, routes, component_ids):
         route['points']=cleaned
     _validate_crossings(g,result)
     _validate_captions(g,result)
+    return g,result
+
+
+def _compile_simple_routes(geometry, routes, component_ids):
+    """Basic lines/one smooth Bezier, with conservative sampled curve checks.
+
+    This preflight catches gross obstructions; pixel inspection is still required.
+    Cubic control points describe the curve, never an orthogonal staircase.
+    """
+    from .svg_workflow import simple_degree_check
+    legacy = deepcopy(geometry)
+    legacy.pop('routing_policy')
+    g, _ = compile_routing_geometry(legacy, [], component_ids)
+    g['routing_policy'] = 'simple'
+    boxes = g['node_boxes']
+    simple_degree_check(g, routes)
+    result = deepcopy(routes)
+    sampled = []
+    for index, route in enumerate(result):
+        source, target = route.get('source_id'), route.get('target_id')
+        if source not in boxes or target not in boxes:
+            raise ValueError('Simple route references an unknown component')
+        if route.get('route_kind') not in _BENDS:
+            raise ValueError('Simple route requires route_kind')
+        points = [_vector(p, 2, 'simple route point') for p in route.get('points', [])]
+        curve = route.get('curve')
+        if curve:
+            expected = {'quadratic': 3, 'cubic': 4}.get(curve)
+            if expected is None or len(points) != expected:
+                raise ValueError('Simple curve needs quadratic/cubic control points')
+            n = len(points) - 1
+            samples = [[sum(math.comb(n,k) * (1-t)**(n-k) * t**k * p[axis]
+                            for k,p in enumerate(points)) for axis in (0,1)]
+                       for t in [i/128 for i in range(129)]]
+        else:
+            if len(points) not in (2,3) or (len(points) == 3 and not all(a[0] == b[0] or a[1] == b[1] for a,b in zip(points,points[1:]))):
+                raise ValueError('No staircase routes: redesign frames or use one simple curve')
+            samples = points
+        if any(not _inside_bounds(p, g['canvas'], g['margin']) for p in [*points, *samples]):
+            raise ValueError('Simple route leaves the canvas')
+        if any(a == b for a,b in zip(points,points[1:])):
+            raise ValueError('Simple route has duplicate points')
+        for p, neighbor, ident, field in [(points[0],points[1],source,'source_port'), (points[-1],points[-2],target,'target_port')]:
+            port = route.get(field)
+            if port not in _PORTS or not _touches(p,boxes[ident],port) or not _port_direction(p,neighbor,port):
+                raise ValueError('Simple route endpoint is detached or has wrong port direction')
+        for ident, box in boxes.items():
+            x,y,w,h = box
+            gap = 0 if ident in (source,target) else g['clearance']
+            # Segment clipping, so even a diagonal passing between samples is checked.
+            for a,b in zip(samples,samples[1:]):
+                lo,hi = 0.,1.
+                for start,delta,low,high in [(a[0],b[0]-a[0],x-gap,x+w+gap),(a[1],b[1]-a[1],y-gap,y+h+gap)]:
+                    if abs(delta) < _EPS:
+                        if not low+_EPS < start < high-_EPS:lo,hi=1.,0.;break
+                    else:
+                        t0,t1=sorted(((low-start)/delta,(high-start)/delta))
+                        lo,hi=max(lo,t0),min(hi,t1)
+                if hi-lo > _EPS:
+                    raise ValueError(f'Simple route {index} crosses node {ident}; move frames before routing')
+        route['points'] = points
+        sampled.append(samples)
+    # Unrelated paths must not cross. A straight/curve family has no crossover bridge escape hatch.
+    def intersects(a,b,c,d):
+        def cross(p,q,r):return (q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0])
+        return cross(a,b,c)*cross(a,b,d) < -_EPS and cross(c,d,a)*cross(c,d,b) < -_EPS
+    for i,left in enumerate(sampled):
+        for j,right in enumerate(sampled[i+1:],i+1):
+            if any(intersects(a,b,c,d) for a,b in zip(left,left[1:]) for c,d in zip(right,right[1:])):
+                raise ValueError(f'Simple routes {i} and {j} cross; redesign frame positions')
+    captions=[]
+    for index,route in enumerate(result):
+        caption=route.get('caption','')
+        if not isinstance(caption,str):raise ValueError('Simple route caption must be text')
+        if not caption.strip():continue
+        box=_box(route.get('caption_box'),g['canvas'],g['margin'],f'route {index} caption box')
+        x,y,w,h=box
+        for other in list(boxes.values())+captions:
+            ox,oy,ow,oh=other
+            if x<ox+ow and x+w>ox and y<oy+oh and y+h>oy:
+                raise ValueError('Simple route caption overlaps a node or another caption')
+        for path in sampled:
+            for a,b in zip(path,path[1:]):
+                lo,hi=0.,1.
+                for start,delta,low,high in [(a[0],b[0]-a[0],x,x+w),(a[1],b[1]-a[1],y,y+h)]:
+                    if abs(delta)<_EPS:
+                        if not low-_EPS<=start<=high+_EPS:lo,hi=1.,0.;break
+                    else:
+                        t0,t1=sorted(((low-start)/delta,(high-start)/delta))
+                        lo,hi=max(lo,t0),min(hi,t1)
+                if hi>=lo:
+                    raise ValueError('Simple route caption obstructs a line or sampled curve')
+        captions.append(box);route['caption_box']=box
     return g,result
 
 

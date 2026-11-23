@@ -130,13 +130,17 @@ def _cmd_validate_reference_coverage(arguments: argparse.Namespace) -> dict[str,
 def _cmd_validate_palette(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
     context3 = load_json_object(root / _CONTEXT_PATHS[3])
-    palette = validate_palette(context3.get("palette"), _palette_library())
+    source = context3.get('palette')
+    palette = validate_palette(source, [] if isinstance(source,dict) and source.get('source_mode') == 'svg-reference' else _palette_library())
     validate_style_palette(load_style_brief(root), palette)
     return palette
 
 
 def _cmd_select_palette(arguments: argparse.Namespace) -> dict[str, Any]:
     root = _run_root(arguments.run)
+    current_style = load_style_brief(root)
+    if current_style and current_style.get('workflow_policy') == 'svg-reference-v1':
+        raise ValueError('Creative Director chooses the SVG-derived palette in colour_decision; palette-library selection is disabled for new SVG runs')
     context1 = validate_context1(load_json_object(root / _CONTEXT_PATHS[1]))
     context2 = validate_context2(load_json_object(root / _CONTEXT_PATHS[2]))
     context3 = load_json_object(root / _CONTEXT_PATHS[3])
@@ -233,7 +237,7 @@ def _parser() -> _Parser:
     start.add_argument("--reference")
     start.add_argument("--source-kind",choices=("user_provided","figurebench","figfoxbench","web"),default="user_provided")
     start.add_argument("--source",default="user provided; original source unresolved")
-    start.set_defaults(handler=lambda a:init_style_run(a.run,a.family,methodology=a.methodology,reference=a.reference,source_kind=a.source_kind,source=a.source))
+    start.set_defaults(handler=lambda a:init_style_run(a.run,a.family,methodology=a.methodology,reference=a.reference,source_kind=a.source_kind,source=a.source,workflow_policy='svg-reference-v1'))
     installation = commands.add_parser("check-installation")
     installation.add_argument("--root", default=REPOSITORY_ROOT)
     installation.set_defaults(handler=_cmd_check_installation)

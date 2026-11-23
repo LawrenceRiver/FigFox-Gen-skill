@@ -1,3 +1,5 @@
+> New SVG-reference runs retain these restraint/adjacency principles but replace fixed-library lineage with the dedicated complete source SVG. See [active contract](svg-reference-workflow.md). Library-specific restrictions below apply only to legacy replay.
+
 # Taste rules
 
 Use taste as a soft constraint: prefer restraint, coherent spacing, clear hierarchy,

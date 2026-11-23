@@ -30,6 +30,8 @@ _REQUIRED_FILES = (
     "scientific_figure_workflow/style_direction.py",
     "scientific_figure_workflow/generation_checklist.py",
     "scientific_figure_workflow/routing_geometry.py",
+    "scientific_figure_workflow/svg_workflow.py",
+    "references/svg-reference-workflow.md",
     "references/versions.md",
     "VERSION",
     "scientific_figure_workflow/run_validation.py",
@@ -39,7 +41,7 @@ _REQUIRED_FILES = (
     "references/direct-visual-insets.md",
     "assets/figurebench-references/index.json",
 )
-_REQUIRED_REQUIREMENTS = {"pillow": "PIL"}
+_REQUIRED_REQUIREMENTS = {"pillow": "PIL", "cairosvg": "cairosvg"}
 _PACKAGE_MODULES = (
     "scientific_figure_workflow",
     "scientific_figure_workflow.artifacts",

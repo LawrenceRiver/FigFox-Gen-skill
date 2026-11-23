@@ -210,6 +210,9 @@ def validate_complete_run(
     """Validate every deterministic artifact through the single final PNG1."""
 
     root = _real_root(run_root, "run root")
+    active_style = load_style_brief(root)
+    if active_style and active_style.get('workflow_policy') == 'svg-reference-v1':
+        return _validate_svg_run(root, active_style)
     references = _real_root(reference_pack_root, "reference pack root")
     artifacts = run_artifact_paths()
     manifest = validate_run_manifest(load_json_object(root / "run-manifest.json"), root)
@@ -272,3 +275,45 @@ def validate_complete_run(
         "figurebench_crops": figurebench["crops"],
         "creative_director": creative["svg_evidence_status"],
     }
+
+
+def _validate_svg_run(root, style):
+    """New-run validation without fabricating an unused PNG FigureBench chain."""
+    from .svg_workflow import director_palette
+    artifacts = run_artifact_paths()
+    keys = ['methodology','context1','context2','context3','web_manifest',
+            'creative_director_prompt','creative_director_brief','prompt1','prompt1_attachments','png1']
+    expected = {key: artifacts[key] for key in keys}
+    manifest = load_json_object(root / 'run-manifest.json')
+    if manifest.get('format') != 'figfox-svg-run-v1' or manifest.get('artifacts') != expected:
+        raise ValueError('SVG run manifest must declare the exact active artifact structure')
+    for key,path in expected.items():
+        _safe_run_file(root, path, key)
+    c1 = validate_context1(load_json_object(root / artifacts['context1']))
+    if c1.get('reference_policy') != 'svg-only':
+        raise ValueError('New SVG run requires SVG-only reference policy')
+    c2 = validate_context2(load_json_object(root / artifacts['context2']))
+    ids = [c['id'] for c in c2['components']]
+    c3 = validate_context3(load_json_object(root / artifacts['context3']), ids)
+    if c3.get('reference_strategy') != 'essential-only' or c3['selected_references']:
+        raise ValueError('SVG runs use retained SVG construction evidence, not legacy raster-library crops')
+    validate_style_palette(style,c3['palette'])
+    plan = load_generation_plan(root,c2)
+    if not plan or plan['routing_geometry'].get('routing_policy') != 'simple':
+        raise ValueError('SVG run requires Director-planned simple routes')
+    validate_web_manifest(load_json_object(root / artifacts['web_manifest']),root,c1,minimum_sources=2)
+    creative = validate_creative_director(load_json_object(root / artifacts['creative_director_brief']),root,ids)
+    director_palette(creative,style,root,ids)
+    method = (root / artifacts['methodology']).read_text()
+    expected_creative = build_creative_director_prompt(method,c1,c2,c3,style,plan)
+    if (root / artifacts['creative_director_prompt']).read_text() != expected_creative['prompt']:
+        raise ValueError('Creative Director prompt does not match SVG compilation')
+    validate_creative_style_attachments(root,expected_creative['attachments'])
+    bundle = build_prompt1_bundle(method,c1,c2,c3,find_user_reference(root),root,creative)
+    _validate_stored_bundle(root,bundle)
+    verify_png(root / artifacts['png1'],'PNG1')
+    if sorted(p.name for p in root.glob('*.png')) != ['png1.png']:
+        raise ValueError('SVG run requires exactly one generated PNG1')
+    return dict(status='valid',workflow='svg-reference-v1',artifacts=len(expected),images=['png1.png'],
+                source_format='svg',palette='Creative Director source-derived decision',routing='simple',
+                limitation='Artifact validation and sampled curve clearance do not prove pixel fidelity.')

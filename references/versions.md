@@ -1,5 +1,23 @@
 # Versions and installation
 
+`main` now provides **V3 (`v3.1.0`)**, the SVG-reference workflow. This supersedes V2 (`v2.1.0`). Earlier `v3.0.0` and `v3.0.1` tags remain historical snapshots; their commits and tags are unchanged.
+
+```bash
+# Current default V3
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill --skill FigFox-Gen-skill
+
+# Pin this V3 revision
+npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v3.1.0 --skill FigFox-Gen-skill
+```
+
+V3 requires genuine SVG image references, a dedicated complete source SVG for palette relationships, full Creative Director decisions, and simple straight or single-curve routes. Scientific topology comes from Methodology. One image generation produces PNG1; actual image inspection is required. Validation cannot prove pixel fidelity. Legacy raster-library runs remain replayable.
+
+Existing local installations require an explicit update. See [the active skill](../SKILL.md) and [SVG schemas](svg-reference-workflow.md).
+
+The following notes describe the prior V2 release and are retained as historical installation guidance, not current defaults.
+
+# Historical versions and installation
+
 `main` provides the current **V2**, released as `v2.1.0`. The workflow previously presented as V3 is now consolidated under V2. The old standalone `figfox-gen-v2` entry and its `v2.0.0` / `v2.0.1` installation tags are retired and removed; use the default skill instead.
 
 | Ref | Skill name | Invocation | Purpose |

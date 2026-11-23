@@ -213,6 +213,9 @@ def validate_web_manifest(
         paper_url = _https_url(record, "source_url", location)
         paper_urls.append(paper_url)
         crop_path = _safe_web_crop(record.get("crop_path"), Path(root), location)
+        if context1.get('reference_policy') == 'svg-only':
+            from .svg_workflow import svg_source
+            svg_source(Path(root) / crop_path)
         crop_paths.append(crop_path)
         normalized.append(
             {
@@ -295,6 +298,8 @@ def validate_context2(value: Mapping[str, Any]) -> dict[str, Any]:
 def _validate_palette(value: Any) -> dict[str, Any]:
     """Validate Context 3's palette with the bundled approved library."""
 
+    if isinstance(value, Mapping) and value.get('source_mode') == 'svg-reference':
+        return validate_palette(value, [])
     library_path = Path(__file__).resolve().parents[1] / "references" / "palette-library.json"
     library = json.loads(library_path.read_text(encoding="utf-8"))
     palettes = library.get("palettes") if isinstance(library, Mapping) else None
@@ -314,7 +319,10 @@ def validate_context3(
     if not known_component_ids:
         raise ValueError("context3 requires Context 2 component ids")
 
-    selections = _records(source.get("selected_references"), "context3 selected_references")
+    strategy = source.get('reference_strategy', 'library')
+    if strategy not in {'library', 'essential-only'}:
+        raise ValueError('Unknown reference strategy')
+    selections = [] if strategy == 'essential-only' and source.get('selected_references') == [] else _records(source.get("selected_references"), "context3 selected_references")
     crop_ids: list[str] = []
     reference_ids: list[str] = []
     normalized["selected_references"] = []
@@ -340,7 +348,7 @@ def validate_context3(
         normalized["selected_references"].append(normalized_selection)
     if len(crop_ids) != len(set(crop_ids)):
         raise ValueError("context3 selected_references crop_ids must be unique")
-    if len(set(reference_ids)) < 2:
+    if strategy == 'library' and len(set(reference_ids)) < 2:
         raise ValueError("context3 selected_references requires two distinct reference_id values")
 
     coverage = _records(source.get("coverage_matrix"), "context3 coverage_matrix")

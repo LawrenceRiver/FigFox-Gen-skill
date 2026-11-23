@@ -1,21 +1,39 @@
+> Active workflow: SVG-only references, dedicated complete other-track SVG palette, full Creative Director colour/layout decisions, and simple routes. See [SKILL.md](SKILL.md). Fixed-library and regular-rectangle examples below are historical, not new-run mandates.
+
 <div align="center">
 
-# FigFox-Gen-skill · V2
+# FigFox-Gen-skill · V3
 
 ### Source-grounded visual planning for one scientific figure.
 ### 从 Methodology 和真实证据出发，生成一张科研图。
 
-**Methodology + peer evidence · need-driven construction · scoped style traits · 14 palette groups · final PNG1**
+**Methodology + peer evidence · need-driven construction · scoped style traits · SVG-derived palette · final PNG1**
 
-**同类图需求锚点 · 按需配图 · 有范围的风格借鉴 · 14 组配色 · 最终 PNG1**
+**同类图需求锚点 · 按需配图 · 有范围的风格借鉴 · SVG 来源配色 · 最终 PNG1**
 
-[V2 architecture / V2 架构](#v2-architecture--v2-架构总览) · [Installation / 安装](#installation) · [Workflow / 工作流程](#workflow) · [Examples / 案例](#examples) · [Version guide / 版本说明](references/versions.md)
+[V3 workflow / V3 流程](#v3--svg-reference-workflow--svg-参考流程) · [Installation / 安装](#installation) · [Workflow / 工作流程](#workflow) · [Examples / 案例](#examples) · [Version guide / 版本说明](references/versions.md)
 
 </div>
 
-## V2 architecture / V2 架构总览
+## V3 · SVG-reference workflow / SVG 参考流程
 
-Current default workflow, generated with FigFox-Gen and reconstructed as editable SVG with FigFox. / 用 FigFox-Gen 生成、再由 FigFox 还原为可编辑 SVG 的当前默认流程。
+Current version: **V3 (`v3.1.0`)**. / 当前版本：**V3 (`v3.1.0`)**。
+
+- Inspect genuine vector SVG references and retain source provenance; report missing references rather than substitute raster images.
+- Derive colours and their spatial relationships from one complete SVG; the Creative Director decides the final palette, composition and scientific detail.
+- Place frames and plan straight or single smooth-curve routes together. Preserve genuine internal topology and keep text inside its parent region.
+- Generate one PNG1 and inspect the actual image. Deterministic validation does not certify scientific or visual correctness.
+
+真实 SVG 参考与来源记录 → 方法内容与叙事 → 完整 SVG 配色关系 → 创意师统筹配色、布局与真实内部拓扑 → 简单连线 → 单次 PNG1 → 实际图像检查。
+
+See [the active workflow and schemas](references/svg-reference-workflow.md) and [SKILL.md](SKILL.md). Historical raster-library runs remain replayable; new runs use `svg-reference-v1`.
+
+## Historical V2 architecture / 历史 V2 架构
+
+The overview and V2 notes below document the previous workflow; they are retained for provenance and do not define V3 defaults. / 以下总览与 V2 说明保留历史来源，不代表 V3 默认流程。
+
+
+Historical V2 workflow, generated with FigFox-Gen and reconstructed as editable SVG with FigFox. / 历史 V2 流程示例。
 
 <img src="assets/generated-figures/figfox-gen-v2-architecture-editable.svg" alt="FigFox-Gen V2 architecture: evidence-grounded planning, single generation and author inspection / V2 架构总览" width="100%" />
 
@@ -23,13 +41,13 @@ Current default workflow, generated with FigFox-Gen and reconstructed as editabl
 
 [Editable SVG / 可编辑 SVG](assets/generated-figures/figfox-gen-v2-architecture-editable.svg) · [SVG preview / SVG 渲染预览](assets/generated-figures/figfox-gen-v2-architecture-editable.png) · [Source comparison & editability / 原图对照与可编辑性](examples/v2-architecture/editable/README.md)
 
-V2 is the default on `main`, released as `v2.1.0`. It turns a scientific Methodology
+V2 was released as `v2.1.0`. It turns a scientific Methodology
 into one raster PNG1 through a source-grounded drawing plan. Detail follows the method's
 actual innovations; supporting stages stay at a consistent level. Cached, parallel work
 resolves the selected visual needs, scoped reference traits and palette before a Creative
 Director fixes the complete rectangular layout and exact connector geometry.
 
-`main` 默认提供 V2，发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
+此前 V2 的发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
 有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
 一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
 创意师确定完整矩形布局和精确连线几何。
@@ -53,11 +71,11 @@ V2 按所需粒度采用标准模型的经典结构画法，默认在普通背�
 
 See the [earlier preview examples and recorded checks](examples/v3-0-1/README.md), the earlier
 [layout and connector trial](examples/regular-layout-trial/README.md), and the
-[direct visual inset contract](references/direct-visual-insets.md). The former standalone V2 entry has been retired; the current workflow is the default V2. V1 remains available through the explicit `$figfox-gen-v1` entry.
+[direct visual inset contract](references/direct-visual-insets.md). The former standalone V2 entry has been retired; the former workflow was the default V2. V1 remains available through the explicit `$figfox-gen-v1` entry.
 
 查看 [此前的预览案例与检查记录](examples/v3-0-1/README.md)、此前的
 [布局和连线对照](examples/regular-layout-trial/README.md)，以及
-[直接视觉插图合同](references/direct-visual-insets.md)。旧的独立 V2 入口已移除，当前流程统一为默认 V2；V1 仍可通过 `$figfox-gen-v1` 明确调用。
+[直接视觉插图合同](references/direct-visual-insets.md)。旧的独立 V2 入口已移除，此前流程统一为默认 V2；V1 仍可通过 `$figfox-gen-v1` 明确调用。
 
 ## From generated figure to editable SVG / 从生成图到可编辑 SVG
 
