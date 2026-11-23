@@ -1,0 +1,96 @@
+{
+  "status": "execution_complete",
+  "input_sha256": "33a3513e8dd3cb402f60dbe45e4850c57c0b587df4e90c2cae8d7cad5d78f4e3",
+  "output_sha256": "7a95ba38e2ffff87e544076fe0c458576d4fa7ee0856ad21eaa11507582b2e19",
+  "transactions": 4,
+  "operations": 17,
+  "journal": [
+    {
+      "index": 0,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 1,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 2,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 3,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 4,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 5,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 6,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 7,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 8,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 9,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 10,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 11,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 12,
+      "operation": "remove",
+      "executed": true
+    },
+    {
+      "index": 13,
+      "operation": "append_svg",
+      "executed": true
+    },
+    {
+      "index": 14,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 15,
+      "operation": "set",
+      "executed": true
+    },
+    {
+      "index": 16,
+      "operation": "set",
+      "executed": true
+    }
+  ],
+  "visual_quality_pass": null,
+  "editability_verified": false
+}

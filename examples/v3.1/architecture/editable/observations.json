@@ -1,0 +1,35 @@
+{
+  "review": "same assistant; sequential source/draft comparison",
+  "issues": [
+    {
+      "id": "miniature-overflow",
+      "source_evidence": "Source correspondence miniature has a blue input and two warm outputs inside its third table cell.",
+      "initial_evidence": "Initial miniature uses oversized shapes and reversed short branch segments, crossing the lower table boundary.",
+      "targets": [
+        "rect-63",
+        "rect-64",
+        "rect-65",
+        "path-66",
+        "path-67"
+      ],
+      "resolution": "Replaced with fitted native nodes and right-pointing branches."
+    },
+    {
+      "id": "peer-count",
+      "source_evidence": "First SVG document shows one cool block and three warm blocks, without text lines through the diagram.",
+      "initial_evidence": "Initial first document has two warm blocks and generic text lines crossing the diagram.",
+      "resolution": "Restored three warm blocks and removed the overlapping document lines."
+    },
+    {
+      "id": "screenshot-density",
+      "source_evidence": "User requested real record screenshots as illustrations.",
+      "initial_evidence": "Full-height screenshots are narrow when fitted to wide inset regions.",
+      "resolution": "Use top excerpts cropped from retained original browser screenshots, at larger readable scale."
+    }
+  ],
+  "limitations": [
+    "Approximate Arial font substitute and flat native fills rather than source raster shading.",
+    "Screenshot contents and case previews remain raster, as intentionally requested illustrations; each is separately movable.",
+    "The source duplicated compiler label is preserved."
+  ]
+}

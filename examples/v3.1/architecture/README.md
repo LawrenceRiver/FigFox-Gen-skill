@@ -14,3 +14,7 @@ This overview was generated with our own **FigFox-Gen V3 skill**, using the curr
 Colour relationships derive from the complete SVG in [Feature-wise transformations](https://distill.pub/2018/feature-wise-transformations/), attributed in the retained style brief and source files. MusicGen and CosyVoice SVGs contribute scoped construction grammar only; a same-track reference gap is recorded.
 
 One built-in image-generation call; no subsequent image repair or SVG reconstruction. Mild shading and one repeated compiler label are retained and disclosed.
+
+## Editable illustrated version
+
+[Native SVG with run-record screenshots and case illustrations](editable/README.md) · [SVG](editable/final.svg) · [Preview](editable/final.png)

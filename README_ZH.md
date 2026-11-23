@@ -14,7 +14,9 @@
 
 ## V3 · SVG-reference workflow / SVG 参考流程
 
-<img src="examples/v3.1/architecture/png1.png" alt="FigFox-Gen V3: Methodology and SVG evidence feed Creative Director decisions, preflight, one generation and pixel inspection" width="100%" />
+<img src="examples/v3.1/architecture/editable/final.svg" alt="FigFox-Gen V3: Methodology and SVG evidence feed Creative Director decisions, preflight, one generation and pixel inspection" width="100%" />
+
+[Editable SVG / 可编辑 SVG](examples/v3.1/architecture/editable/final.svg) · [PNG preview / PNG 预览](examples/v3.1/architecture/editable/final.png) · [Reconstruction & run illustrations / 重建与运行记录插图](examples/v3.1/architecture/editable/README.md)
 
 [Full V3 Methodology / 完整方法正文](examples/v3.1/architecture/input/methodology.md) · [Generated with our own skill / 自己的 skill 生成记录](examples/v3.1/architecture/README.md) · [Prompt / 提示词](examples/v3.1/architecture/prompt-1/prompt.md)
 
