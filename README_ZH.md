@@ -29,37 +29,7 @@ Current version: **V3 (`v3.1.0`)**. / 当前版本：**V3 (`v3.1.0`)**。
 
 真实 SVG 参考与来源记录 → 方法内容与叙事 → 完整 SVG 配色关系 → 创意师统筹配色、布局与真实内部拓扑 → 简单连线 → 单次 PNG1 → 实际图像检查。
 
-See [the active workflow and schemas](references/svg-reference-workflow.md) and [SKILL.md](SKILL.md). Historical raster-library runs remain replayable; new runs use `svg-reference-v1`.
-
-## Historical V2 architecture / 历史 V2 架构
-
-The overview and V2 notes below document the previous workflow; they are retained for provenance and do not define V3 defaults. / 以下总览与 V2 说明保留历史来源，不代表 V3 默认流程。
-
-
-Historical V2 workflow, generated with FigFox-Gen and reconstructed as editable SVG with FigFox. / 历史 V2 流程示例。
-
-<img src="assets/generated-figures/figfox-gen-v2-architecture-editable.svg" alt="FigFox-Gen V2 architecture: evidence-grounded planning, single generation and author inspection / V2 架构总览" width="100%" />
-
-[Methodology & generation record / 方法正文与生成记录](examples/v2-architecture/README.md)
-
-[Editable SVG / 可编辑 SVG](assets/generated-figures/figfox-gen-v2-architecture-editable.svg) · [SVG preview / SVG 渲染预览](assets/generated-figures/figfox-gen-v2-architecture-editable.png) · [Source comparison & editability / 原图对照与可编辑性](examples/v2-architecture/editable/README.md)
-
-此前 V2 的发布版本为 `v2.1.0`。它从科学 Methodology 出发，形成
-有来源依据的绘图计划，交付一张栅格 PNG1。细节服务于方法的实际创新，辅助模块保持
-一致层级；复用已核实的缓存，按视觉需求并行处理构件证据、参考特征与配色，再由
-创意师确定完整矩形布局和精确连线几何。
-
-默认视觉优先级为：完整矩形整体、规整分区、在框内尽可能单向传导。以白底、黑字和浅色为主；只对重要内容定向着色，普通支撑区域尽量留白。
-
-V2 按所需粒度采用标准模型的经典结构画法，默认在普通背景上使用粗体标题，把
-颜色重点留给科学内容；箭头采用统一的比例与风格，可使用粗杆、圆角或手绘线条。
-按需选用且已获使用许可的内容插图，通过确定性贴入保留实际素材像素。只调用一次
-图像模型生成布局；生成图或贴入素材后的合成图就是唯一最终 PNG1，由作者检查实际
-像素后决定是否接受，不承诺可编辑 SVG。
-
-查看 [此前的预览案例与检查记录](examples/v3-0-1/README.md)、此前的
-[布局和连线对照](examples/regular-layout-trial/README.md)，以及
-[直接视觉插图合同](references/direct-visual-insets.md)。旧的独立 V2 入口已移除，此前流程统一为默认 V2；V1 仍可通过 `$figfox-gen-v1` 明确调用。
+See [the active workflow and schemas](references/svg-reference-workflow.md) and [SKILL.md](SKILL.md). New runs use `svg-reference-v1`.
 
 ## From generated figure to editable SVG / 从生成图到可编辑 SVG
 
@@ -75,15 +45,7 @@ Use `$FigFox-Gen-skill` to create the figure, then `$figfox` to reconstruct the 
 
 先用 `$FigFox-Gen-skill` 生成，再用 `$figfox` 还原选定图片；两步分别调用，不自动进入重建或修图循环。
 
-[Installation & workflow / 安装与流程](https://github.com/LawrenceRiver/FigFox/blob/main/docs/skill.md) · [Our editable V2 example / 本仓库 V2 可编辑示例](examples/v2-architecture/editable/README.md)
-
-## 历史 V2 更新亮点
-
-1. **不再出现过度配色的 Mermaid 式拓扑图。** 用主视觉参考统一图形、箭头和字体，让生成结果具有真正科研架构图的构造感。
-2. **真正从简的逻辑布局。** 支持反 C、S 型和环形等排布，整体规整、饱满、对齐，尽可能单向传导，并逐条复查实际箭头的逻辑走向。
-3. **反直觉的空间配色要求。** 相邻模块用相近浅色过渡，远处才拉开色彩差异，关键机制通常只保留一种强调色。
-4. **图片插入开挂。** 音频波形、街景等外部图片可以按科学需要直接嵌入框架图，让具体内容进入方法表达。
-5. **专家式文字压缩。** 默认靠近 100 词，删除重复解释和灰色微字，并参考同类论文的创新粒度决定自己的细节展开程度，框架创新讲框架、层级创新讲层级，用户可按需求调整。
+[Installation & workflow / 安装与流程](https://github.com/LawrenceRiver/FigFox/blob/main/docs/skill.md) · [Our editable V3 overview / 本仓库 V3 可编辑总览](examples/v3.1/architecture/editable/README.md)
 
 ## Examples · V3 / V3 新案例
 
@@ -113,7 +75,7 @@ Known deviation: some connector labels remain outside frames. Readouts are schem
 
 Known deviation: mild shading/gradients. / 已记录：局部有轻微渐变。
 
-[All V3 run packages / 全部 V3 运行记录](examples/v3.1/README.md) · [Historical preview cases / 历史预览案例](examples/v3-0-1/README.md)
+[All V3 run packages / 全部 V3 运行记录](examples/v3.1/README.md)
 
 ### 可选科研海报支线
 
@@ -144,16 +106,53 @@ npx skills@latest check
 npx skills@latest update FigFox-Gen-skill
 ```
 
-远端仓库更新不会自动改动本地安装。手动安装或固定在 V1 的副本，可用上面的 V2
-安装命令切换来源；先保存本地自定义修改。固定版本与 V1/V2 共存方法见
-[版本说明](references/versions.md)。在已安装的 Skill 目录检查文件完整性：
+远端仓库更新需要主动更新本地安装；更新前先保存本地自定义修改。在已安装的 Skill 目录检查文件完整性：
 
 ```bash
 python scripts/check_installation.py
 ```
 
-使用时提供 Methodology，可选附上参考图。一般请求默认使用 V2；保留的旧版名为
-`figfox-gen-v1`，只在明确指定它时调用。
+使用时提供 Methodology，可选附上 SVG 参考图。一般请求默认使用当前 V3 工作流。
+
+## Choose a workflow / 选择工作流
+
+```mermaid
+flowchart LR
+  subgraph V1["V1 · Original / 初版"]
+    a["Contexts 1–3<br/>FigureBench + palette"]
+  end
+  subgraph V2["V2 · Visual planning / 视觉规划"]
+    b["Needs → drawing correspondence<br/>Grid + route preflight"]
+  end
+  subgraph V3["V3 · Current / 当前"]
+    c["Genuine SVG evidence<br/>Director-owned colour + simple routes"]
+  end
+  a --> b --> c
+```
+
+| Workflow / 工作流 | Install source / 安装来源 | Call / 调用 |
+|---|---|---|
+| V1 | [v1.0.0](https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v1.0.0) | `$figfox-gen-v1` |
+| V2 | [v2.1.0](https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v2.1.0) | `$FigFox-Gen-skill` after installing V2 / 安装 V2 后调用 |
+| V3 | [main](https://github.com/LawrenceRiver/FigFox-Gen-skill) | `$FigFox-Gen-skill` (default / 默认) |
+
+<details>
+<summary>Install a specific workflow / 安装指定工作流</summary>
+
+```bash
+# V1
+npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v1.0.0 --skill figfox-gen-v1
+
+# V2
+npx skills@latest add https://github.com/LawrenceRiver/FigFox-Gen-skill/tree/v2.1.0 --skill FigFox-Gen-skill
+
+# V3 (current)
+npx skills@latest add LawrenceRiver/FigFox-Gen-skill --skill FigFox-Gen-skill
+```
+
+V2 and V3 share the same skill name: install the selected version before calling it. / V2 与 V3 使用同一 skill 名称，先安装所选版本，再调用；不通过名称同时区分两个版本。
+
+</details>
 
 ## 工作流程
 
@@ -172,18 +171,6 @@ Methodology + 用户要求
 5. **单次生成与实际检查。** 调用一次图像模型，交付 PNG1，检查真实图像，保留方法正文、来源、创意决策、计划、提示词与已知偏差。产物校验不能证明视觉或科学正确，不自动修图或还原可编辑 SVG。
 
 [完整 V3 Methodology](examples/v3.1/architecture/input/methodology.md) · [当前 skill](SKILL.md) · [SVG 合同](references/svg-reference-workflow.md) · [紧凑交付](references/compact-generation.md)
-
-## 历史 V1 案例
-
-旧图与原路径保持不变，作为 V1 案例；历史配色预览展示的是旧版颜色库。
-
-| V1 Methodology | 原 V1 结果 |
-|---|---|
-| Latent Diffusion | <img src="assets/generated-figures/02-latent-diffusion.png" alt="保留的 V1 Latent Diffusion 案例" width="620" /> |
-| MusiCoT | <img src="assets/generated-figures/03-musicot.png" alt="保留的 V1 MusiCoT 案例" width="620" /> |
-| AlphaFold 3 | <img src="assets/generated-figures/04-alphafold3.png" alt="保留的 V1 AlphaFold 3 案例" width="620" /> |
-
-[V1 FigureBench/配色预览](assets/figurebench-palette-preview.png)
 
 ## 内置参考包
 
