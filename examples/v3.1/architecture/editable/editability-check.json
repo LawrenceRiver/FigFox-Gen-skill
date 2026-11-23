@@ -1,6 +1,6 @@
 {
-  "final_sha256": "7a95ba38e2ffff87e544076fe0c458576d4fa7ee0856ad21eaa11507582b2e19",
-  "native_text_elements": 48,
+  "final_sha256": "62e2c92959ad6fa90d64d3bd9b5aa2930cd26061c38c7c78b8b513ef3fe3ad36",
+  "native_text_elements": 46,
   "native_shapes_and_paths": 115,
   "embedded_images": 6,
   "external_resources": 0,
@@ -15,5 +15,7 @@
   "limitations": [
     "Font weight, document details and flat fills approximate the generated raster.",
     "Six evidence/example illustrations remain independently movable raster images."
-  ]
+  ],
+  "previous_verified_sha256": "7a95ba38e2ffff87e544076fe0c458576d4fa7ee0856ad21eaa11507582b2e19",
+  "subsequent_edit": "Removed only two user-specified explanatory captions; rendered and visually checked. Earlier operation probe applies to the preceding revision."
 }
